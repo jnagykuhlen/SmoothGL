@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using OpenTK;
+using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
+
+
+namespace SmoothGL.Graphics
+{
+    /// <summary>
+    /// Defines an atomic element vertex data can be composed of.
+    /// </summary>
+    public interface IVertexElement
+    {
+        /// <summary>
+        /// Commmunicates this vertex element definition to the GPU. This method is not required to be called by client code.
+        /// </summary>
+        /// <param name="strideSize">The length of a single vertex representation in memory, in bytes.</param>
+        /// <param name="offset">The offset at which this element is placed, in bytes.</param>
+        /// <param name="divisor">The divisor.</param>
+        void ApplyDefinition(int strideSize, int offset, int divisor);
+
+        /// <summary>
+        /// Gets the number of bytes required to represent this vertex element in memory.
+        /// </summary>
+        int Size { get; }
+    }
+}

@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1FC5EE24-83AB-4260-964C-A48E50E72C27}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SmoothGL</RootNamespace>
+    <AssemblyName>SmoothGL</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Debug\SmoothGL.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\External\OpenTK\$(ConfigurationName)\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Internal\CachedResult.cs" />
+    <Compile Include="Content\Internal\CachedReader.cs" />
+    <Compile Include="Content\Internal\ICachedReader.cs" />
+    <Compile Include="Content\Readers\TextureCubeReader.cs" />
+    <Compile Include="Graphics\IUnsafeBuffer.cs" />
+    <Compile Include="Graphics\Geometry\Builder\CubeBuilder.cs" />
+    <Compile Include="Graphics\Geometry\Builder\IGeometryBuilder.cs" />
+    <Compile Include="Graphics\Geometry\Builder\QuadBuilder.cs" />
+    <Compile Include="Graphics\Geometry\Builder\SphereBuilder.cs" />
+    <Compile Include="Graphics\Geometry\Builder\TetrahedronBuilder.cs" />
+    <Compile Include="Graphics\Geometry\Internal\IDrawStrategy.cs" />
+    <Compile Include="Graphics\Geometry\Internal\ArrayDrawStrategy.cs" />
+    <Compile Include="Graphics\Geometry\Internal\ElementDrawStrategy.cs" />
+    <Compile Include="Graphics\BufferUsage.cs" />
+    <Compile Include="Graphics\Geometry\FloatSourceType.cs" />
+    <Compile Include="Graphics\Geometry\IntegerSourceType.cs" />
+    <Compile Include="Graphics\Geometry\ElementType.cs" />
+    <Compile Include="Graphics\Geometry\VertexPosition.cs" />
+    <Compile Include="Graphics\Geometry\VertexPositionTexture.cs" />
+    <Compile Include="Graphics\Geometry\Primitive.cs" />
+    <Compile Include="Graphics\GraphicsResourceNotDisposedException.cs" />
+    <Compile Include="Graphics\Shader\Internal\IShaderUniformAssignment.cs" />
+    <Compile Include="Graphics\Shader\Internal\ShaderBufferUniform.cs" />
+    <Compile Include="Graphics\Shader\Internal\ShaderUniformArrayAssignmentDispatcher.cs" />
+    <Compile Include="Graphics\Shader\Internal\ShaderUniformSingleAssignmentDispatcher.cs" />
+    <Compile Include="Graphics\Shader\Internal\IShaderUniformAssignmentDispatcher.cs" />
+    <Compile Include="Graphics\Shader\Internal\ShaderProgramUniform.cs" />
+    <Compile Include="Graphics\Shader\Internal\ShaderUniformAssignmentManager.cs" />
+    <Compile Include="Graphics\Shader\Internal\ShaderUniformAssignments.cs" />
+    <Compile Include="Graphics\Shader\Internal\ShaderUniformTextureAssignment.cs" />
+    <Compile Include="Graphics\Shader\Internal\ShaderUniformAssignment.cs" />
+    <Compile Include="Graphics\Shader\UniformBuffer.cs" />
+    <Compile Include="Graphics\Shader\ShaderUniformBlock.cs" />
+    <Compile Include="Graphics\Shader\ShaderUniformType.cs" />
+    <Compile Include="Graphics\State\Blend.cs" />
+    <Compile Include="Graphics\State\BlendEquation.cs" />
+    <Compile Include="Graphics\State\BlendState.cs" />
+    <Compile Include="Graphics\Buffer.cs" />
+    <Compile Include="Graphics\State\ColorWriteChannels.cs" />
+    <Compile Include="Content\ContentLoadException.cs" />
+    <Compile Include="Content\ContentManager.cs" />
+    <Compile Include="Content\Factories\ShaderProgramFactory.cs" />
+    <Compile Include="Content\FactoryReader.cs" />
+    <Compile Include="Content\IContentReader.cs" />
+    <Compile Include="Content\IFactory.cs" />
+    <Compile Include="Content\Readers\TextureDataReader.cs" />
+    <Compile Include="Content\Readers\SerializationReader.cs" />
+    <Compile Include="Content\Readers\StringReader.cs" />
+    <Compile Include="Content\Readers\ColorTextureReader.cs" />
+    <Compile Include="Content\Readers\VertexArrayReader.cs" />
+    <Compile Include="Content\Readers\WavefrontOBJReader.cs" />
+    <Compile Include="Graphics\State\DepthState.cs" />
+    <Compile Include="Graphics\Geometry\ElementBuffer.cs" />
+    <Compile Include="Graphics\Geometry\IVertexElement.cs" />
+    <Compile Include="Graphics\Geometry\MeshData.cs" />
+    <Compile Include="Graphics\Geometry\VertexArray.cs" />
+    <Compile Include="Graphics\Geometry\VertexBuffer.cs" />
+    <Compile Include="Graphics\Geometry\VertexDeclaration.cs" />
+    <Compile Include="Graphics\Geometry\VertexElementDouble.cs" />
+    <Compile Include="Graphics\Geometry\VertexElementFloat.cs" />
+    <Compile Include="Graphics\Geometry\VertexElementInteger.cs" />
+    <Compile Include="Graphics\Geometry\VertexPositionNormalTexture.cs" />
+    <Compile Include="Graphics\GraphicsResource.cs" />
+    <Compile Include="Graphics\State\CompareFunction.cs" />
+    <Compile Include="Graphics\State\CullMode.cs" />
+    <Compile Include="Graphics\State\FillMode.cs" />
+    <Compile Include="Graphics\State\StencilFaceState.cs" />
+    <Compile Include="Graphics\State\RasterizerState.cs" />
+    <Compile Include="Graphics\State\StencilOperation.cs" />
+    <Compile Include="Graphics\State\StencilState.cs" />
+    <Compile Include="Graphics\State\IGraphicsState.cs" />
+    <Compile Include="Graphics\OcclusionQuery.cs" />
+    <Compile Include="Graphics\StereoProjection.cs" />
+    <Compile Include="Graphics\Texture\IColorAttachment.cs" />
+    <Compile Include="Graphics\Texture\TargetOptions.cs" />
+    <Compile Include="Graphics\Texture\Internal\DefaultFrameBuffer.cs" />
+    <Compile Include="Graphics\Texture\TextureFilterMode.cs" />
+    <Compile Include="Graphics\Texture\TextureColorFormat.cs" />
+    <Compile Include="Graphics\Texture\FrameBufferTarget.cs" />
+    <Compile Include="Graphics\Texture\IDepthStencilAttachment.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Graphics\Quad.cs" />
+    <Compile Include="Graphics\Query.cs" />
+    <Compile Include="Graphics\Shader\ShaderCompilationException.cs" />
+    <Compile Include="Graphics\Shader\ShaderProgram.cs" />
+    <Compile Include="Graphics\Shader\ShaderProgramLinkException.cs" />
+    <Compile Include="Graphics\Shader\ShaderUniform.cs" />
+    <Compile Include="Graphics\Shader\ShaderUniformException.cs" />
+    <Compile Include="Graphics\Shader\UniformBlockException.cs" />
+    <Compile Include="Graphics\Shader\UniformBufferLayout.cs" />
+    <Compile Include="Graphics\Shader\UniformBufferElement.cs" />
+    <Compile Include="Graphics\Texture\DepthStencilBuffer.cs" />
+    <Compile Include="Graphics\Texture\DepthStencilTexture2D.cs" />
+    <Compile Include="Graphics\Texture\FrameBuffer.cs" />
+    <Compile Include="Graphics\Texture\ColorTexture2D.cs" />
+    <Compile Include="Graphics\Texture\Texture.cs" />
+    <Compile Include="Graphics\Texture\Texture1D.cs" />
+    <Compile Include="Graphics\Texture\Texture2D.cs" />
+    <Compile Include="Graphics\Texture\Texture3D.cs" />
+    <Compile Include="Graphics\Texture\TextureCube.cs" />
+    <Compile Include="Graphics\Texture\TextureCubeFace.cs" />
+    <Compile Include="Graphics\Texture\TextureData.cs" />
+    <Compile Include="Graphics\Texture\TextureInterpolation.cs" />
+    <Compile Include="Graphics\TimeQuery.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
