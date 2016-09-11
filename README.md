@@ -4,32 +4,32 @@ SmoothGL is an easy-to-use framework for OpenGL graphics in C\#. It is intended 
 
 This framework is based on [OpenTK](https://github.com/opentk/opentk), which is primarily a low-level binding for OpenGL functions as well as window management. The goal of SmoothGL is to allow programmers to work with strongly-typed, intuitively to use objects to avoid most of the common mistakes in low-level OpenGL. Furthermore, it provides a lightweight content system that makes loading of textures, models, shaders and other resources very easy. However, it does not fully replace OpenTK, which is still required to create a window and main loop.
 
-#### What SmoothGL is
+### What SmoothGL is
 
 SmoothGL wraps most OpenGL objects required for modern graphics applications into an easy-to-use API. When using this framework, no direct calls to OpenGL functions (which are those included in the *OpenTK.Graphics.OpenGL* namespace) are required anymore. The following table shows which features from XNA are implemented in SmoothGL and vice versa, where deviating names are added in brackets.
 
-| Feature                           | XNA                 | SmoothGL             |
-| --------------------------------- | ------------------- | -------------------- |
-| Vertex buffers                    | Yes                 | Yes                  |
-| Indexed rendering                 | Yes (index buffer)  | Yes (element buffer) |
-| Instanced rendering               | Yes                 | Yes                  |
-| Composed rendering state          | Yes (mesh)          | Yes (vertex array)   |
-| Vertex and fragment shaders       | Yes (effect)        | Yes (shader program) |
-| Geometry and tessellation shaders | No                  | Yes (shader program) |
-| Color textures                    | Yes                 | Yes                  |
-| Cube textures                     | Yes                 | Yes                  |
-| Depth-stencil textures            | No                  | Yes                  |
-| Render to texture                 | Yes (render target) | Yes (frame buffer)   |
-| Occlusion queries                 | Yes                 | Yes                  |
-| Shader constant buffers           | No                  | Yes (uniform buffer) |
-| Blend states                      | Yes                 | Yes                  |
-| Depth-stencil states              | Yes                 | Yes                  |
-| 2D rendering                      | Yes (sprite batch)  | No                   |
-| Basic collision detection         | Yes                 | No                   |
-| Content loading system            | Yes                 | Yes                  |
-| Sound                             | Yes                 | No                   |
+| Feature                           | XNA                     | SmoothGL                 |
+| --------------------------------- | ----------------------- | ------------------------ |
+| Vertex buffers                    | **Yes**                 | **Yes**                  |
+| Indexed rendering                 | **Yes** (index buffer)  | **Yes** (element buffer) |
+| Instanced rendering               | **Yes**                 | **Yes**                  |
+| Composed rendering state          | **Yes** (mesh)          | **Yes** (vertex array)   |
+| Vertex and fragment shaders       | **Yes** (effect)        | **Yes** (shader program) |
+| Geometry and tessellation shaders | No                      | **Yes** (shader program) |
+| Color textures                    | **Yes**                 | **Yes**                  |
+| Cube textures                     | **Yes**                 | **Yes**                  |
+| Depth-stencil textures            | No                      | **Yes**                  |
+| Render to texture                 | **Yes** (render target) | **Yes** (frame buffer)   |
+| Occlusion queries                 | **Yes**                 | **Yes**                  |
+| Shader constant buffers           | No                      | **Yes** (uniform buffer) |
+| Blend states                      | **Yes**                 | **Yes**                  |
+| Depth-stencil states              | **Yes**                 | **Yes**                  |
+| 2D rendering                      | **Yes** (sprite batch)  | No                       |
+| Basic collision detection         | **Yes**                 | No                       |
+| Content loading system            | **Yes**                 | **Yes**                  |
+| Sound                             | **Yes**                 | No                       |
 
-#### What SmoothGL is not
+### What SmoothGL is not
 
 This framework is designed primarily as graphics library and thus does not cover other game components such as sound, collision and physics, networking, input and window management. It is furthermore not meant to replace OpenTK entirely, but rather to extend and simplify the graphics-related part of it. This means that OpenTK is still required for creating a window with main loop and input handling, as well as providing the necessary math classes (which is the functionality included in the *OpenTK* and *OpenTK.Input* namespaces).
 
