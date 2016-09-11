@@ -51,6 +51,8 @@
     <Compile Include="Content\Internal\CachedResult.cs" />
     <Compile Include="Content\Internal\CachedReader.cs" />
     <Compile Include="Content\Internal\ICachedReader.cs" />
+    <Compile Include="Content\Readers\CubeTextureElement.cs" />
+    <Compile Include="Content\Readers\CubeTextureLayout.cs" />
     <Compile Include="Content\Readers\TextureCubeReader.cs" />
     <Compile Include="Graphics\IUnsafeBuffer.cs" />
     <Compile Include="Graphics\Geometry\Builder\CubeBuilder.cs" />
