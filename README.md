@@ -40,3 +40,7 @@ SmoothGL was developed using Visual Studio 2015, but should be compatible with o
 # Code structure
 
 The code is split into the two major parts *Graphics* and *Content*, each with corresponding namespaces and subdirectories for separate components. All contained classes and interfaces as well as their public members are annotated with XML documentation comments that provide further usage information directly in Visual Studio. Classes which are required exclusively for internal use were moved to *Internal* folders with corresponding namespaces (such as *SmoothGL.Graphics.Internal* for example), but nevertheless have the 'public' access modifier. This is because they might still be helpful for certain programmers extending the framework. However, they are mostly undocumented and using them requires a detailed understanding of the system. Similarly, instantiation of non-internal classes is considered safe, whereas creating subclasses and using protected methods is not. Subclassing is generally not necessary to use the features provided by SmoothGL, but can be done at own risk to include new OpenGL features (which of course presumes insights into the OpenGL low-level API).
+
+# Getting started
+
+Documented sample code can be found in the *Samples* project, showing which steps are required to present graphics on the screen using the SmoothGL framework.
