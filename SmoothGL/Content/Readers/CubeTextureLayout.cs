@@ -114,6 +114,9 @@ namespace SmoothGL.Content
         /// <returns>Cube texture layout.</returns>
         public static CubeTextureLayout FromCubeFaceOrder(TextureCubeFace[] cubeFaceOrder)
         {
+            if (cubeFaceOrder == null)
+                throw new ArgumentNullException("cubeFaceOrder");
+
             if (cubeFaceOrder.Length != 6)
                 throw new ArgumentException("Cube face order array must contain exactly six values.", "cubeFaceOrder");
 

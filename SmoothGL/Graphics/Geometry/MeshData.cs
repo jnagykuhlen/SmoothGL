@@ -189,8 +189,8 @@ namespace SmoothGL.Graphics
         public ElementBuffer ToElementBuffer()
         {
             if (_indices == null)
-                return null;
-
+                throw new InvalidOperationException("Cannot create element buffer from mesh data that has no indices.");
+            
             ElementBuffer elementBuffer;
             if (NumberOfVertices <= byte.MaxValue)
             {
