@@ -1,0 +1,4 @@
+﻿<ShaderProgram>
+  <Vertex>VertexSky.glsl</Vertex>
+  <Fragment>FragmentSky.glsl</Fragment>
+</ShaderProgram>

@@ -11,7 +11,8 @@ namespace SmoothGL.Samples
         {
             SampleWindow[] samples = new SampleWindow[]
             {
-                new HelloWorldSample()
+                new HelloWorldSample(),
+                new AdvancedTechniquesSample()
             };
 
             for (int i = 0; i < samples.Length; ++i)

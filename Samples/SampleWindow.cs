@@ -18,8 +18,8 @@ namespace SmoothGL.Samples
     /// </summary>
     public class SampleWindow : GameWindow
     {
-        private float NearPlane = 0.1f;
-        private float FarPlane = 20.0f;
+        protected float NearPlane = 0.1f;
+        protected float FarPlane = 20.0f;
         
         private Matrix4 _projection;
         private float _elapsedTime;

@@ -67,7 +67,7 @@ namespace SmoothGL.Samples
         {
             // Creates and compiles a shader program directly from vertex and fragment shader code.
             _shaderProgram = new ShaderProgram(VertexShaderCode, FragmentShaderCode);
-
+            
             // Formal layout declaration of our vertex data represented by the VertexPositionColor struct
             // defined earlier. This declaration communicates to the GPU how the vertex data is organized
             // in memory. In accordance with the struct declaration, we state that the vertex position vector
