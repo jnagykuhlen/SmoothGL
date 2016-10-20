@@ -43,8 +43,6 @@ namespace SmoothGL.Graphics
 
         private void ApplyFiltering()
         {
-            Bind();
-
             TextureMinFilter minFilter;
             TextureMagFilter magFilter;
 
@@ -59,9 +57,13 @@ namespace SmoothGL.Graphics
                 magFilter = TextureMagFilter.Linear;
             }
 
-            GL.TexParameter(_target, TextureParameterName.TextureMinFilter, (float)minFilter);
-            GL.TexParameter(_target, TextureParameterName.TextureMagFilter, (float)magFilter);
+            GL.TexParameter(_target, TextureParameterName.TextureMinFilter, (int)minFilter);
+            GL.TexParameter(_target, TextureParameterName.TextureMagFilter, (int)magFilter);
 
+            GL.TexParameter(_target, TextureParameterName.TextureWrapS, (int)_filterMode.Wrap);
+            GL.TexParameter(_target, TextureParameterName.TextureWrapT, (int)_filterMode.Wrap);
+            GL.TexParameter(_target, TextureParameterName.TextureWrapR, (int)_filterMode.Wrap);
+            
             float maxAnisotropy;
             GL.GetFloat((GetPName)ExtTextureFilterAnisotropic.MaxTextureMaxAnisotropyExt, out maxAnisotropy);
 

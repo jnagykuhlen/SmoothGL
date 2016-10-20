@@ -131,6 +131,7 @@
     <Compile Include="Graphics\Texture\TextureColorFormat.cs" />
     <Compile Include="Graphics\Texture\FrameBufferTarget.cs" />
     <Compile Include="Graphics\Texture\IDepthStencilAttachment.cs" />
+    <Compile Include="Graphics\Texture\TextureWrap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Graphics\Quad.cs" />
     <Compile Include="Graphics\Query.cs" />
