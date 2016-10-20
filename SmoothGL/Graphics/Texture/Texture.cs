@@ -69,8 +69,6 @@ namespace SmoothGL.Graphics
 
             float anisotropy = MathHelper.Clamp(_filterMode.Anisotropy, 1.0f, maxAnisotropy);
             GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName)ExtTextureFilterAnisotropic.TextureMaxAnisotropyExt, anisotropy);
-
-            Console.WriteLine(GL.GetError());
         }
 
         protected sealed override void FreeResources()
