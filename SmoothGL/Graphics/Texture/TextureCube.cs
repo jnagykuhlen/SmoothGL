@@ -129,6 +129,29 @@ namespace SmoothGL.Graphics
         }
 
         /// <summary>
+        /// Creates a new bitmap from the color data stored in the specified face of this texture.
+        /// </summary>
+        /// <returns>New bitmap with color data from this texture.</returns>
+        public Bitmap ToBitmap(TextureCubeFace cubeFace)
+        {
+            Bitmap bitmap = new Bitmap(_width, _height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            Rectangle bitmapRectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            BitmapData bitmapData = bitmap.LockBits(bitmapRectangle, ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            try
+            {
+                Bind();
+                GL.GetTexImage(TextureTarget.TextureCubeMapPositiveX + (int)cubeFace, 0, PixelFormat.Bgra, PixelType.UnsignedInt8888Reversed, bitmapData.Scan0);
+            }
+            finally
+            {
+                bitmap.UnlockBits(bitmapData);
+            }
+
+            return bitmap;
+        }
+
+        /// <summary>
         /// Creates a new frame buffer attachment that can be used to attach a specified face of this texture to a
         /// frame buffer by calling its <see cref="FrameBuffer.Attach(IDepthStencilAttachment, IColorAttachment[])"/> method.
         /// </summary>
