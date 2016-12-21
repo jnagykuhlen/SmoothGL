@@ -55,6 +55,7 @@
     <Compile Include="Content\Readers\CubeTextureElement.cs" />
     <Compile Include="Content\Readers\CubeTextureLayout.cs" />
     <Compile Include="Content\Readers\TextureCubeReader.cs" />
+    <Compile Include="Graphics\Geometry\Builder\CylinderBuilder.cs" />
     <Compile Include="Graphics\IUnsafeBuffer.cs" />
     <Compile Include="Graphics\Geometry\Builder\CubeBuilder.cs" />
     <Compile Include="Graphics\Geometry\Builder\IGeometryBuilder.cs" />
