@@ -35,7 +35,7 @@ This framework is designed primarily as graphics library and thus does not cover
 
 # How to build
 
-SmoothGL was developed using Visual Studio 2015, but should be compatible with other versions of Visual Studio as well. It depends on the *OpenTK.dll*, which needs to be copied to the *SmoothGL/External/OpenTK/Debug/* and the *SmoothGL/External/OpenTK/Release/* directories with corresponding build configuration. The [source code of OpenTK](https://github.com/opentk/opentk) can be cloned from GitHub and manually compiled, or alternatively, OpenTK is also [available as NuGet package](http://www.nuget.org/packages/OpenTK/). In order to use the features provided by SmoothGL, a graphics card that supports at least OpenGL version 3.3 is required (OpenGL version 4.0 for tessellation shaders).
+SmoothGL was developed using Visual Studio 2015, but should be compatible with other versions of Visual Studio as well. It depends on the *OpenTK.dll*, which is referenced as [NuGet package](http://www.nuget.org/packages/OpenTK/). In order to use the features provided by SmoothGL, a graphics card that supports at least OpenGL version 3.3 is required (OpenGL version 4.0 for tessellation shaders).
 
 # Code structure
 
