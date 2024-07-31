@@ -1,12 +1,12 @@
 ﻿namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Defines an abstract resource in graphics memory.
+/// Defines an abstract resource in graphics memory.
 /// </summary>
 public abstract class GraphicsResource : IDisposable
 {
     /// <summary>
-    ///     Creates a new graphics resource.
+    /// Creates a new graphics resource.
     /// </summary>
     protected GraphicsResource()
     {
@@ -14,17 +14,17 @@ public abstract class GraphicsResource : IDisposable
     }
 
     /// <summary>
-    ///     Override this method to return the name of the resource.
+    /// Override this method to return the name of the resource.
     /// </summary>
     protected virtual string ResourceName => "GraphicsResource";
 
     /// <summary>
-    ///     Gets a value indicating whether this resource has been disposed.
+    /// Gets a value indicating whether this resource has been disposed.
     /// </summary>
     public bool Disposed { get; private set; }
 
     /// <summary>
-    ///     Disposes this resource, freeing all allocated graphics memory.
+    /// Disposes this resource, freeing all allocated graphics memory.
     /// </summary>
     public void Dispose()
     {
@@ -37,7 +37,7 @@ public abstract class GraphicsResource : IDisposable
     }
 
     /// <summary>
-    ///     Throws an ObjectDisposedException in case this resource is already disposed.
+    /// Throws an ObjectDisposedException in case this resource is already disposed.
     /// </summary>
     protected void CheckDisposed()
     {
@@ -46,7 +46,7 @@ public abstract class GraphicsResource : IDisposable
     }
 
     /// <summary>
-    ///     Override this method to free unmanaged resources.
+    /// Override this method to free unmanaged resources.
     /// </summary>
     protected virtual void FreeResources()
     {

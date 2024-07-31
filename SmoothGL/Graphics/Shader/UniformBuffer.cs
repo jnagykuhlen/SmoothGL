@@ -4,14 +4,14 @@ using SmoothGL.Graphics.Internal;
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents a buffer storing a number of uniforms, persistent in graphics memory.
+/// Represents a buffer storing a number of uniforms, persistent in graphics memory.
 /// </summary>
 public class UniformBuffer : Buffer
 {
     private readonly Dictionary<string, ShaderUniform> _uniforms;
 
     /// <summary>
-    ///     Creates a new structured uniform buffer.
+    /// Creates a new structured uniform buffer.
     /// </summary>
     /// <param name="description">Description of the uniforms included in the buffer.</param>
     /// <param name="usage">Hint for the driver concerning the frequency the data in this buffer is expected to change.</param>
@@ -22,7 +22,7 @@ public class UniformBuffer : Buffer
     }
 
     /// <summary>
-    ///     Gets all uniforms contained in this uniform buffer.
+    /// Gets all uniforms contained in this uniform buffer.
     /// </summary>
     public IEnumerable<ShaderUniform> Uniforms => _uniforms.Values;
 
@@ -35,8 +35,8 @@ public class UniformBuffer : Buffer
     }
 
     /// <summary>
-    ///     Gets the uniform with the specified name contained in this uniform buffer.
-    ///     Returns null if such uniform does not exist.
+    /// Gets the uniform with the specified name contained in this uniform buffer.
+    /// Returns null if such uniform does not exist.
     /// </summary>
     /// <param name="name">Name of the uniform.</param>
     /// <returns>Uniform.</returns>

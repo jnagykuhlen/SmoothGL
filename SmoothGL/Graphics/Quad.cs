@@ -3,7 +3,7 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents a quadratic finite plane orthogonal to the z-axis with unit size.
+/// Represents a quadratic finite plane orthogonal to the z-axis with unit size.
 /// </summary>
 public class Quad : GraphicsResource
 {
@@ -11,7 +11,7 @@ public class Quad : GraphicsResource
     private readonly VertexBuffer _vertexBuffer;
 
     /// <summary>
-    ///     Creates a new quad in graphics memory.
+    /// Creates a new quad in graphics memory.
     /// </summary>
     public Quad()
     {
@@ -28,7 +28,7 @@ public class Quad : GraphicsResource
     protected override string ResourceName => "Quad";
 
     /// <summary>
-    ///     Draws this quad with the shader program that is currently active.
+    /// Draws this quad with the shader program that is currently active.
     /// </summary>
     public void Draw()
     {

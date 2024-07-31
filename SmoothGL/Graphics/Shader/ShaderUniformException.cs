@@ -1,12 +1,12 @@
 ﻿namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Exception which is thrown when an invalid operation is performed on shader uniforms.
+/// Exception which is thrown when an invalid operation is performed on shader uniforms.
 /// </summary>
 public class ShaderUniformException : Exception
 {
     /// <summary>
-    ///     Creates a new ShaderUniformException.
+    /// Creates a new ShaderUniformException.
     /// </summary>
     /// <param name="message">Message specifying the reason for the exception.</param>
     /// <param name="uniformName">Name of the shader uniform which caused the exception.</param>
@@ -19,12 +19,12 @@ public class ShaderUniformException : Exception
     }
 
     /// <summary>
-    ///     Gets the name of the shader uniform which caused the exception.
+    /// Gets the name of the shader uniform which caused the exception.
     /// </summary>
     public string UniformName { get; }
 
     /// <summary>
-    ///     Gets the type of the shader uniform which caused the exception.
+    /// Gets the type of the shader uniform which caused the exception.
     /// </summary>
     public ShaderUniformType UniformType { get; }
 }

@@ -3,12 +3,12 @@
 namespace SmoothGL.Content;
 
 /// <summary>
-///     Reader class which reads a string from a stream.
+/// Reader class which reads a string from a stream.
 /// </summary>
 public class StringReader : IContentReader<string>
 {
     /// <summary>
-    ///     Reads a string from a stream.
+    /// Reads a string from a stream.
     /// </summary>
     /// <param name="stream">Stream to read data from.</param>
     /// <param name="requestedType">The concrete type requested. Should be the specified type or subtypes.</param>
@@ -23,12 +23,12 @@ public class StringReader : IContentReader<string>
     }
 
     /// <summary>
-    ///     Indicates whether this class can also read subtypes of the specified type.
+    /// Indicates whether this class can also read subtypes of the specified type.
     /// </summary>
     public bool CanReadSubtypes => false;
 
     /// <summary>
-    ///     Gets the name of this reader.
+    /// Gets the name of this reader.
     /// </summary>
     public string ReaderName => "StringReader";
 }

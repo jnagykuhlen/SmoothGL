@@ -4,12 +4,12 @@ using OpenTK.Mathematics;
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Defines a one-dimensional texture persistent in graphics memory, storing an array of color values.
+/// Defines a one-dimensional texture persistent in graphics memory, storing an array of color values.
 /// </summary>
 public class Texture1D : Texture
 {
     /// <summary>
-    ///     Creates a new one-dimensional color texture with RGBA format and default filter mode.
+    /// Creates a new one-dimensional color texture with RGBA format and default filter mode.
     /// </summary>
     /// <param name="width">Texture width.</param>
     public Texture1D(int width)
@@ -18,7 +18,7 @@ public class Texture1D : Texture
     }
 
     /// <summary>
-    ///     Creates a new one-dimensional color texture with specified color format and filtering.
+    /// Creates a new one-dimensional color texture with specified color format and filtering.
     /// </summary>
     /// <param name="width">Texture width.</param>
     /// <param name="format">Specifies the format of each color value in memory.</param>
@@ -32,17 +32,17 @@ public class Texture1D : Texture
     }
 
     /// <summary>
-    ///     Gets the width of this texture.
+    /// Gets the width of this texture.
     /// </summary>
     public int Width { get; }
 
     /// <summary>
-    ///     Gets the format of each color value in memory.
+    /// Gets the format of each color value in memory.
     /// </summary>
     public TextureColorFormat Format { get; }
 
     /// <summary>
-    ///     Stores color data in this texture. The length of the provided data array must match the width of this texture.
+    /// Stores color data in this texture. The length of the provided data array must match the width of this texture.
     /// </summary>
     /// <param name="data">Color data to store in the texture.</param>
     public void SetData(Color4[] data)
@@ -56,7 +56,7 @@ public class Texture1D : Texture
     }
 
     /// <summary>
-    ///     Reads the color data stored in this texture back into client memory.
+    /// Reads the color data stored in this texture back into client memory.
     /// </summary>
     /// <returns>Color data.</returns>
     public Color4[] GetData()

@@ -3,7 +3,7 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Abstract query used to perform GPU measurements.
+/// Abstract query used to perform GPU measurements.
 /// </summary>
 public abstract class Query : GraphicsResource
 {
@@ -12,7 +12,7 @@ public abstract class Query : GraphicsResource
     private readonly QueryTarget _target;
 
     /// <summary>
-    ///     Creates a new query.
+    /// Creates a new query.
     /// </summary>
     /// <param name="target">Specifies the type of the query.</param>
     protected Query(QueryTarget target)
@@ -23,7 +23,7 @@ public abstract class Query : GraphicsResource
     }
 
     /// <summary>
-    ///     Gets a value indicating whether the query has been performed successfully and the result is available.
+    /// Gets a value indicating whether the query has been performed successfully and the result is available.
     /// </summary>
     public bool IsFinished
     {
@@ -39,7 +39,7 @@ public abstract class Query : GraphicsResource
     }
 
     /// <summary>
-    ///     Gets the query result if it is available.
+    /// Gets the query result if it is available.
     /// </summary>
     protected int Result
     {
@@ -59,7 +59,7 @@ public abstract class Query : GraphicsResource
     protected override string ResourceName => "Query";
 
     /// <summary>
-    ///     Starts the query. An InvalidOperationException is thrown if the query is already active.
+    /// Starts the query. An InvalidOperationException is thrown if the query is already active.
     /// </summary>
     public void Begin()
     {
@@ -70,8 +70,8 @@ public abstract class Query : GraphicsResource
     }
 
     /// <summary>
-    ///     Ends the query. An InvalidOperationException is thrown if the query is not active.
-    ///     Not that the query result may not be immediately available.
+    /// Ends the query. An InvalidOperationException is thrown if the query is not active.
+    /// Not that the query result may not be immediately available.
     /// </summary>
     public void End()
     {

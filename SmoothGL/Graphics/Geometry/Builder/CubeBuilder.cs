@@ -3,12 +3,12 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents a builder that constructs a unit cube aligned to the coordinate axes.
+/// Represents a builder that constructs a unit cube aligned to the coordinate axes.
 /// </summary>
 public class CubeBuilder : IGeometryBuilder
 {
     /// <summary>
-    ///     Builds a unit cube stored in memory.
+    /// Builds a unit cube stored in memory.
     /// </summary>
     /// <returns>Unit cube.</returns>
     public MeshData Build()

@@ -3,16 +3,16 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents a two-dimensional texture persistent in graphics memory, storing a 24-bit depth value and an 8-bit
-///     stencil
-///     value per pixel. Single depth-stencil textures can be bound to frame buffers to allow depth and stencil testing.
-///     Unlike the <see cref="DepthStencilBuffer" />, this texture can be assigned to a shader uniform when not attached
-///     to an active frame buffer, allowing direct access to stored depth and stencil values.
+/// Represents a two-dimensional texture persistent in graphics memory, storing a 24-bit depth value and an 8-bit
+/// stencil
+/// value per pixel. Single depth-stencil textures can be bound to frame buffers to allow depth and stencil testing.
+/// Unlike the <see cref="DepthStencilBuffer" />, this texture can be assigned to a shader uniform when not attached
+/// to an active frame buffer, allowing direct access to stored depth and stencil values.
 /// </summary>
 public class DepthStencilTexture2D : Texture2D
 {
     /// <summary>
-    ///     Creates a new depth-stencil texture.
+    /// Creates a new depth-stencil texture.
     /// </summary>
     /// <param name="width">Texture width.</param>
     /// <param name="height">Texture height.</param>
@@ -24,10 +24,10 @@ public class DepthStencilTexture2D : Texture2D
     protected override string ResourceName => "DepthStencilTexture";
 
     /// <summary>
-    ///     Creates a new frame buffer attachment that can be used to attach this texture to a frame buffer
-    ///     by calling its <see cref="FrameBuffer.Attach(IDepthStencilAttachment, IColorAttachment[])" /> method. This allows
-    ///     for
-    ///     depth and stencil testing when the frame buffer is set as target.
+    /// Creates a new frame buffer attachment that can be used to attach this texture to a frame buffer
+    /// by calling its <see cref="FrameBuffer.Attach(IDepthStencilAttachment, IColorAttachment[])" /> method. This allows
+    /// for
+    /// depth and stencil testing when the frame buffer is set as target.
     /// </summary>
     /// <returns>Frame buffer attachment.</returns>
     public IDepthStencilAttachment CreateFrameBufferAttachment()

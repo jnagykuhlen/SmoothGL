@@ -4,8 +4,8 @@ using SmoothGL.Graphics;
 namespace SmoothGL.Content;
 
 /// <summary>
-///     Reader class which reads a cube texture from a stream. The six cube faces are expected to be quadratic
-///     and consecutively stored in the image file.
+/// Reader class which reads a cube texture from a stream. The six cube faces are expected to be quadratic
+/// and consecutively stored in the image file.
 /// </summary>
 public class TextureCubeReader : IContentReader<TextureCube>
 {
@@ -14,8 +14,8 @@ public class TextureCubeReader : IContentReader<TextureCube>
     private readonly CubeTextureLayout _layout;
 
     /// <summary>
-    ///     Creates a new texture cube reader, specifying a texture filtering mode which is applied to loaded cube textures.
-    ///     The layout of source image files is assumed to be a horizontal strip.
+    /// Creates a new texture cube reader, specifying a texture filtering mode which is applied to loaded cube textures.
+    /// The layout of source image files is assumed to be a horizontal strip.
     /// </summary>
     /// <param name="filterMode">Defines the filtering mode applied to all loaded textures.</param>
     /// <param name="flipVertically">Indicates whether the y-axis should be inverted during the read process.</param>
@@ -25,8 +25,8 @@ public class TextureCubeReader : IContentReader<TextureCube>
     }
 
     /// <summary>
-    ///     Creates a new texture cube reader, specifying a texture filtering mode which is applied to loaded cube textures.
-    ///     The layout of source image files is assumed to be a horizontal strip with specified face order.
+    /// Creates a new texture cube reader, specifying a texture filtering mode which is applied to loaded cube textures.
+    /// The layout of source image files is assumed to be a horizontal strip with specified face order.
     /// </summary>
     /// <param name="filterMode">Defines the filtering mode applied to all loaded textures.</param>
     /// <param name="flipVertically">Indicates whether the y-axis should be inverted during the read process.</param>
@@ -37,8 +37,8 @@ public class TextureCubeReader : IContentReader<TextureCube>
     }
 
     /// <summary>
-    ///     Creates a new texture cube reader, specifying a texture filtering mode which is applied to loaded cube textures
-    ///     as well as a layout that defines how the individual faces are arranged in the source image file.
+    /// Creates a new texture cube reader, specifying a texture filtering mode which is applied to loaded cube textures
+    /// as well as a layout that defines how the individual faces are arranged in the source image file.
     /// </summary>
     /// <param name="filterMode">Defines the filtering mode applied to all loaded textures.</param>
     /// <param name="flipVertically">Indicates whether the y-axis should be inverted during the read process.</param>
@@ -51,7 +51,7 @@ public class TextureCubeReader : IContentReader<TextureCube>
     }
 
     /// <summary>
-    ///     Reads a cube texture from a stream.
+    /// Reads a cube texture from a stream.
     /// </summary>
     /// <param name="stream">Stream to read data from.</param>
     /// <param name="requestedType">The concrete type requested. Should be the specified type or subtypes.</param>
@@ -108,12 +108,12 @@ public class TextureCubeReader : IContentReader<TextureCube>
     }
 
     /// <summary>
-    ///     Indicates whether this class can also read subtypes of the specified type.
+    /// Indicates whether this class can also read subtypes of the specified type.
     /// </summary>
     public bool CanReadSubtypes => false;
 
     /// <summary>
-    ///     Gets the name of this reader.
+    /// Gets the name of this reader.
     /// </summary>
     public string ReaderName => "TextureCubeReader";
 }

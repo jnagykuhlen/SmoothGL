@@ -3,7 +3,7 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Defines how faces are filled for rasterization.
+/// Defines how faces are filled for rasterization.
 /// </summary>
 public enum FillMode
 {

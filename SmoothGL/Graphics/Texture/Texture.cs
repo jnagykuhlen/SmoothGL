@@ -4,7 +4,7 @@ using OpenTK.Mathematics;
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Defines a texture persistent in graphics memory.
+/// Defines a texture persistent in graphics memory.
 /// </summary>
 public abstract class Texture : GraphicsResource
 {
@@ -21,7 +21,7 @@ public abstract class Texture : GraphicsResource
     }
 
     /// <summary>
-    ///     Gets the filter mode of this texture.
+    /// Gets the filter mode of this texture.
     /// </summary>
     public TextureFilterMode FilterMode { get; }
 
@@ -30,7 +30,7 @@ public abstract class Texture : GraphicsResource
     protected override string ResourceName => "Texture";
 
     /// <summary>
-    ///     Binds this texture to the graphics device. This method is not required to be called by client code.
+    /// Binds this texture to the graphics device. This method is not required to be called by client code.
     /// </summary>
     public void Bind()
     {

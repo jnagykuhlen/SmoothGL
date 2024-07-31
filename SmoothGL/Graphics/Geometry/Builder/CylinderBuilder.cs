@@ -3,7 +3,7 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents a builder that constructs a unit cylinder aligned along the y-axis with specified level of detail.
+/// Represents a builder that constructs a unit cylinder aligned along the y-axis with specified level of detail.
 /// </summary>
 public class CylinderBuilder : IGeometryBuilder
 {
@@ -12,7 +12,7 @@ public class CylinderBuilder : IGeometryBuilder
     private readonly int _slices;
 
     /// <summary>
-    ///     Creates a new cylinder builder with default parameters for the level of detail.
+    /// Creates a new cylinder builder with default parameters for the level of detail.
     /// </summary>
     public CylinderBuilder()
         : this(DefaultSlices)
@@ -20,7 +20,7 @@ public class CylinderBuilder : IGeometryBuilder
     }
 
     /// <summary>
-    ///     Creates a new cylinder builder with specified parameters for the level of detail.
+    /// Creates a new cylinder builder with specified parameters for the level of detail.
     /// </summary>
     /// <param name="slices">The number of subdivisions around the y-axis.</param>
     public CylinderBuilder(int slices)
@@ -29,7 +29,7 @@ public class CylinderBuilder : IGeometryBuilder
     }
 
     /// <summary>
-    ///     Builds a unit cylinder stored in memory.
+    /// Builds a unit cylinder stored in memory.
     /// </summary>
     /// <returns>Unit cylinder.</returns>
     public MeshData Build()

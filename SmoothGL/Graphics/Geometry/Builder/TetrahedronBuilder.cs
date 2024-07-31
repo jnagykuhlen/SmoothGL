@@ -3,12 +3,12 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents a builder that constructs a regular tetrahedron with edge length two.
+/// Represents a builder that constructs a regular tetrahedron with edge length two.
 /// </summary>
 public class TetrahedronBuilder : IGeometryBuilder
 {
     /// <summary>
-    ///     Builds a regular tetrahedron stored in memory.
+    /// Builds a regular tetrahedron stored in memory.
     /// </summary>
     /// <returns>Regular tetrahedron.</returns>
     public MeshData Build()

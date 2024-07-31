@@ -1,12 +1,12 @@
 ﻿namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Describes a single uniform in a uniform buffer.
+/// Describes a single uniform in a uniform buffer.
 /// </summary>
 public class UniformBufferElement
 {
     /// <summary>
-    ///     Creates a new description of a uniform in a uniform buffer.
+    /// Creates a new description of a uniform in a uniform buffer.
     /// </summary>
     /// <param name="name">Name of the uniform.</param>
     /// <param name="type">Type of the value the uniform stores.</param>
@@ -39,17 +39,17 @@ public class UniformBufferElement
     }
 
     /// <summary>
-    ///     Gets the name of the uniform.
+    /// Gets the name of the uniform.
     /// </summary>
     public string Name { get; }
 
     /// <summary>
-    ///     Gets the type of the value the uniform stores.
+    /// Gets the type of the value the uniform stores.
     /// </summary>
     public ShaderUniformType Type { get; }
 
     /// <summary>
-    ///     Gets the offset of this uniform relative to the start of the containing uniform buffer, in bytes.
+    /// Gets the offset of this uniform relative to the start of the containing uniform buffer, in bytes.
     /// </summary>
     public int Offset { get; }
 }

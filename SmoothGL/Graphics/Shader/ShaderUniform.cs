@@ -1,7 +1,7 @@
 ﻿namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents a shader uniform associated with a single shader program instance.
+/// Represents a shader uniform associated with a single shader program instance.
 /// </summary>
 public abstract class ShaderUniform
 {
@@ -16,7 +16,7 @@ public abstract class ShaderUniform
     }
 
     /// <summary>
-    ///     Gets or sets the value of this uniform in the corresponding shader program. Null values are not allowed.
+    /// Gets or sets the value of this uniform in the corresponding shader program. Null values are not allowed.
     /// </summary>
     public object Value
     {
@@ -32,17 +32,17 @@ public abstract class ShaderUniform
     }
 
     /// <summary>
-    ///     Gets the number of elements of this uniform in case that it represents an array. Otherwise, 1 is returned.
+    /// Gets the number of elements of this uniform in case that it represents an array. Otherwise, 1 is returned.
     /// </summary>
     public int Size { get; }
 
     /// <summary>
-    ///     Gets the name of this uniform.
+    /// Gets the name of this uniform.
     /// </summary>
     public string Name { get; }
 
     /// <summary>
-    ///     Gets the type of the value this uniform stores.
+    /// Gets the type of the value this uniform stores.
     /// </summary>
     public ShaderUniformType Type { get; }
 

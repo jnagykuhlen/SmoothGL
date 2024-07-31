@@ -3,9 +3,9 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents the projection transformation required for stereoscopic rendering.
-///     Provides projection matrices for the left and the right eye, which allow to draw
-///     the scene twice to obtain stereo images.
+/// Represents the projection transformation required for stereoscopic rendering.
+/// Provides projection matrices for the left and the right eye, which allow to draw
+/// the scene twice to obtain stereo images.
 /// </summary>
 public class StereoProjection
 {
@@ -13,7 +13,7 @@ public class StereoProjection
     private readonly Matrix4 _rightProjection;
 
     /// <summary>
-    ///     Creates a new stereoscopic projection.
+    /// Creates a new stereoscopic projection.
     /// </summary>
     /// <param name="monoProjection">Base projection matrix, which is the same as for a non-stereoscopic camera.</param>
     /// <param name="interaxial">Distance between the eyes.</param>
@@ -25,7 +25,7 @@ public class StereoProjection
     }
 
     /// <summary>
-    ///     Creates a new stereoscopic projection.
+    /// Creates a new stereoscopic projection.
     /// </summary>
     /// <param name="monoProjection">Base projection matrix, which is the same as for a non-stereoscopic camera.</param>
     /// <param name="separation">Ratio of the distance between the eyes and the virtual screen width.</param>
@@ -41,12 +41,12 @@ public class StereoProjection
     }
 
     /// <summary>
-    ///     Gets the projection matrix for the left eye in the stereoscopic projection.
+    /// Gets the projection matrix for the left eye in the stereoscopic projection.
     /// </summary>
     public Matrix4 LeftProjection => _leftProjection;
 
     /// <summary>
-    ///     Gets the projection matrix for the right eye in the stereoscopic projection.
+    /// Gets the projection matrix for the right eye in the stereoscopic projection.
     /// </summary>
     public Matrix4 RightProjection => _rightProjection;
 }

@@ -3,7 +3,7 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Describes a vertex element as a vector of integers.
+/// Describes a vertex element as a vector of integers.
 /// </summary>
 public class VertexElementInteger : IVertexElement
 {
@@ -25,7 +25,7 @@ public class VertexElementInteger : IVertexElement
     }
 
     /// <summary>
-    ///     Creates a new vertex element description for a vector of 32-bit signed integers.
+    /// Creates a new vertex element description for a vector of 32-bit signed integers.
     /// </summary>
     /// <param name="location">Location at which this vertex element is accessible in the vertex shader.</param>
     /// <param name="numberOfComponents">Number of components of the described vector in the range between one and four.</param>
@@ -35,7 +35,7 @@ public class VertexElementInteger : IVertexElement
     }
 
     /// <summary>
-    ///     Creates a new vertex element description for a vector of integers.
+    /// Creates a new vertex element description for a vector of integers.
     /// </summary>
     /// <param name="location">Location at which this vertex element is accessible in the vertex shader.</param>
     /// <param name="numberOfComponents">Number of components of the described vector in the range between one and four.</param>
@@ -48,7 +48,7 @@ public class VertexElementInteger : IVertexElement
     }
 
     /// <summary>
-    ///     Commmunicates this vertex element definition to the GPU. This method is not required to be called by client code.
+    /// Commmunicates this vertex element definition to the GPU. This method is not required to be called by client code.
     /// </summary>
     /// <param name="strideSize">The length of a single vertex representation in memory, in bytes.</param>
     /// <param name="offset">The offset at which this element is placed, in bytes.</param>
@@ -61,7 +61,7 @@ public class VertexElementInteger : IVertexElement
     }
 
     /// <summary>
-    ///     Gets the number of bytes required to represent this vertex element in memory.
+    /// Gets the number of bytes required to represent this vertex element in memory.
     /// </summary>
     public int Size => _numberOfComponents * _sourceTypeSizes[_sourceType];
 }

@@ -3,7 +3,7 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents possible blending factors in the blending equation.
+/// Represents possible blending factors in the blending equation.
 /// </summary>
 public enum Blend
 {

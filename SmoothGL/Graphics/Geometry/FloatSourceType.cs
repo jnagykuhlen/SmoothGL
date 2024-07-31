@@ -3,7 +3,7 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Describes how data in a vertex buffer is interpreted for floating point elements.
+/// Describes how data in a vertex buffer is interpreted for floating point elements.
 /// </summary>
 public enum FloatSourceType
 {

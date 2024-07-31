@@ -4,7 +4,7 @@ using OpenTK.Graphics.OpenGL;
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Defines an abstract buffer persistent in graphics memory.
+/// Defines an abstract buffer persistent in graphics memory.
 /// </summary>
 public abstract class Buffer : GraphicsResource, IUnsafeBuffer
 {
@@ -14,7 +14,7 @@ public abstract class Buffer : GraphicsResource, IUnsafeBuffer
     private readonly BufferTarget _target;
 
     /// <summary>
-    ///     Creates a new buffer.
+    /// Creates a new buffer.
     /// </summary>
     /// <param name="size">Allocated buffer size in bytes.</param>
     /// <param name="target">Specifies the type of the buffer.</param>
@@ -33,7 +33,7 @@ public abstract class Buffer : GraphicsResource, IUnsafeBuffer
     protected override string ResourceName => "Buffer";
 
     /// <summary>
-    ///     Gets the hint for the driver concerning the frequency the data in this buffer is expected to change.
+    /// Gets the hint for the driver concerning the frequency the data in this buffer is expected to change.
     /// </summary>
     public BufferUsage Usage { get; }
 
@@ -53,8 +53,8 @@ public abstract class Buffer : GraphicsResource, IUnsafeBuffer
     }
 
     /// <summary>
-    ///     Invalidates the binding cache used to speed up buffer binding operations.
-    ///     This method is not required to be called by client code.
+    /// Invalidates the binding cache used to speed up buffer binding operations.
+    /// This method is not required to be called by client code.
     /// </summary>
     public static void InvalidateBindingCache()
     {
@@ -62,7 +62,7 @@ public abstract class Buffer : GraphicsResource, IUnsafeBuffer
     }
 
     /// <summary>
-    ///     Binds this buffer to the graphics device. This method is not required to be called by client code.
+    /// Binds this buffer to the graphics device. This method is not required to be called by client code.
     /// </summary>
     public void Bind()
     {
@@ -75,8 +75,8 @@ public abstract class Buffer : GraphicsResource, IUnsafeBuffer
     }
 
     /// <summary>
-    ///     Binds this buffer to the graphics device at a certain location. This method is not required to be called by client
-    ///     code.
+    /// Binds this buffer to the graphics device at a certain location. This method is not required to be called by client
+    /// code.
     /// </summary>
     /// <param name="location">The location this buffer is bound to.</param>
     public void Bind(int location)
@@ -86,7 +86,7 @@ public abstract class Buffer : GraphicsResource, IUnsafeBuffer
     }
 
     /// <summary>
-    ///     Resizes this buffer to a new size. All data in this buffer will be discarded.
+    /// Resizes this buffer to a new size. All data in this buffer will be discarded.
     /// </summary>
     /// <param name="size">Allocated buffer size in bytes.</param>
     protected void Resize(int size)
@@ -99,7 +99,7 @@ public abstract class Buffer : GraphicsResource, IUnsafeBuffer
     }
 
     /// <summary>
-    ///     Replaces a single data object in the buffer.
+    /// Replaces a single data object in the buffer.
     /// </summary>
     /// <param name="data">Data object to upload. Only instances of value types (structs) are allowed as this parameter.</param>
     /// <param name="offset">The offset in bytes from the beginning of the buffer at which the data object should be stored.</param>
@@ -121,7 +121,7 @@ public abstract class Buffer : GraphicsResource, IUnsafeBuffer
     }
 
     /// <summary>
-    ///     Replaces a single data object in the buffer.
+    /// Replaces a single data object in the buffer.
     /// </summary>
     /// <typeparam name="T">Data type.</typeparam>
     /// <param name="data">Data object to upload.</param>
@@ -134,7 +134,7 @@ public abstract class Buffer : GraphicsResource, IUnsafeBuffer
     }
 
     /// <summary>
-    ///     Replaces multiple data objects in the buffer.
+    /// Replaces multiple data objects in the buffer.
     /// </summary>
     /// <typeparam name="T">Data type.</typeparam>
     /// <param name="data">Array of sequential data objects to upload.</param>

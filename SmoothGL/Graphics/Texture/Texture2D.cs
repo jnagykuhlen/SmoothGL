@@ -3,7 +3,7 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Defines a two-dimensional texture persistent in graphics memory, storing a grid of data.
+/// Defines a two-dimensional texture persistent in graphics memory, storing a grid of data.
 /// </summary>
 public abstract class Texture2D : Texture
 {
@@ -18,12 +18,12 @@ public abstract class Texture2D : Texture
     protected override string ResourceName => "Texture2D";
 
     /// <summary>
-    ///     Gets the width of this texture in pixels.
+    /// Gets the width of this texture in pixels.
     /// </summary>
     public int Width { get; }
 
     /// <summary>
-    ///     Gets the height of this texture in pixels.
+    /// Gets the height of this texture in pixels.
     /// </summary>
     public int Height { get; }
 }

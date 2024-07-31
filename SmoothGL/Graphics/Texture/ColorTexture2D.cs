@@ -8,12 +8,12 @@ using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Defines a two-dimensional texture persistent in graphics memory, storing a grid of color values.
+/// Defines a two-dimensional texture persistent in graphics memory, storing a grid of color values.
 /// </summary>
 public class ColorTexture2D : Texture2D
 {
     /// <summary>
-    ///     Creates a new color texture with RGBA format and default filter mode.
+    /// Creates a new color texture with RGBA format and default filter mode.
     /// </summary>
     /// <param name="width">Texture width.</param>
     /// <param name="height">Texture height.</param>
@@ -23,7 +23,7 @@ public class ColorTexture2D : Texture2D
     }
 
     /// <summary>
-    ///     Creates a new color texture with specified color format and filtering.
+    /// Creates a new color texture with specified color format and filtering.
     /// </summary>
     /// <param name="width">Texture width.</param>
     /// <param name="height">Texture height.</param>
@@ -36,14 +36,14 @@ public class ColorTexture2D : Texture2D
     }
 
     /// <summary>
-    ///     Gets the format of each color value in memory.
+    /// Gets the format of each color value in memory.
     /// </summary>
     public TextureColorFormat Format { get; }
 
     protected override string ResourceName => "ColorTexture";
 
     /// <summary>
-    ///     Stores data from a bitmap in this texture. The provided bitmap must have the same size as this texture.
+    /// Stores data from a bitmap in this texture. The provided bitmap must have the same size as this texture.
     /// </summary>
     /// <param name="bitmap">Bitmap to store in the texture.</param>
     public void SetData(Bitmap bitmap)
@@ -67,7 +67,7 @@ public class ColorTexture2D : Texture2D
     }
 
     /// <summary>
-    ///     Stores color data in this texture. The provided data array must have exactly width * height elements.
+    /// Stores color data in this texture. The provided data array must have exactly width * height elements.
     /// </summary>
     /// <param name="data">Color data to store in the texture.</param>
     public void SetData(Color4[] data)
@@ -81,7 +81,7 @@ public class ColorTexture2D : Texture2D
     }
 
     /// <summary>
-    ///     Reads the color data stored in this texture back into client memory.
+    /// Reads the color data stored in this texture back into client memory.
     /// </summary>
     /// <returns>Color data.</returns>
     public Color4[] GetData()
@@ -93,7 +93,7 @@ public class ColorTexture2D : Texture2D
     }
 
     /// <summary>
-    ///     Creates a new bitmap from the color data stored in this texture.
+    /// Creates a new bitmap from the color data stored in this texture.
     /// </summary>
     /// <returns>New bitmap with color data from this texture.</returns>
     public Bitmap ToBitmap()
@@ -116,8 +116,8 @@ public class ColorTexture2D : Texture2D
     }
 
     /// <summary>
-    ///     Creates a new frame buffer attachment that can be used to attach this texture to a frame buffer
-    ///     by calling its <see cref="FrameBuffer.Attach(IDepthStencilAttachment, IColorAttachment[])" /> method.
+    /// Creates a new frame buffer attachment that can be used to attach this texture to a frame buffer
+    /// by calling its <see cref="FrameBuffer.Attach(IDepthStencilAttachment, IColorAttachment[])" /> method.
     /// </summary>
     /// <returns>Frame buffer attachment.</returns>
     public IColorAttachment CreateFrameBufferAttachment()

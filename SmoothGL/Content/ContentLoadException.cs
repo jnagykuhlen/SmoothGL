@@ -1,12 +1,12 @@
 ﻿namespace SmoothGL.Content;
 
 /// <summary>
-///     Exception which is thrown when content cannot be read by the content manager.
+/// Exception which is thrown when content cannot be read by the content manager.
 /// </summary>
 public class ContentLoadException : Exception
 {
     /// <summary>
-    ///     Creates a new ContentLoadException.
+    /// Creates a new ContentLoadException.
     /// </summary>
     /// <param name="message">Exception message.</param>
     /// <param name="innerException">Inner exception which indicated that the read operation failed.</param>
@@ -20,7 +20,7 @@ public class ContentLoadException : Exception
     }
 
     /// <summary>
-    ///     Creates a new ContentLoadException.
+    /// Creates a new ContentLoadException.
     /// </summary>
     /// <param name="message">Exception message.</param>
     /// <param name="filename">Path to the content file for which loading failed.</param>
@@ -31,12 +31,12 @@ public class ContentLoadException : Exception
     }
 
     /// <summary>
-    ///     Gets the path to the content file for which loading failed.
+    /// Gets the path to the content file for which loading failed.
     /// </summary>
     public string Filename { get; }
 
     /// <summary>
-    ///     Gets the requested content type for which loading failed.
+    /// Gets the requested content type for which loading failed.
     /// </summary>
     public Type ContentType { get; }
 }

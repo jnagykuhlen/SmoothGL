@@ -5,46 +5,46 @@ using SmoothGL.Graphics;
 namespace SmoothGL.Content;
 
 /// <summary>
-///     Serialializable, mutable factory which creates shader programs.
+/// Serialializable, mutable factory which creates shader programs.
 /// </summary>
 [XmlRoot(ElementName = "ShaderProgram")]
 public class ShaderProgramFactory : IFactory<ShaderProgram>
 {
     /// <summary>
-    ///     Path to the vertex shader code file.
+    /// Path to the vertex shader code file.
     /// </summary>
     [XmlElement(ElementName = "Vertex")]
     public string VertexShaderFilename { get; set; }
 
     /// <summary>
-    ///     Path to the tessellation control shader code file.
-    ///     Set this property to null if the tessellation control shader is not required.
+    /// Path to the tessellation control shader code file.
+    /// Set this property to null if the tessellation control shader is not required.
     /// </summary>
     [XmlElement(ElementName = "TessellationControl")]
     public string TessellationControlFilename { get; set; }
 
     /// <summary>
-    ///     Path to the tessellation evaluation shader code file.
-    ///     Set this property to null if the tessellation evaluation shader is not required.
+    /// Path to the tessellation evaluation shader code file.
+    /// Set this property to null if the tessellation evaluation shader is not required.
     /// </summary>
     [XmlElement(ElementName = "TessellationEvaluation")]
     public string TessellationEvaluationFilename { get; set; }
 
     /// <summary>
-    ///     Path to the geometry shader code file.
-    ///     Set this property to null if the geometry shader is not required.
+    /// Path to the geometry shader code file.
+    /// Set this property to null if the geometry shader is not required.
     /// </summary>
     [XmlElement(ElementName = "Geometry")]
     public string GeometryShaderFilename { get; set; }
 
     /// <summary>
-    ///     Path to the fragment shader code file.
+    /// Path to the fragment shader code file.
     /// </summary>
     [XmlElement(ElementName = "Fragment")]
     public string FragmentShaderFilename { get; set; }
 
     /// <summary>
-    ///     Creates a shader program from the individual shaders loaded from the corresponding files.
+    /// Creates a shader program from the individual shaders loaded from the corresponding files.
     /// </summary>
     /// <param name="contentManager">Content manager used to load the shader files.</param>
     /// <returns>Shader program.</returns>

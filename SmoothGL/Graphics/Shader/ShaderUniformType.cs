@@ -3,7 +3,7 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Describes the data types which are valid for shader uniforms.
+/// Describes the data types which are valid for shader uniforms.
 /// </summary>
 public enum ShaderUniformType
 {

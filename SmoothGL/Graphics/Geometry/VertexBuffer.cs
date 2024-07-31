@@ -3,12 +3,12 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents a buffer storing vertex data, persistent in graphics memory.
+/// Represents a buffer storing vertex data, persistent in graphics memory.
 /// </summary>
 public class VertexBuffer : Buffer
 {
     /// <summary>
-    ///     Creates a new vertex buffer.
+    /// Creates a new vertex buffer.
     /// </summary>
     /// <param name="numberOfVertices">Maximum number of vertices stored in this buffer.</param>
     /// <param name="vertexDeclaration">Vertex declaration defining how the buffer data is interpreted.</param>
@@ -23,18 +23,18 @@ public class VertexBuffer : Buffer
     protected override string ResourceName => "VertexBuffer";
 
     /// <summary>
-    ///     Gets the maximum number of vertices which can be stored in this buffer.
+    /// Gets the maximum number of vertices which can be stored in this buffer.
     /// </summary>
     public int NumberOfVertices { get; private set; }
 
     /// <summary>
-    ///     Gets the associated vertex declaration.
+    /// Gets the associated vertex declaration.
     /// </summary>
     public VertexDeclaration VertexDeclaration { get; }
 
     /// <summary>
-    ///     Resizes this buffer in a way that it can store the specified number of vertices. All vertex data in this buffer
-    ///     will be discarded.
+    /// Resizes this buffer in a way that it can store the specified number of vertices. All vertex data in this buffer
+    /// will be discarded.
     /// </summary>
     /// <param name="numberOfVertices">Maximum number of vertices stored in this buffer.</param>
     public new void Resize(int numberOfVertices)
@@ -44,7 +44,7 @@ public class VertexBuffer : Buffer
     }
 
     /// <summary>
-    ///     Uploads vertex data to the GPU.
+    /// Uploads vertex data to the GPU.
     /// </summary>
     /// <typeparam name="T">Vertex type.</typeparam>
     /// <param name="data">Vertex data to store in this buffer.</param>

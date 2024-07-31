@@ -3,7 +3,7 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Defines possible operations which can be applied to a value in the stencil buffer.
+/// Defines possible operations which can be applied to a value in the stencil buffer.
 /// </summary>
 public enum StencilOperation
 {

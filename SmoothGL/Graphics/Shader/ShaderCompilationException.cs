@@ -3,12 +3,12 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Exception which is thrown when a shader fails to compile.
+/// Exception which is thrown when a shader fails to compile.
 /// </summary>
 public class ShaderCompilationException : Exception
 {
     /// <summary>
-    ///     Creates a new ShaderCompilationException.
+    /// Creates a new ShaderCompilationException.
     /// </summary>
     /// <param name="message">Message specifying why the shader does not compile.</param>
     /// <param name="shaderType">Type of the shader which does not compile.</param>
@@ -18,7 +18,7 @@ public class ShaderCompilationException : Exception
     }
 
     /// <summary>
-    ///     Creates a new ShaderCompilationException.
+    /// Creates a new ShaderCompilationException.
     /// </summary>
     /// <param name="message">Message specifying why the shader does not compile.</param>
     /// <param name="shaderType">Type of the shader which does not compile.</param>
@@ -31,12 +31,12 @@ public class ShaderCompilationException : Exception
     }
 
     /// <summary>
-    ///     Gets the type of the shader which does not compile.
+    /// Gets the type of the shader which does not compile.
     /// </summary>
     public ShaderType ShaderType { get; }
 
     /// <summary>
-    ///     Gets the incorrect shader code causing the compilation error.
+    /// Gets the incorrect shader code causing the compilation error.
     /// </summary>
     public string ShaderCode { get; }
 }

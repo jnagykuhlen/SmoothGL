@@ -3,30 +3,30 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Encapsulates rendering state variables related to the rasterizer stage. Rendering state objects are immutable.
+/// Encapsulates rendering state variables related to the rasterizer stage. Rendering state objects are immutable.
 /// </summary>
 public class StencilState : IGraphicsState
 {
     /// <summary>
-    ///     Stencil state which does not perform any stencil testing.
+    /// Stencil state which does not perform any stencil testing.
     /// </summary>
     public static readonly StencilState None = new(false, null, null, 0, 0, 0);
 
     /// <summary>
-    ///     Creates a new stencil state object.
+    /// Creates a new stencil state object.
     /// </summary>
     /// <param name="stencilTestEnabled">indicates whether stencil testing is enabled.</param>
     /// <param name="stencilFrontState">
-    ///     Operations which are performed for front faces dependent on the result of the stencil
-    ///     test.
+    /// Operations which are performed for front faces dependent on the result of the stencil
+    /// test.
     /// </param>
     /// <param name="stencilBackState">
-    ///     Operations which are performed for back faces dependent on the result of the stencil
-    ///     test.
+    /// Operations which are performed for back faces dependent on the result of the stencil
+    /// test.
     /// </param>
     /// <param name="referenceStencil">
-    ///     reference stencil value, which is written to the stencil buffer when performing
-    ///     <see cref="StencilOperation.Replace" />.
+    /// reference stencil value, which is written to the stencil buffer when performing
+    /// <see cref="StencilOperation.Replace" />.
     /// </param>
     /// <param name="stencilReadMask">Bit mask defining which bits are read from the stencil buffer.</param>
     /// <param name="stencilWriteMask">Bit mask defining which bits are written to the stencil buffer.</param>
@@ -46,38 +46,38 @@ public class StencilState : IGraphicsState
     }
 
     /// <summary>
-    ///     Gets a value indicating whether stencil testing is enabled.
+    /// Gets a value indicating whether stencil testing is enabled.
     /// </summary>
     public bool StencilTestEnabled { get; }
 
     /// <summary>
-    ///     Gets the operations which are performed for front faces dependent on the result of the stencil test.
+    /// Gets the operations which are performed for front faces dependent on the result of the stencil test.
     /// </summary>
     public StencilFaceState StencilFrontState { get; }
 
     /// <summary>
-    ///     Gets the operations which are performed for back faces dependent on the result of the stencil test.
+    /// Gets the operations which are performed for back faces dependent on the result of the stencil test.
     /// </summary>
     public StencilFaceState StencilBackState { get; }
 
     /// <summary>
-    ///     Gets the reference stencil value, which is written to the stencil buffer when performing
-    ///     <see cref="StencilOperation.Replace" />.
+    /// Gets the reference stencil value, which is written to the stencil buffer when performing
+    /// <see cref="StencilOperation.Replace" />.
     /// </summary>
     public int ReferenceStencil { get; }
 
     /// <summary>
-    ///     Gets a bit mask defining which bits are read from the stencil buffer.
+    /// Gets a bit mask defining which bits are read from the stencil buffer.
     /// </summary>
     public int StencilReadMask { get; }
 
     /// <summary>
-    ///     Gets a bit mask defining which bits are written to the stencil buffer.
+    /// Gets a bit mask defining which bits are written to the stencil buffer.
     /// </summary>
     public int StencilWriteMask { get; }
 
     /// <summary>
-    ///     Communicates the state encapsulated in this state object to the driver.
+    /// Communicates the state encapsulated in this state object to the driver.
     /// </summary>
     public void Apply()
     {

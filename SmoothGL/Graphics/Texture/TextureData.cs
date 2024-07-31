@@ -3,14 +3,14 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents texture data in client memory, storing a number of color values of a two-dimensional texture.
+/// Represents texture data in client memory, storing a number of color values of a two-dimensional texture.
 /// </summary>
 public class TextureData
 {
     private readonly Color4[] _data;
 
     /// <summary>
-    ///     Creates new texture data in client memory.
+    /// Creates new texture data in client memory.
     /// </summary>
     /// <param name="width">Width of the represented texture, in pixels.</param>
     /// <param name="height">Height of the represented texture, in pixels.</param>
@@ -26,17 +26,17 @@ public class TextureData
     }
 
     /// <summary>
-    ///     Gets the width of the represented texture, in pixels.
+    /// Gets the width of the represented texture, in pixels.
     /// </summary>
     public int Width { get; }
 
     /// <summary>
-    ///     Gets the height of the represented texture, in pixels.
+    /// Gets the height of the represented texture, in pixels.
     /// </summary>
     public int Height { get; }
 
     /// <summary>
-    ///     Gets the stored color values for the represented texture.
+    /// Gets the stored color values for the represented texture.
     /// </summary>
     /// <returns>Array of color values.</returns>
     public Color4[] GetData()
@@ -45,7 +45,7 @@ public class TextureData
     }
 
     /// <summary>
-    ///     Gets the stored color values for a rectangular area of the represented texture.
+    /// Gets the stored color values for a rectangular area of the represented texture.
     /// </summary>
     /// <param name="rectX">The x-value of the starting point of the rectangular area.</param>
     /// <param name="rectY">The y-value of the starting point of the rectangular area.</param>

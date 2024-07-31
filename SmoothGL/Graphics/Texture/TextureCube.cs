@@ -8,13 +8,13 @@ using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Defines a cube texture persistent in graphics memory, storing a separate grid of color values for each of the six
-///     faces of a cube.
+/// Defines a cube texture persistent in graphics memory, storing a separate grid of color values for each of the six
+/// faces of a cube.
 /// </summary>
 public class TextureCube : Texture
 {
     /// <summary>
-    ///     Creates a new cube texture with RGBA format and default filter mode.
+    /// Creates a new cube texture with RGBA format and default filter mode.
     /// </summary>
     /// <param name="width">Cube face width in pixels.</param>
     /// <param name="height">Cube face height in pixels.</param>
@@ -24,7 +24,7 @@ public class TextureCube : Texture
     }
 
     /// <summary>
-    ///     Creates a new cube texture with specified color format and filtering.
+    /// Creates a new cube texture with specified color format and filtering.
     /// </summary>
     /// <param name="width">Cube face width in pixels.</param>
     /// <param name="height">Cube face height in pixels.</param>
@@ -45,23 +45,23 @@ public class TextureCube : Texture
     protected override string ResourceName => "TextureCube";
 
     /// <summary>
-    ///     Gets the width of each cube face in pixels.
+    /// Gets the width of each cube face in pixels.
     /// </summary>
     public int Width { get; }
 
     /// <summary>
-    ///     Gets the height of each cube face in pixels.
+    /// Gets the height of each cube face in pixels.
     /// </summary>
     public int Height { get; }
 
     /// <summary>
-    ///     Gets the format of each color value in memory.
+    /// Gets the format of each color value in memory.
     /// </summary>
     public TextureColorFormat Format { get; }
 
     /// <summary>
-    ///     Stores data from a bitmap in the specified face of this texture. The bitmap size must match the face size of this
-    ///     texture.
+    /// Stores data from a bitmap in the specified face of this texture. The bitmap size must match the face size of this
+    /// texture.
     /// </summary>
     /// <param name="bitmap">Bitmap to store in the specified face.</param>
     /// <param name="cubeFace">The face to store bitmap data in.</param>
@@ -87,8 +87,8 @@ public class TextureCube : Texture
     }
 
     /// <summary>
-    ///     Stores color data in the specified face of this texture. The provided data array must have exactly width * height
-    ///     elements.
+    /// Stores color data in the specified face of this texture. The provided data array must have exactly width * height
+    /// elements.
     /// </summary>
     /// <param name="data">Color data to store in the specified face.</param>
     /// <param name="cubeFace">The face to store color data in.</param>
@@ -103,7 +103,7 @@ public class TextureCube : Texture
     }
 
     /// <summary>
-    ///     Reads the color data stored in the specified face back into client memory.
+    /// Reads the color data stored in the specified face back into client memory.
     /// </summary>
     /// <param name="cubeFace">The face to read color data from.</param>
     /// <returns>Color data.</returns>
@@ -116,7 +116,7 @@ public class TextureCube : Texture
     }
 
     /// <summary>
-    ///     Creates a new bitmap from the color data stored in the specified face of this texture.
+    /// Creates a new bitmap from the color data stored in the specified face of this texture.
     /// </summary>
     /// <returns>New bitmap with color data from this texture.</returns>
     public Bitmap ToBitmap(TextureCubeFace cubeFace)
@@ -139,8 +139,8 @@ public class TextureCube : Texture
     }
 
     /// <summary>
-    ///     Creates a new frame buffer attachment that can be used to attach a specified face of this texture to a
-    ///     frame buffer by calling its <see cref="FrameBuffer.Attach(IDepthStencilAttachment, IColorAttachment[])" /> method.
+    /// Creates a new frame buffer attachment that can be used to attach a specified face of this texture to a
+    /// frame buffer by calling its <see cref="FrameBuffer.Attach(IDepthStencilAttachment, IColorAttachment[])" /> method.
     /// </summary>
     /// <param name="cubeFace">The face to create a frame buffer attachment for.</param>
     /// <returns>Frame buffer attachment.</returns>

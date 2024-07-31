@@ -1,8 +1,8 @@
 ﻿namespace SmoothGL.Content.Internal;
 
 /// <summary>
-///     A proxy reader which wraps another reader. When an object has been already loaded,
-///     this reader returns a cached version instead of requesting a new one from the internal reader.
+/// A proxy reader which wraps another reader. When an object has been already loaded,
+/// this reader returns a cached version instead of requesting a new one from the internal reader.
 /// </summary>
 /// <typeparam name="T">Type of objects read.</typeparam>
 public class CachedReader<T> : IContentReader<CachedResult>, ICachedReader
@@ -11,7 +11,7 @@ public class CachedReader<T> : IContentReader<CachedResult>, ICachedReader
     private readonly IContentReader<T> _internalReader;
 
     /// <summary>
-    ///     Creates a new cached reader which wraps around the specified reader.
+    /// Creates a new cached reader which wraps around the specified reader.
     /// </summary>
     /// <param name="internalReader">The internal reader used to load objects which are not cached yet.</param>
     public CachedReader(IContentReader<T> internalReader)
@@ -24,7 +24,7 @@ public class CachedReader<T> : IContentReader<CachedResult>, ICachedReader
     }
 
     /// <summary>
-    ///     Clears the cache.
+    /// Clears the cache.
     /// </summary>
     public void ClearCache()
     {
@@ -32,8 +32,8 @@ public class CachedReader<T> : IContentReader<CachedResult>, ICachedReader
     }
 
     /// <summary>
-    ///     Reads an object from a stream using the internal reader if it is not cached.
-    ///     Otherwise, the cached object is returned.
+    /// Reads an object from a stream using the internal reader if it is not cached.
+    /// Otherwise, the cached object is returned.
     /// </summary>
     /// <param name="stream">Stream to read data from.</param>
     /// <param name="requestedType">The concrete type requested. Should be the specified type or subtypes.</param>
@@ -57,12 +57,12 @@ public class CachedReader<T> : IContentReader<CachedResult>, ICachedReader
     }
 
     /// <summary>
-    ///     Indicates whether this class can also read subtypes of the specified type.
+    /// Indicates whether this class can also read subtypes of the specified type.
     /// </summary>
     public bool CanReadSubtypes => _internalReader.CanReadSubtypes;
 
     /// <summary>
-    ///     Gets the name of this reader.
+    /// Gets the name of this reader.
     /// </summary>
     public string ReaderName => "Cached" + _internalReader.ReaderName;
 }

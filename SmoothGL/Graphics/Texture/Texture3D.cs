@@ -4,12 +4,12 @@ using OpenTK.Mathematics;
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Defines a three-dimensional texture persistent in graphics memory, storing a volume of color values (voxels).
+/// Defines a three-dimensional texture persistent in graphics memory, storing a volume of color values (voxels).
 /// </summary>
 public class Texture3D : Texture
 {
     /// <summary>
-    ///     Creates a new three-dimensional color texture with RGBA format and default filter mode.
+    /// Creates a new three-dimensional color texture with RGBA format and default filter mode.
     /// </summary>
     /// <param name="width">Texture width.</param>
     /// <param name="height">Texture height.</param>
@@ -20,7 +20,7 @@ public class Texture3D : Texture
     }
 
     /// <summary>
-    ///     Creates a new three-dimensional color texture with specified color format and filtering.
+    /// Creates a new three-dimensional color texture with specified color format and filtering.
     /// </summary>
     /// <param name="width">Texture width.</param>
     /// <param name="height">Texture height.</param>
@@ -37,27 +37,27 @@ public class Texture3D : Texture
     }
 
     /// <summary>
-    ///     Gets the width of this texture.
+    /// Gets the width of this texture.
     /// </summary>
     public int Width { get; }
 
     /// <summary>
-    ///     Gets the height of this texture.
+    /// Gets the height of this texture.
     /// </summary>
     public int Height { get; }
 
     /// <summary>
-    ///     Gets the depth of this texture.
+    /// Gets the depth of this texture.
     /// </summary>
     public int Depth { get; }
 
     /// <summary>
-    ///     Gets the format of each color value in memory.
+    /// Gets the format of each color value in memory.
     /// </summary>
     public TextureColorFormat Format { get; }
 
     /// <summary>
-    ///     Stores color data in this texture. The provided data array must have exactly width * height * depth elements.
+    /// Stores color data in this texture. The provided data array must have exactly width * height * depth elements.
     /// </summary>
     /// <param name="data">Color data to store in the texture.</param>
     public void SetData(Color4[] data)
@@ -71,7 +71,7 @@ public class Texture3D : Texture
     }
 
     /// <summary>
-    ///     Reads the color data stored in this texture back into client memory.
+    /// Reads the color data stored in this texture back into client memory.
     /// </summary>
     /// <returns>Color data.</returns>
     public Color4[] GetData()

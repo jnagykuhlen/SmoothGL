@@ -4,7 +4,7 @@ using SmoothGL.Graphics;
 namespace SmoothGL.Content;
 
 /// <summary>
-///     Handles loading of content from files or streams and takes care of disposing loaded content automatically.
+/// Handles loading of content from files or streams and takes care of disposing loaded content automatically.
 /// </summary>
 public class ContentManager : IDisposable
 {
@@ -13,7 +13,7 @@ public class ContentManager : IDisposable
     private bool _disposed;
 
     /// <summary>
-    ///     Creates a new content manager without any registered content readers.
+    /// Creates a new content manager without any registered content readers.
     /// </summary>
     /// <param name="rootPath">Root directory the paths of content files are relative to.</param>
     public ContentManager(string rootPath)
@@ -25,12 +25,12 @@ public class ContentManager : IDisposable
     }
 
     /// <summary>
-    ///     Gets the root directory that paths of content files are relative to.
+    /// Gets the root directory that paths of content files are relative to.
     /// </summary>
     public string RootPath { get; }
 
     /// <summary>
-    ///     Disposes all content objects managed by this content manager, as well as the content manager itself.
+    /// Disposes all content objects managed by this content manager, as well as the content manager itself.
     /// </summary>
     public void Dispose()
     {
@@ -43,7 +43,7 @@ public class ContentManager : IDisposable
     }
 
     /// <summary>
-    ///     Creates a new content manager with readers for default content types already registered.
+    /// Creates a new content manager with readers for default content types already registered.
     /// </summary>
     /// <param name="rootPath">Root directory the paths of content files are relative to.</param>
     /// <returns>Content manager.</returns>
@@ -66,9 +66,9 @@ public class ContentManager : IDisposable
     }
 
     /// <summary>
-    ///     Registers a content reader which handles loading of content of the specified type.
-    ///     When a reader is already registered for this type, it will be replaced. The content manager is
-    ///     allowed to cache created content objects of this type.
+    /// Registers a content reader which handles loading of content of the specified type.
+    /// When a reader is already registered for this type, it will be replaced. The content manager is
+    /// allowed to cache created content objects of this type.
     /// </summary>
     /// <typeparam name="T">Content type which can be loaded by the reader.</typeparam>
     /// <param name="contentReader">Content reader of the specified type.</param>
@@ -78,10 +78,10 @@ public class ContentManager : IDisposable
     }
 
     /// <summary>
-    ///     Registers a content reader which handles loading of content of the specified type.
-    ///     When a reader is already registered for this type, it will be replaced. The content manager can be
-    ///     allowed to cache created content objects of this type to reduce loading times when the same file is
-    ///     requested multiple times. However, caching can cause problems when content objects are not immutable.
+    /// Registers a content reader which handles loading of content of the specified type.
+    /// When a reader is already registered for this type, it will be replaced. The content manager can be
+    /// allowed to cache created content objects of this type to reduce loading times when the same file is
+    /// requested multiple times. However, caching can cause problems when content objects are not immutable.
     /// </summary>
     /// <typeparam name="T">Content type which can be loaded by the reader.</typeparam>
     /// <param name="contentReader">Content reader of the specified type.</param>
@@ -99,7 +99,7 @@ public class ContentManager : IDisposable
     }
 
     /// <summary>
-    ///     Loads content from a file.
+    /// Loads content from a file.
     /// </summary>
     /// <typeparam name="T">The requested content type to load.</typeparam>
     /// <param name="filename">Path to the file storing content data.</param>
@@ -129,7 +129,7 @@ public class ContentManager : IDisposable
     }
 
     /// <summary>
-    ///     Loads content from a stream.
+    /// Loads content from a stream.
     /// </summary>
     /// <typeparam name="T">The requested content type to load.</typeparam>
     /// <param name="stream">Stream from which content data is read.</param>
@@ -179,7 +179,7 @@ public class ContentManager : IDisposable
     }
 
     /// <summary>
-    ///     Adds a disposable content object so that its lifetime is managed by this content manager.
+    /// Adds a disposable content object so that its lifetime is managed by this content manager.
     /// </summary>
     /// <param name="disposable"></param>
     public void Add(IDisposable disposable)
@@ -190,7 +190,7 @@ public class ContentManager : IDisposable
     }
 
     /// <summary>
-    ///     Disposes all content objects managed by this content manager.
+    /// Disposes all content objects managed by this content manager.
     /// </summary>
     public void Unload()
     {

@@ -1,7 +1,7 @@
 ﻿namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Defines which color channels of the current framebuffer are affected by blending operations.
+/// Defines which color channels of the current framebuffer are affected by blending operations.
 /// </summary>
 [Flags]
 public enum ColorWriteChannels

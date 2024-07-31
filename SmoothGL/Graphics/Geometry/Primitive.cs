@@ -3,8 +3,8 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Describes how vertices from a vertex buffer are connected to each other when being drawn,
-///     i.e., determines the primitive a fixed number of vertices form.
+/// Describes how vertices from a vertex buffer are connected to each other when being drawn,
+/// i.e., determines the primitive a fixed number of vertices form.
 /// </summary>
 public enum Primitive
 {

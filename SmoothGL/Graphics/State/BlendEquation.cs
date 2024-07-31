@@ -3,7 +3,7 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Defines possible blending equations.
+/// Defines possible blending equations.
 /// </summary>
 public enum BlendEquation
 {

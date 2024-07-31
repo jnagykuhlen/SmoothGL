@@ -3,7 +3,7 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents a builder that constructs a unit sphere with specified level of detail.
+/// Represents a builder that constructs a unit sphere with specified level of detail.
 /// </summary>
 public class SphereBuilder : IGeometryBuilder
 {
@@ -14,7 +14,7 @@ public class SphereBuilder : IGeometryBuilder
     private readonly int _stacks;
 
     /// <summary>
-    ///     Creates a new sphere builder with default parameters for the level of detail.
+    /// Creates a new sphere builder with default parameters for the level of detail.
     /// </summary>
     public SphereBuilder()
         : this(DefaultSlices, DefaultStacks)
@@ -22,7 +22,7 @@ public class SphereBuilder : IGeometryBuilder
     }
 
     /// <summary>
-    ///     Creates a new sphere builder with specified parameters for the level of detail.
+    /// Creates a new sphere builder with specified parameters for the level of detail.
     /// </summary>
     /// <param name="slices">The number of subdivisions around the y-axis.</param>
     /// <param name="stacks">The number of subdivisions along the y-axis.</param>
@@ -33,7 +33,7 @@ public class SphereBuilder : IGeometryBuilder
     }
 
     /// <summary>
-    ///     Builds a unit sphere stored in memory.
+    /// Builds a unit sphere stored in memory.
     /// </summary>
     /// <returns>Unit sphere.</returns>
     public MeshData Build()

@@ -1,7 +1,7 @@
 ﻿namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Describes the six possible faces of a cube texture.
+/// Describes the six possible faces of a cube texture.
 /// </summary>
 public enum TextureCubeFace
 {

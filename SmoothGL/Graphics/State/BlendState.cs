@@ -3,12 +3,12 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Encapsulates rendering state variables related to blending. Rendering state objects are immutable.
+/// Encapsulates rendering state variables related to blending. Rendering state objects are immutable.
 /// </summary>
 public class BlendState : IGraphicsState
 {
     /// <summary>
-    ///     Defines blending which overwrites all four destination channels with source channels.
+    /// Defines blending which overwrites all four destination channels with source channels.
     /// </summary>
     public static readonly BlendState Opaque = new(
         BlendEquation.Add,
@@ -21,7 +21,7 @@ public class BlendState : IGraphicsState
     );
 
     /// <summary>
-    ///     Defines alpha blending usually used for transparency. The source color is weighted with the source alpha.
+    /// Defines alpha blending usually used for transparency. The source color is weighted with the source alpha.
     /// </summary>
     public static readonly BlendState AlphaNonPremultiplied = new(
         BlendEquation.Add,
@@ -34,8 +34,8 @@ public class BlendState : IGraphicsState
     );
 
     /// <summary>
-    ///     Defines alpha blending usually used for transparency.
-    ///     The source color is expected to be premultiplied with the source alpha in the fragment shader.
+    /// Defines alpha blending usually used for transparency.
+    /// The source color is expected to be premultiplied with the source alpha in the fragment shader.
     /// </summary>
     public static readonly BlendState AlphaPremultiplied = new(
         BlendEquation.Add,
@@ -48,7 +48,7 @@ public class BlendState : IGraphicsState
     );
 
     /// <summary>
-    ///     Defines blending which adds all four source and destination channels per component.
+    /// Defines blending which adds all four source and destination channels per component.
     /// </summary>
     public static readonly BlendState Additive = new(
         BlendEquation.Add,
@@ -61,7 +61,7 @@ public class BlendState : IGraphicsState
     );
 
     /// <summary>
-    ///     Defines blending which multiplies all four source and destination channels per component.
+    /// Defines blending which multiplies all four source and destination channels per component.
     /// </summary>
     public static readonly BlendState Multiplicative = new(
         BlendEquation.Add,
@@ -74,7 +74,7 @@ public class BlendState : IGraphicsState
     );
 
     /// <summary>
-    ///     Defines blending which ignores the source color entirely, without changing the current frame buffer.
+    /// Defines blending which ignores the source color entirely, without changing the current frame buffer.
     /// </summary>
     public static readonly BlendState None = new(
         BlendEquation.Add,
@@ -87,7 +87,7 @@ public class BlendState : IGraphicsState
     );
 
     /// <summary>
-    ///     Creates a new blending state object.
+    /// Creates a new blending state object.
     /// </summary>
     /// <param name="colorBlendEquation">The blending equation used for color blending.</param>
     /// <param name="alphaBlendEquation">The blending equation used for alpha blending.</param>
@@ -96,8 +96,8 @@ public class BlendState : IGraphicsState
     /// <param name="alphaSourceBlend">The factor of the source alpha in the blending equation.</param>
     /// <param name="alphaDestinationBlend">The factor of the destination alpha in the blending equation.</param>
     /// <param name="colorWriteChannels">
-    ///     The color channels in the current frame buffer which are affected by blending
-    ///     operations.
+    /// The color channels in the current frame buffer which are affected by blending
+    /// operations.
     /// </param>
     public BlendState(BlendEquation colorBlendEquation,
         BlendEquation alphaBlendEquation,
@@ -117,42 +117,42 @@ public class BlendState : IGraphicsState
     }
 
     /// <summary>
-    ///     Gets the blending equation used for color blending.
+    /// Gets the blending equation used for color blending.
     /// </summary>
     public BlendEquation ColorBlendEquation { get; }
 
     /// <summary>
-    ///     Gets the blending equation used for alpha blending.
+    /// Gets the blending equation used for alpha blending.
     /// </summary>
     public BlendEquation AlphaBlendEquation { get; }
 
     /// <summary>
-    ///     Gets the factor of the source color in the blending equation.
+    /// Gets the factor of the source color in the blending equation.
     /// </summary>
     public Blend ColorSourceBlend { get; }
 
     /// <summary>
-    ///     Gets the factor of the destination color in the blending equation.
+    /// Gets the factor of the destination color in the blending equation.
     /// </summary>
     public Blend ColorDestinationBlend { get; }
 
     /// <summary>
-    ///     Gets the factor of the source alpha in the blending equation.
+    /// Gets the factor of the source alpha in the blending equation.
     /// </summary>
     public Blend AlphaSourceBlend { get; }
 
     /// <summary>
-    ///     Gets the factor of the destination alpha in the blending equation.
+    /// Gets the factor of the destination alpha in the blending equation.
     /// </summary>
     public Blend AlphaDestinationBlend { get; }
 
     /// <summary>
-    ///     Gets the color channels in the current frame buffer which are affected by blending operations.
+    /// Gets the color channels in the current frame buffer which are affected by blending operations.
     /// </summary>
     public ColorWriteChannels ColorWriteChannels { get; }
 
     /// <summary>
-    ///     Communicates the state encapsulated in this state object to the driver.
+    /// Communicates the state encapsulated in this state object to the driver.
     /// </summary>
     public void Apply()
     {

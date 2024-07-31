@@ -3,7 +3,7 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Defines the orientation of faces which are culled during rendering.
+/// Defines the orientation of faces which are culled during rendering.
 /// </summary>
 public enum CullMode
 {

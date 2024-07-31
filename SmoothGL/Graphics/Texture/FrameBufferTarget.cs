@@ -5,8 +5,8 @@ using SmoothGL.Graphics.Internal;
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents an abstract target for draw operations, i.e., an object
-///     that fragment shader output is written to.
+/// Represents an abstract target for draw operations, i.e., an object
+/// that fragment shader output is written to.
 /// </summary>
 public abstract class FrameBufferTarget : GraphicsResource
 {
@@ -22,8 +22,8 @@ public abstract class FrameBufferTarget : GraphicsResource
     }
 
     /// <summary>
-    ///     Gets the default frame buffer. When selected as target, all
-    ///     draw operations directly affect the pixels on the screen.
+    /// Gets the default frame buffer. When selected as target, all
+    /// draw operations directly affect the pixels on the screen.
     /// </summary>
     public static FrameBufferTarget Default
     {
@@ -41,8 +41,8 @@ public abstract class FrameBufferTarget : GraphicsResource
     }
 
     /// <summary>
-    ///     Gets the frame buffer that is currently selected as target, i.e., the frame
-    ///     buffer that subsequent drawing operations will be performed on.
+    /// Gets the frame buffer that is currently selected as target, i.e., the frame
+    /// buffer that subsequent drawing operations will be performed on.
     /// </summary>
     public static FrameBufferTarget Current
     {
@@ -55,8 +55,8 @@ public abstract class FrameBufferTarget : GraphicsResource
     }
 
     /// <summary>
-    ///     Gets or sets the viewport for this frame buffer target, determining which
-    ///     pixels are affected by drawing operations to this frame buffer target.
+    /// Gets or sets the viewport for this frame buffer target, determining which
+    /// pixels are affected by drawing operations to this frame buffer target.
     /// </summary>
     public Rectangle Viewport
     {
@@ -70,16 +70,16 @@ public abstract class FrameBufferTarget : GraphicsResource
     }
 
     /// <summary>
-    ///     Gets a value indicating whether this frame buffer is currently selected as
-    ///     target.
+    /// Gets a value indicating whether this frame buffer is currently selected as
+    /// target.
     /// </summary>
     public bool IsTarget => _currentFrameBuffer == this;
 
     protected abstract int Id { get; }
 
     /// <summary>
-    ///     Clears this frame buffer target with the specified color. If present, the depth and stencil
-    ///     attachments are overwritten with maximum depth and zero, respectively.
+    /// Clears this frame buffer target with the specified color. If present, the depth and stencil
+    /// attachments are overwritten with maximum depth and zero, respectively.
     /// </summary>
     /// <param name="color">The color written to all color attachments.</param>
     public void Clear(Color color)
@@ -88,8 +88,8 @@ public abstract class FrameBufferTarget : GraphicsResource
     }
 
     /// <summary>
-    ///     Clears this frame buffer target, replacing all values in the specified attachments by the
-    ///     provided clearing values.
+    /// Clears this frame buffer target, replacing all values in the specified attachments by the
+    /// provided clearing values.
     /// </summary>
     /// <param name="options">Specifies which attachments are affected by the clearing operation.</param>
     /// <param name="color">The color written to all color attachments.</param>
@@ -112,8 +112,8 @@ public abstract class FrameBufferTarget : GraphicsResource
     }
 
     /// <summary>
-    ///     Copies data from another frame buffer target to this frame buffer target, affecting the specified attachments and
-    ///     areas. The copy operation requires this frame buffer to be selected as target.
+    /// Copies data from another frame buffer target to this frame buffer target, affecting the specified attachments and
+    /// areas. The copy operation requires this frame buffer to be selected as target.
     /// </summary>
     /// <param name="source">The frame buffer target from which data is copied.</param>
     /// <param name="options">Specifies which attachments are affected by the copy operation.</param>
@@ -148,8 +148,8 @@ public abstract class FrameBufferTarget : GraphicsResource
     }
 
     /// <summary>
-    ///     Sets this frame buffer as target. As a result, subsequent draw operations
-    ///     write to this frame buffer target.
+    /// Sets this frame buffer as target. As a result, subsequent draw operations
+    /// write to this frame buffer target.
     /// </summary>
     public void SetAsTarget()
     {

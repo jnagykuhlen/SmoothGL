@@ -3,18 +3,18 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents a buffer persistent in graphics memory, storing a 24-bit depth value and an 8-bit stencil value
-///     per pixel. Single depth-stencil buffers can be bound to frame buffers to allow depth and stencil testing,
-///     but the content of this buffer cannot be accessed explicitly. In case that depth or stencil values need to be
-///     read outside the context of depth and stencil testing, consider using the <see cref="DepthStencilTexture2D" />
-///     class instead.
+/// Represents a buffer persistent in graphics memory, storing a 24-bit depth value and an 8-bit stencil value
+/// per pixel. Single depth-stencil buffers can be bound to frame buffers to allow depth and stencil testing,
+/// but the content of this buffer cannot be accessed explicitly. In case that depth or stencil values need to be
+/// read outside the context of depth and stencil testing, consider using the <see cref="DepthStencilTexture2D" />
+/// class instead.
 /// </summary>
 public class DepthStencilBuffer : GraphicsResource
 {
     private int _renderBufferId;
 
     /// <summary>
-    ///     Creates a new depth-stencil buffer.
+    /// Creates a new depth-stencil buffer.
     /// </summary>
     /// <param name="width">Width of the buffer in pixels.</param>
     /// <param name="height">Height of the buffer in pixels.</param>
@@ -28,9 +28,9 @@ public class DepthStencilBuffer : GraphicsResource
     protected override string ResourceName => "DepthStencilBuffer";
 
     /// <summary>
-    ///     Creates a new frame buffer attachment that can be used to attach this buffer to a frame buffer
-    ///     by calling its <see cref="FrameBuffer.Attach(IDepthStencilAttachment, IColorAttachment[])" /> method.
-    ///     This allows for depth and stencil testing when the frame buffer is set as target.
+    /// Creates a new frame buffer attachment that can be used to attach this buffer to a frame buffer
+    /// by calling its <see cref="FrameBuffer.Attach(IDepthStencilAttachment, IColorAttachment[])" /> method.
+    /// This allows for depth and stencil testing when the frame buffer is set as target.
     /// </summary>
     /// <returns>Frame buffer attachment.</returns>
     public IDepthStencilAttachment CreateFrameBufferAttachment()

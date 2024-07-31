@@ -3,14 +3,14 @@
 namespace SmoothGL.Content;
 
 /// <summary>
-///     Specifies how the six individual faces of a cube texture are arranged in a two-dimensional image file.
-///     A source image is interpreted as a uniform grid of quadratic tiles. Each cube face is then
-///     selected by the coordinates of the corresponding tile in the grid.
+/// Specifies how the six individual faces of a cube texture are arranged in a two-dimensional image file.
+/// A source image is interpreted as a uniform grid of quadratic tiles. Each cube face is then
+/// selected by the coordinates of the corresponding tile in the grid.
 /// </summary>
 public class CubeTextureLayout
 {
     /// <summary>
-    ///     Represents a layout in which the six cube face textures are arranged in a horizontal strip.
+    /// Represents a layout in which the six cube face textures are arranged in a horizontal strip.
     /// </summary>
     public static readonly CubeTextureLayout HorizontalStrip = new(
         6, 1,
@@ -23,9 +23,9 @@ public class CubeTextureLayout
     );
 
     /// <summary>
-    ///     Represents a layout in which the six cube face textures are arranged in a horizontal cross,
-    ///     dividing the source image into a grid of 4x3 tiles. The top and bottom row of tiles is not taken
-    ///     into account except from the second tile each.
+    /// Represents a layout in which the six cube face textures are arranged in a horizontal cross,
+    /// dividing the source image into a grid of 4x3 tiles. The top and bottom row of tiles is not taken
+    /// into account except from the second tile each.
     /// </summary>
     public static readonly CubeTextureLayout HorizontalCross = new(
         4, 3,
@@ -47,8 +47,8 @@ public class CubeTextureLayout
     }
 
     /// <summary>
-    ///     Creates a new cube texture layout, interpreting a source image as a grid of tiles of specified
-    ///     width and height. The cube face textures are selected as the specified tile in the grid.
+    /// Creates a new cube texture layout, interpreting a source image as a grid of tiles of specified
+    /// width and height. The cube face textures are selected as the specified tile in the grid.
     /// </summary>
     /// <param name="gridWidth">Number of tiles in the grid in horizontal direction.</param>
     /// <param name="gridHeight">Number of tiles in the grid in vertical direction.</param>
@@ -98,18 +98,18 @@ public class CubeTextureLayout
     }
 
     /// <summary>
-    ///     Gets the number of tiles in the grid in horizontal direction.
+    /// Gets the number of tiles in the grid in horizontal direction.
     /// </summary>
     public int GridWidth { get; }
 
     /// <summary>
-    ///     Gets the number of tiles in the grid in vertical direction.
+    /// Gets the number of tiles in the grid in vertical direction.
     /// </summary>
     public int GridHeight { get; }
 
     /// <summary>
-    ///     Creates a new cube texture layout in which the six cube face textures are arranged in a horizontal strip,
-    ///     specifying the order in which each cube face appears in the strip of tiles.
+    /// Creates a new cube texture layout in which the six cube face textures are arranged in a horizontal strip,
+    /// specifying the order in which each cube face appears in the strip of tiles.
     /// </summary>
     /// <param name="cubeFaceOrder">Defines the order in which the cube faces are stored in the source image file.</param>
     /// <returns>Cube texture layout.</returns>
@@ -132,7 +132,7 @@ public class CubeTextureLayout
     }
 
     /// <summary>
-    ///     Gets the coordinates of the tile in the grid corresponding to the specified cube face.
+    /// Gets the coordinates of the tile in the grid corresponding to the specified cube face.
     /// </summary>
     /// <param name="cubeFace">Cube face for which the tile coordinates in the grid are requested.</param>
     /// <returns>Position of the corresponding tile in the grid.</returns>

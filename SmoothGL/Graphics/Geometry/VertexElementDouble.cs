@@ -3,7 +3,7 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Describes a vertex element as a vector of double precision floating point numbers.
+/// Describes a vertex element as a vector of double precision floating point numbers.
 /// </summary>
 public class VertexElementDouble : IVertexElement
 {
@@ -11,7 +11,7 @@ public class VertexElementDouble : IVertexElement
     private readonly int _numberOfComponents;
 
     /// <summary>
-    ///     Creates a new vertex element description for a vector of doubles.
+    /// Creates a new vertex element description for a vector of doubles.
     /// </summary>
     /// <param name="location">Location at which this vertex element is accessible in the vertex shader.</param>
     /// <param name="numberOfComponents">Number of components of the described vector in the range between one and four.</param>

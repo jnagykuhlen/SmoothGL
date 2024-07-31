@@ -4,7 +4,7 @@ using SmoothGL.Graphics.Internal;
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents a shader program linked from a number of compiled shaders.
+/// Represents a shader program linked from a number of compiled shaders.
 /// </summary>
 public class ShaderProgram : GraphicsResource
 {
@@ -15,7 +15,7 @@ public class ShaderProgram : GraphicsResource
     private Dictionary<string, ShaderProgramUniform> _uniforms;
 
     /// <summary>
-    ///     Creates a new shader program with vertex and fragment shader stage.
+    /// Creates a new shader program with vertex and fragment shader stage.
     /// </summary>
     /// <param name="vertexShaderCode">Vertex shader source code.</param>
     /// <param name="fragmentShaderCode">Fragment shader source code.</param>
@@ -25,7 +25,7 @@ public class ShaderProgram : GraphicsResource
     }
 
     /// <summary>
-    ///     Creates a new shader program with vertex, geometry and fragment shader stage.
+    /// Creates a new shader program with vertex, geometry and fragment shader stage.
     /// </summary>
     /// <param name="vertexShaderCode">Vertex shader source code.</param>
     /// <param name="geometryShaderCode">Geometry shader source code.</param>
@@ -36,7 +36,7 @@ public class ShaderProgram : GraphicsResource
     }
 
     /// <summary>
-    ///     Creates a new shader program with vertex, tessellation and fragment shader stage.
+    /// Creates a new shader program with vertex, tessellation and fragment shader stage.
     /// </summary>
     /// <param name="vertexShaderCode">Vertex shader source code.</param>
     /// <param name="tessellationControlShaderCode">Tessellation control shader source code.</param>
@@ -51,7 +51,7 @@ public class ShaderProgram : GraphicsResource
     }
 
     /// <summary>
-    ///     Creates a new shader program with vertex, tessellation, geometry and fragment shader stage.
+    /// Creates a new shader program with vertex, tessellation, geometry and fragment shader stage.
     /// </summary>
     /// <param name="vertexShaderCode">Vertex shader source code.</param>
     /// <param name="tessellationControlShaderCode">Tessellation control shader source code.</param>
@@ -91,18 +91,18 @@ public class ShaderProgram : GraphicsResource
     }
 
     /// <summary>
-    ///     Gets all uniforms defined by this shader program.
+    /// Gets all uniforms defined by this shader program.
     /// </summary>
     public IEnumerable<ShaderUniform> Uniforms => _uniforms.Values;
 
     /// <summary>
-    ///     Gets all uniform blocks defined by this shader program.
+    /// Gets all uniform blocks defined by this shader program.
     /// </summary>
     public IEnumerable<ShaderUniformBlock> UniformBlocks => _uniformBlocks.Values;
 
     /// <summary>
-    ///     Gets a value indicating whether this shader program is currently in use for subsequent draw operations,
-    ///     i.e., its <see cref="Use" /> method was called after using any other shader program.
+    /// Gets a value indicating whether this shader program is currently in use for subsequent draw operations,
+    /// i.e., its <see cref="Use" /> method was called after using any other shader program.
     /// </summary>
     public bool IsActive => _currentProgramId == _programId;
 
@@ -249,8 +249,8 @@ public class ShaderProgram : GraphicsResource
     }
 
     /// <summary>
-    ///     Communicates the uniform values to the GPU and uses this shader program for all
-    ///     subsequent drawing operations.
+    /// Communicates the uniform values to the GPU and uses this shader program for all
+    /// subsequent drawing operations.
     /// </summary>
     public void Use()
     {
@@ -271,9 +271,9 @@ public class ShaderProgram : GraphicsResource
     }
 
     /// <summary>
-    ///     Gets the uniform with the specified name. Returns null if such uniform does not exist.
-    ///     Note that uniform value changes are not communicated to the GPU until this shader
-    ///     program's <see cref="Use" /> method is called again.
+    /// Gets the uniform with the specified name. Returns null if such uniform does not exist.
+    /// Note that uniform value changes are not communicated to the GPU until this shader
+    /// program's <see cref="Use" /> method is called again.
     /// </summary>
     /// <param name="name">Name of the uniform.</param>
     /// <returns>Uniform.</returns>
@@ -286,7 +286,7 @@ public class ShaderProgram : GraphicsResource
     }
 
     /// <summary>
-    ///     Gets the uniform block with the specified name. Returns null if such uniform block does not exist.
+    /// Gets the uniform block with the specified name. Returns null if such uniform block does not exist.
     /// </summary>
     /// <param name="name">Name of the uniform block.</param>
     /// <returns>Uniform block.</returns>

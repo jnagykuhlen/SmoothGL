@@ -3,13 +3,13 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents a query which can be used to measure the total number of fragments passing the
-///     graphics pipeline.
+/// Represents a query which can be used to measure the total number of fragments passing the
+/// graphics pipeline.
 /// </summary>
 public class OcclusionQuery : Query
 {
     /// <summary>
-    ///     Creates a new occlusion query.
+    /// Creates a new occlusion query.
     /// </summary>
     public OcclusionQuery()
         : base(QueryTarget.SamplesPassed)
@@ -17,9 +17,9 @@ public class OcclusionQuery : Query
     }
 
     /// <summary>
-    ///     Gets the number of fragments which passed the graphics pipeline between <see cref="Query.Begin" /> and
-    ///     <see cref="Query.End" />.
-    ///     This value is available when the query has finished.
+    /// Gets the number of fragments which passed the graphics pipeline between <see cref="Query.Begin" /> and
+    /// <see cref="Query.End" />.
+    /// This value is available when the query has finished.
     /// </summary>
     public int FragmentCount => Result;
 }

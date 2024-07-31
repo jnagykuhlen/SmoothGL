@@ -3,13 +3,13 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Represents a builder that constructs a quad, which is a quadratic finite plane orthogonal to the z-axis with unit
-///     size.
+/// Represents a builder that constructs a quad, which is a quadratic finite plane orthogonal to the z-axis with unit
+/// size.
 /// </summary>
 public class QuadBuilder : IGeometryBuilder
 {
     /// <summary>
-    ///     Builds a quad stored in memory.
+    /// Builds a quad stored in memory.
     /// </summary>
     /// <returns>Quad.</returns>
     public MeshData Build()

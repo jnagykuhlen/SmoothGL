@@ -3,11 +3,11 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Specifies the format of color values stored in a texture. Possible color components
-///     are red, green, blue and alpha denoted by their first letter. The number indicates how
-///     many bits are reserved for the full color value, i.e., for the sum of its components.
-///     When specified as float, component values outside the range between 0.0 and 1.0 are not
-///     clamped to this interval but stored with floating-point precision.
+/// Specifies the format of color values stored in a texture. Possible color components
+/// are red, green, blue and alpha denoted by their first letter. The number indicates how
+/// many bits are reserved for the full color value, i.e., for the sum of its components.
+/// When specified as float, component values outside the range between 0.0 and 1.0 are not
+/// clamped to this interval but stored with floating-point precision.
 /// </summary>
 public enum TextureColorFormat
 {

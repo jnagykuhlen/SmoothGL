@@ -3,7 +3,7 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Describes how data in a vertex buffer is interpreted for integer elements.
+/// Describes how data in a vertex buffer is interpreted for integer elements.
 /// </summary>
 public enum IntegerSourceType
 {

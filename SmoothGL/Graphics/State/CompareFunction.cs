@@ -3,7 +3,7 @@
 namespace SmoothGL.Graphics;
 
 /// <summary>
-///     Defines a compare function for depth and stencil operations.
+/// Defines a compare function for depth and stencil operations.
 /// </summary>
 public enum CompareFunction
 {
