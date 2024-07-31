@@ -94,6 +94,7 @@ public class FrameBuffer : FrameBufferTarget
 
     protected override void FreeResources()
     {
+        Unbind();
         GL.DeleteFramebuffers(1, ref _frameBufferId);
     }
 }

@@ -142,6 +142,15 @@ public abstract class FrameBufferTarget : GraphicsResource
         }
     }
 
+    protected void Unbind()
+    {
+        if (_currentFrameBufferId == Id)
+        {
+            GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
+            _currentFrameBufferId = 0;
+        }
+    }
+
     protected void ApplyViewport()
     {
         GL.Viewport(_viewport);
