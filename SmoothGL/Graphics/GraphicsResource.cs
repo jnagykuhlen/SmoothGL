@@ -1,96 +1,74 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿namespace SmoothGL.Graphics;
 
-namespace SmoothGL.Graphics
+/// <summary>
+///     Defines an abstract resource in graphics memory.
+/// </summary>
+public abstract class GraphicsResource : IDisposable
 {
     /// <summary>
-    /// Defines an abstract resource in graphics memory.
+    ///     Creates a new graphics resource.
     /// </summary>
-    public abstract class GraphicsResource : IDisposable
+    protected GraphicsResource()
     {
-        private bool _disposed;
+        Disposed = false;
+    }
 
-        /// <summary>
-        /// Creates a new graphics resource.
-        /// </summary>
-        protected GraphicsResource()
+    /// <summary>
+    ///     Override this method to return the name of the resource.
+    /// </summary>
+    protected virtual string ResourceName => "GraphicsResource";
+
+    /// <summary>
+    ///     Gets a value indicating whether this resource has been disposed.
+    /// </summary>
+    public bool Disposed { get; private set; }
+
+    /// <summary>
+    ///     Disposes this resource, freeing all allocated graphics memory.
+    /// </summary>
+    public void Dispose()
+    {
+        if (!Disposed)
         {
-            _disposed = false;
+            FreeResources();
+            GC.SuppressFinalize(this);
+            Disposed = true;
         }
+    }
 
-        /// <summary>
-        /// Disposes this resource, freeing all allocated graphics memory.
-        /// </summary>
-        public void Dispose()
-        {
-            if (!_disposed)
+    /// <summary>
+    ///     Throws an ObjectDisposedException in case this resource is already disposed.
+    /// </summary>
+    protected void CheckDisposed()
+    {
+        if (Disposed)
+            throw new ObjectDisposedException(ResourceName, "The object is already disposed.");
+    }
+
+    /// <summary>
+    ///     Override this method to free unmanaged resources.
+    /// </summary>
+    protected virtual void FreeResources()
+    {
+    }
+
+    ~GraphicsResource()
+    {
+        if (!Disposed)
+            try
             {
-                FreeResources();
-                GC.SuppressFinalize(this);
-                _disposed = true;
+                Dispose();
             }
-        }
-
-        /// <summary>
-        /// Throws an ObjectDisposedException in case this resource is already disposed.
-        /// </summary>
-        protected void CheckDisposed()
-        {
-            if (_disposed)
-                throw new ObjectDisposedException(ResourceName, "The object is already disposed.");
-        }
-
-        /// <summary>
-        /// Override this method to free unmanaged resources.
-        /// </summary>
-        protected virtual void FreeResources()
-        {
-        }
-
-        /// <summary>
-        /// Override this method to return the name of the resource.
-        /// </summary>
-        protected virtual string ResourceName
-        {
-            get
+            catch (Exception exception)
             {
-                return "GraphicsResource";
+                throw new GraphicsResourceNotDisposedException(
+                    string.Format(
+                        "{0} has not been disposed before finalization and cannot be disposed automatically. " +
+                        "Make sure that all graphics resources are disposed manually to avoid memory leaks.",
+                        ResourceName
+                    ),
+                    exception
+                );
             }
-        }
-
-        ~GraphicsResource()
-        {
-            if (!_disposed)
-            {
-                try
-                {
-                    Dispose();
-                }
-                catch (Exception exception)
-                {
-                    throw new GraphicsResourceNotDisposedException(
-                        string.Format(
-                            "{0} has not been disposed before finalization and cannot be disposed automatically. " +
-                            "Make sure that all graphics resources are disposed manually to avoid memory leaks.",
-                            ResourceName
-                        ),
-                        exception
-                    );
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether this resource has been disposed.
-        /// </summary>
-        public bool Disposed
-        {
-            get
-            {
-                return _disposed;
-            }
-        }
     }
 }

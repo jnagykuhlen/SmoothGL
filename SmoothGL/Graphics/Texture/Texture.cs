@@ -1,107 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
+namespace SmoothGL.Graphics;
 
-namespace SmoothGL.Graphics
+/// <summary>
+///     Defines a texture persistent in graphics memory.
+/// </summary>
+public abstract class Texture : GraphicsResource
 {
-    /// <summary>
-    /// Defines a texture persistent in graphics memory.
-    /// </summary>
-    public abstract class Texture : GraphicsResource
+    private readonly TextureTarget _target;
+    private int _textureId;
+
+    protected Texture(TextureTarget target, TextureFilterMode filterMode)
     {
-        private TextureTarget _target;
-        private TextureFilterMode _filterMode;
-        private int _textureId;
+        _target = target;
+        FilterMode = filterMode;
+        GL.GenTextures(1, out _textureId);
+        GL.BindTexture(_target, _textureId);
+        ApplyFiltering();
+    }
 
-        protected Texture(TextureTarget target, TextureFilterMode filterMode)
+    /// <summary>
+    ///     Gets the filter mode of this texture.
+    /// </summary>
+    public TextureFilterMode FilterMode { get; }
+
+    protected int Id => _textureId;
+
+    protected override string ResourceName => "Texture";
+
+    /// <summary>
+    ///     Binds this texture to the graphics device. This method is not required to be called by client code.
+    /// </summary>
+    public void Bind()
+    {
+        GL.BindTexture(_target, _textureId);
+    }
+
+    protected void UpdateMipmaps()
+    {
+        if (FilterMode.Mipmapping)
+            GL.GenerateMipmap((GenerateMipmapTarget)_target);
+    }
+
+    private void ApplyFiltering()
+    {
+        TextureMinFilter minFilter;
+        TextureMagFilter magFilter;
+
+        if (FilterMode.Interpolation == TextureInterpolation.Nearest)
         {
-            _target = target;
-            _filterMode = filterMode;
-            GL.GenTextures(1, out _textureId);
-            GL.BindTexture(_target, _textureId);
-            ApplyFiltering();
+            minFilter = FilterMode.Mipmapping ? TextureMinFilter.NearestMipmapNearest : TextureMinFilter.Nearest;
+            magFilter = TextureMagFilter.Nearest;
+        }
+        else
+        {
+            minFilter = FilterMode.Mipmapping ? TextureMinFilter.LinearMipmapLinear : TextureMinFilter.Linear;
+            magFilter = TextureMagFilter.Linear;
         }
 
-        /// <summary>
-        /// Binds this texture to the graphics device. This method is not required to be called by client code.
-        /// </summary>
-        public void Bind()
-        {
-            GL.BindTexture(_target, _textureId);
-        }
+        GL.TexParameter(_target, TextureParameterName.TextureMinFilter, (int)minFilter);
+        GL.TexParameter(_target, TextureParameterName.TextureMagFilter, (int)magFilter);
 
-        protected void UpdateMipmaps()
-        {
-            if (_filterMode.Mipmapping)
-                GL.GenerateMipmap((GenerateMipmapTarget)_target);
-        }
+        GL.TexParameter(_target, TextureParameterName.TextureWrapS, (int)FilterMode.Wrap);
+        GL.TexParameter(_target, TextureParameterName.TextureWrapT, (int)FilterMode.Wrap);
+        GL.TexParameter(_target, TextureParameterName.TextureWrapR, (int)FilterMode.Wrap);
 
-        private void ApplyFiltering()
-        {
-            TextureMinFilter minFilter;
-            TextureMagFilter magFilter;
+        float maxAnisotropy;
+        GL.GetFloat((GetPName)ExtTextureFilterAnisotropic.MaxTextureMaxAnisotropyExt, out maxAnisotropy);
 
-            if (_filterMode.Interpolation == TextureInterpolation.Nearest)
-            {
-                minFilter = _filterMode.Mipmapping ? TextureMinFilter.NearestMipmapNearest : TextureMinFilter.Nearest;
-                magFilter = TextureMagFilter.Nearest;
-            }
-            else
-            {
-                minFilter = _filterMode.Mipmapping ? TextureMinFilter.LinearMipmapLinear : TextureMinFilter.Linear;
-                magFilter = TextureMagFilter.Linear;
-            }
+        var anisotropy = MathHelper.Clamp(FilterMode.Anisotropy, 1.0f, maxAnisotropy);
+        GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName)ExtTextureFilterAnisotropic.TextureMaxAnisotropyExt, anisotropy);
+    }
 
-            GL.TexParameter(_target, TextureParameterName.TextureMinFilter, (int)minFilter);
-            GL.TexParameter(_target, TextureParameterName.TextureMagFilter, (int)magFilter);
-
-            GL.TexParameter(_target, TextureParameterName.TextureWrapS, (int)_filterMode.Wrap);
-            GL.TexParameter(_target, TextureParameterName.TextureWrapT, (int)_filterMode.Wrap);
-            GL.TexParameter(_target, TextureParameterName.TextureWrapR, (int)_filterMode.Wrap);
-            
-            float maxAnisotropy;
-            GL.GetFloat((GetPName)ExtTextureFilterAnisotropic.MaxTextureMaxAnisotropyExt, out maxAnisotropy);
-
-            float anisotropy = MathHelper.Clamp(_filterMode.Anisotropy, 1.0f, maxAnisotropy);
-            GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName)ExtTextureFilterAnisotropic.TextureMaxAnisotropyExt, anisotropy);
-        }
-
-        protected sealed override void FreeResources()
-        {
-            GL.DeleteTextures(1, ref _textureId);
-        }
-        
-        /// <summary>
-        /// Gets the filter mode of this texture.
-        /// </summary>
-        public TextureFilterMode FilterMode
-        {
-            get
-            {
-                return _filterMode;
-            }
-        }
-
-        protected int Id
-        {
-            get
-            {
-                return _textureId;
-            }
-        }
-
-        protected override string ResourceName
-        {
-            get
-            {
-                return "Texture";
-            }
-        }
+    protected sealed override void FreeResources()
+    {
+        GL.DeleteTextures(1, ref _textureId);
     }
 }

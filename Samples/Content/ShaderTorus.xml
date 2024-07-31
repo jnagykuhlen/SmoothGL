@@ -1,4 +1,4 @@
 ﻿<ShaderProgram>
-  <Vertex>VertexTorus.glsl</Vertex>
-  <Fragment>FragmentTorus.glsl</Fragment>
+    <Vertex>VertexTorus.glsl</Vertex>
+    <Fragment>FragmentTorus.glsl</Fragment>
 </ShaderProgram>

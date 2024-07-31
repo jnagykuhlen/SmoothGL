@@ -1,57 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
+﻿using OpenTK.Mathematics;
 
+namespace SmoothGL.Graphics;
 
-namespace SmoothGL.Graphics
+/// <summary>
+///     Represents a builder that constructs a quad, which is a quadratic finite plane orthogonal to the z-axis with unit
+///     size.
+/// </summary>
+public class QuadBuilder : IGeometryBuilder
 {
     /// <summary>
-    /// Represents a builder that constructs a quad, which is a quadratic finite plane orthogonal to the z-axis with unit size.
+    ///     Builds a quad stored in memory.
     /// </summary>
-    public class QuadBuilder : IGeometryBuilder
+    /// <returns>Quad.</returns>
+    public MeshData Build()
     {
-        /// <summary>
-        /// Builds a quad stored in memory.
-        /// </summary>
-        /// <returns>Quad.</returns>
-        public MeshData Build()
+        Vector3[] positions =
         {
-            Vector3[] positions = new Vector3[]
-            {
-                new Vector3( 1,  1, 0),
-                new Vector3(-1,  1, 0),
-                new Vector3( 1, -1, 0),
-                new Vector3(-1, -1, 0)
-            };
+            new(1, 1, 0),
+            new(-1, 1, 0),
+            new(1, -1, 0),
+            new(-1, -1, 0)
+        };
 
-            Vector3[] normals = new Vector3[]
-            {
-                Vector3.UnitZ,
-                Vector3.UnitZ,
-                Vector3.UnitZ,
-                Vector3.UnitZ
-            };
+        Vector3[] normals =
+        {
+            Vector3.UnitZ,
+            Vector3.UnitZ,
+            Vector3.UnitZ,
+            Vector3.UnitZ
+        };
 
-            Vector2[] textureCoordinates = new Vector2[]
-            {
-                new Vector2(1, 1),
-                new Vector2(0, 1),
-                new Vector2(1, 0),
-                new Vector2(0, 0)
-            };
+        Vector2[] textureCoordinates =
+        {
+            new(1, 1),
+            new(0, 1),
+            new(1, 0),
+            new(0, 0)
+        };
 
-            uint[] indices = new uint[]
-            {
-                0, 1, 2,
-                1, 3, 2
-            };
+        uint[] indices =
+        {
+            0, 1, 2,
+            1, 3, 2
+        };
 
-            return new MeshData(positions, normals, textureCoordinates, indices);
-        }
+        return new MeshData(positions, normals, textureCoordinates, indices);
     }
 }

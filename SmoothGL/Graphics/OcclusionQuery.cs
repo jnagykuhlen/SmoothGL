@@ -1,36 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 
+namespace SmoothGL.Graphics;
 
-namespace SmoothGL.Graphics
+/// <summary>
+///     Represents a query which can be used to measure the total number of fragments passing the
+///     graphics pipeline.
+/// </summary>
+public class OcclusionQuery : Query
 {
     /// <summary>
-    /// Represents a query which can be used to measure the total number of fragments passing the
-    /// graphics pipeline.
+    ///     Creates a new occlusion query.
     /// </summary>
-    public class OcclusionQuery : Query
+    public OcclusionQuery()
+        : base(QueryTarget.SamplesPassed)
     {
-        /// <summary>
-        /// Creates a new occlusion query.
-        /// </summary>
-        public OcclusionQuery()
-             : base(QueryTarget.SamplesPassed) { }
-
-        /// <summary>
-        /// Gets the number of fragments which passed the graphics pipeline between <see cref="Query.Begin"/> and <see cref="Query.End"/>.
-        /// This value is available when the query has finished.
-        /// </summary>
-        public int FragmentCount
-        {
-            get
-            {
-                return Result;
-            }
-        }
     }
+
+    /// <summary>
+    ///     Gets the number of fragments which passed the graphics pipeline between <see cref="Query.Begin" /> and
+    ///     <see cref="Query.End" />.
+    ///     This value is available when the query has finished.
+    /// </summary>
+    public int FragmentCount => Result;
 }

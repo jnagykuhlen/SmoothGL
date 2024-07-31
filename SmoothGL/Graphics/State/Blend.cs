@@ -1,29 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 
+namespace SmoothGL.Graphics;
 
-namespace SmoothGL.Graphics
+/// <summary>
+///     Represents possible blending factors in the blending equation.
+/// </summary>
+public enum Blend
 {
-    /// <summary>
-    /// Represents possible blending factors in the blending equation.
-    /// </summary>
-    public enum Blend
-    {
-        Zero = BlendingFactorSrc.Zero,
-        One = BlendingFactorSrc.One,
-        SourceColor = BlendingFactorSrc.SrcColor,
-        SourceColorInverse = BlendingFactorSrc.OneMinusSrcColor,
-        SourceAlpha = BlendingFactorSrc.SrcAlpha,
-        SourceAlphaInverse = BlendingFactorSrc.OneMinusSrcAlpha,
-        SourceAlphaSaturate = BlendingFactorSrc.SrcAlphaSaturate,
-        DestinationColor = BlendingFactorSrc.DstColor,
-        DestinationColorInverse = BlendingFactorSrc.OneMinusDstColor,
-        DestinationAlpha = BlendingFactorSrc.DstAlpha,
-        InverseDestinationAlpha = BlendingFactorSrc.OneMinusDstAlpha
-    }
+    Zero = BlendingFactorSrc.Zero,
+    One = BlendingFactorSrc.One,
+    SourceColor = BlendingFactorSrc.SrcColor,
+    SourceColorInverse = BlendingFactorSrc.OneMinusSrcColor,
+    SourceAlpha = BlendingFactorSrc.SrcAlpha,
+    SourceAlphaInverse = BlendingFactorSrc.OneMinusSrcAlpha,
+    SourceAlphaSaturate = BlendingFactorSrc.SrcAlphaSaturate,
+    DestinationColor = BlendingFactorSrc.DstColor,
+    DestinationColorInverse = BlendingFactorSrc.OneMinusDstColor,
+    DestinationAlpha = BlendingFactorSrc.DstAlpha,
+    InverseDestinationAlpha = BlendingFactorSrc.OneMinusDstAlpha
 }

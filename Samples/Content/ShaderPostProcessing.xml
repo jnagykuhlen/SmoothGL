@@ -1,4 +1,4 @@
 ﻿<ShaderProgram>
-  <Vertex>VertexPostProcessing.glsl</Vertex>
-  <Fragment>FragmentPostProcessing.glsl</Fragment>
+    <Vertex>VertexPostProcessing.glsl</Vertex>
+    <Fragment>FragmentPostProcessing.glsl</Fragment>
 </ShaderProgram>

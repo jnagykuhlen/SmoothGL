@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿namespace SmoothGL.Content.Internal;
 
-namespace SmoothGL.Content.Internal
+public interface ICachedReader
 {
-    public interface ICachedReader
-    {
-        void ClearCache();
-    }
+    void ClearCache();
 }

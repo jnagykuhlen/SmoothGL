@@ -1,29 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿namespace SmoothGL.Graphics;
 
-namespace SmoothGL.Graphics
+/// <summary>
+///     Exception which is thrown if a graphics resource has not been disposed before finalization and cannot be disposed
+///     by the finalizer,
+///     e.g. because freeing resources is thread-dependent.
+/// </summary>
+public class GraphicsResourceNotDisposedException : Exception
 {
     /// <summary>
-    /// Exception which is thrown if a graphics resource has not been disposed before finalization and cannot be disposed by the finalizer,
-    /// e.g. because freeing resources is thread-dependent.
+    ///     Creates a new GraphicsResourceNotDisposedException.
     /// </summary>
-    public class GraphicsResourceNotDisposedException : Exception
+    /// <param name="message">Message describing why finalization failed.</param>
+    public GraphicsResourceNotDisposedException(string message)
+        : base(message)
     {
-        /// <summary>
-        /// Creates a new GraphicsResourceNotDisposedException.
-        /// </summary>
-        /// <param name="message">Message describing why finalization failed.</param>
-        public GraphicsResourceNotDisposedException(string message)
-            : base(message) { }
+    }
 
-        /// <summary>
-        /// Creates a new GraphicsResourceNotDisposedException.
-        /// </summary>
-        /// <param name="message">Message describing why finalization failed.</param>
-        /// <param name="innerException">Inner exception causing this exception to be thrown.</param>
-        public GraphicsResourceNotDisposedException(string message, Exception innerException)
-            : base(message, innerException) { }
+    /// <summary>
+    ///     Creates a new GraphicsResourceNotDisposedException.
+    /// </summary>
+    /// <param name="message">Message describing why finalization failed.</param>
+    /// <param name="innerException">Inner exception causing this exception to be thrown.</param>
+    public GraphicsResourceNotDisposedException(string message, Exception innerException)
+        : base(message, innerException)
+    {
     }
 }

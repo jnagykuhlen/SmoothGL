@@ -1,101 +1,93 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using OpenTK.Mathematics;
 
-using OpenTK;
-using OpenTK.Mathematics;
+namespace SmoothGL.Graphics;
 
-
-namespace SmoothGL.Graphics
+/// <summary>
+///     Represents a builder that constructs a unit sphere with specified level of detail.
+/// </summary>
+public class SphereBuilder : IGeometryBuilder
 {
+    private const int DefaultSlices = 16;
+    private const int DefaultStacks = 8;
+
+    private readonly int _slices;
+    private readonly int _stacks;
+
     /// <summary>
-    /// Represents a builder that constructs a unit sphere with specified level of detail.
+    ///     Creates a new sphere builder with default parameters for the level of detail.
     /// </summary>
-    public class SphereBuilder : IGeometryBuilder
+    public SphereBuilder()
+        : this(DefaultSlices, DefaultStacks)
     {
-        private const int DefaultSlices = 16;
-        private const int DefaultStacks = 8;
+    }
 
-        private int _slices;
-        private int _stacks;
+    /// <summary>
+    ///     Creates a new sphere builder with specified parameters for the level of detail.
+    /// </summary>
+    /// <param name="slices">The number of subdivisions around the y-axis.</param>
+    /// <param name="stacks">The number of subdivisions along the y-axis.</param>
+    public SphereBuilder(int slices, int stacks)
+    {
+        _slices = slices;
+        _stacks = stacks;
+    }
 
-        /// <summary>
-        /// Creates a new sphere builder with default parameters for the level of detail.
-        /// </summary>
-        public SphereBuilder()
-            : this(DefaultSlices, DefaultStacks) { }
+    /// <summary>
+    ///     Builds a unit sphere stored in memory.
+    /// </summary>
+    /// <returns>Unit sphere.</returns>
+    public MeshData Build()
+    {
+        var numberOfVertices = (_slices + 1) * (_stacks + 1);
+        var numberOfIndices = _slices * _stacks * 6;
 
-        /// <summary>
-        /// Creates a new sphere builder with specified parameters for the level of detail.
-        /// </summary>
-        /// <param name="slices">The number of subdivisions around the y-axis.</param>
-        /// <param name="stacks">The number of subdivisions along the y-axis.</param>
-        public SphereBuilder(int slices, int stacks)
+        var positions = new Vector3[numberOfVertices];
+        var normals = new Vector3[numberOfVertices];
+        var texCoords = new Vector2[numberOfVertices];
+        var indices = new uint[numberOfIndices];
+
+        float phi;
+        float theta;
+        var dphi = MathHelper.Pi / _stacks;
+        var dtheta = MathHelper.TwoPi / _slices;
+        float x, y, z, sc;
+        var index = 0;
+
+        for (var stack = 0; stack <= _stacks; ++stack)
         {
-            _slices = slices;
-            _stacks = stacks;
+            phi = MathHelper.PiOver2 - stack * dphi;
+            y = (float)Math.Sin(phi);
+            sc = -(float)Math.Cos(phi);
+
+            for (var slice = 0; slice <= _slices; ++slice)
+            {
+                theta = slice * dtheta;
+                x = sc * (float)Math.Sin(theta);
+                z = sc * (float)Math.Cos(theta);
+
+                positions[index] = new Vector3(x, y, z);
+                normals[index] = new Vector3(x, y, z);
+                texCoords[index] = new Vector2(slice / (float)_slices, stack / (float)_stacks);
+
+                index++;
+            }
         }
 
-        /// <summary>
-        /// Builds a unit sphere stored in memory.
-        /// </summary>
-        /// <returns>Unit sphere.</returns>
-        public MeshData Build()
+        index = 0;
+        var k = _slices + 1;
+
+        for (var stack = 0; stack < _stacks; ++stack)
+        for (var slice = 0; slice < _slices; ++slice)
         {
-            int numberOfVertices = (_slices + 1) * (_stacks + 1);
-            int numberOfIndices = _slices * _stacks * 6;
+            indices[index++] = (uint)((stack + 0) * k + slice);
+            indices[index++] = (uint)((stack + 1) * k + slice);
+            indices[index++] = (uint)((stack + 0) * k + slice + 1);
 
-            Vector3[] positions = new Vector3[numberOfVertices];
-            Vector3[] normals = new Vector3[numberOfVertices];
-            Vector2[] texCoords = new Vector2[numberOfVertices];
-            uint[] indices = new uint[numberOfIndices];
-
-            float phi;
-            float theta;
-            float dphi = MathHelper.Pi / _stacks;
-            float dtheta = MathHelper.TwoPi / _slices;
-            float x, y, z, sc;
-            int index = 0;
-
-            for (int stack = 0; stack <= _stacks; ++stack)
-            {
-                phi = MathHelper.PiOver2 - stack * dphi;
-                y = (float)Math.Sin(phi);
-                sc = -(float)Math.Cos(phi);
-
-                for (int slice = 0; slice <= _slices; ++slice)
-                {
-                    theta = slice * dtheta;
-                    x = sc * (float)Math.Sin(theta);
-                    z = sc * (float)Math.Cos(theta);
-
-                    positions[index] = new Vector3(x, y, z);
-                    normals[index] = new Vector3(x, y, z);
-                    texCoords[index] = new Vector2((float)slice / (float)_slices, (float)stack / (float)_stacks);
-                    
-                    index++;
-                }
-            }
-
-            index = 0;
-            int k = _slices + 1;
-
-            for (int stack = 0; stack < _stacks; ++stack)
-            {
-                for (int slice = 0; slice < _slices; ++slice)
-                {
-                    indices[index++] = (uint)((stack + 0) * k + slice);
-                    indices[index++] = (uint)((stack + 1) * k + slice);
-                    indices[index++] = (uint)((stack + 0) * k + slice + 1);
-
-                    indices[index++] = (uint)((stack + 0) * k + slice + 1);
-                    indices[index++] = (uint)((stack + 1) * k + slice);
-                    indices[index++] = (uint)((stack + 1) * k + slice + 1);
-                }
-            }
-
-            return new MeshData(positions, normals, texCoords, indices);
+            indices[index++] = (uint)((stack + 0) * k + slice + 1);
+            indices[index++] = (uint)((stack + 1) * k + slice);
+            indices[index++] = (uint)((stack + 1) * k + slice + 1);
         }
+
+        return new MeshData(positions, normals, texCoords, indices);
     }
 }
