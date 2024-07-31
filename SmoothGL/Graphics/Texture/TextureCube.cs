@@ -13,6 +13,10 @@ namespace SmoothGL.Graphics;
 /// </summary>
 public class TextureCube : Texture
 {
+    private const int AllFacesBitMask = 0b111111;
+    
+    private int _setFacesBitMask = 0;
+    
     /// <summary>
     /// Creates a new cube texture with RGBA format and default filter mode.
     /// </summary>
@@ -70,7 +74,6 @@ public class TextureCube : Texture
         if (bitmap.Width != Width || bitmap.Height != Height)
             throw new ArgumentException("The size of the provided bitmap does not match the face size of this texture.");
 
-
         var bitmapRectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
         var bitmapData = bitmap.LockBits(bitmapRectangle, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
@@ -78,7 +81,7 @@ public class TextureCube : Texture
         {
             Bind();
             GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + (int)cubeFace, 0, (PixelInternalFormat)Format, Width, Height, 0, PixelFormat.Bgra, PixelType.UnsignedInt8888Reversed, bitmapData.Scan0);
-            UpdateMipmaps();
+            TryUpdateMipmaps(cubeFace);
         }
         finally
         {
@@ -99,7 +102,14 @@ public class TextureCube : Texture
 
         Bind();
         GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + (int)cubeFace, 0, (PixelInternalFormat)Format, Width, Height, 0, PixelFormat.Rgba, PixelType.Float, data);
-        UpdateMipmaps();
+        TryUpdateMipmaps(cubeFace);
+    }
+
+    private void TryUpdateMipmaps(TextureCubeFace textureCubeFace)
+    {
+        _setFacesBitMask |= 1 << (int)textureCubeFace;
+        if (_setFacesBitMask == AllFacesBitMask)
+            UpdateMipmaps();
     }
 
     /// <summary>
