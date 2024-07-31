@@ -13,15 +13,15 @@ for (var i = 0; i < samples.Length; ++i)
 Console.WriteLine();
 Console.WriteLine("Please enter a number to select the sample to start.");
 
-int selectedSampleIndex;
-do
+int selectedSampleIndex = 1;
+/*do
 {
     var keyInfo = Console.ReadKey(true);
     if (keyInfo.Key == ConsoleKey.Escape)
         return;
 
     selectedSampleIndex = keyInfo.KeyChar - '1';
-} while (selectedSampleIndex < 0 || selectedSampleIndex >= samples.Length);
+} while (selectedSampleIndex < 0 || selectedSampleIndex >= samples.Length);*/
 
 Console.WriteLine("Starting {0}.", samples[selectedSampleIndex].Title);
 samples[selectedSampleIndex].CreateWindow().Run();

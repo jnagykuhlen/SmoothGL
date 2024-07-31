@@ -17,9 +17,6 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
     private readonly ContentManager _contentManager;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private FrameBuffer _frameBuffer;
-    private ColorTexture2D _frameBufferColorTexture;
-    private DepthStencilTexture2D _frameBufferDepthTexture;
     private VertexBuffer _instanceBuffer;
     private Quad _quad;
     private ShaderProgram _shaderPostProcessing;
@@ -27,6 +24,10 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
     private ShaderProgram _shaderTorus;
     private VertexArray _vertexArraySkybox;
     private VertexArray _vertexArrayTorus;
+    
+    private FrameBuffer _frameBuffer;
+    private ColorTexture2D _frameBufferColorTexture;
+    private DepthStencilTexture2D _frameBufferDepthTexture;
 
     public AdvancedTechniquesSampleWindow()
     {
@@ -106,24 +107,13 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
         // shader, which allows for modifications per pixel.
         _quad = new Quad();
         _contentManager.Add(_quad);
-
+        
         // Creates a frame buffer, which is used as a target for off-screen rendering. Besides a
         // texture with normal RGBA color channels, a depth-stencil texture is also attached to
         // the frame buffer (from which, however, only the depth component is used). Information
         // on the rendered scene will then be stored in these textures, accessible by the
         // post-processing shader.
-        _frameBuffer = new FrameBuffer(Size.X, Size.Y);
-        _frameBufferColorTexture = new ColorTexture2D(Size.X, Size.Y, TextureColorFormat.Rgba32, TextureFilterMode.None);
-        _frameBufferDepthTexture = new DepthStencilTexture2D(Size.X, Size.Y);
-
-        _frameBuffer.Attach(
-            _frameBufferDepthTexture.CreateFrameBufferAttachment(),
-            _frameBufferColorTexture.CreateFrameBufferAttachment()
-        );
-
-        _contentManager.Add(_frameBuffer);
-        _contentManager.Add(_frameBufferColorTexture);
-        _contentManager.Add(_frameBufferDepthTexture);
+        LoadFrameBuffer(Size);
     }
 
     protected override void OnUnload()
@@ -132,6 +122,7 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
         // all created graphics resources were added to the content manager for automatic
         // disposal. Resources directly loaded by the content manager were added implicitly.
         _contentManager.Unload();
+        UnloadFrameBuffer();
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
@@ -195,5 +186,31 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
         // As usual, the back and the front frame buffers need to be swapped to present the
         // result on the display device.
         SwapBuffers();
+    }
+
+    protected override void OnResize(ResizeEventArgs e)
+    {
+        base.OnResize(e);
+        UnloadFrameBuffer();
+        LoadFrameBuffer(e.Size);
+    }
+
+    private void LoadFrameBuffer(Vector2i size)
+    {
+        _frameBuffer = new FrameBuffer(size.X, size.Y);
+        _frameBufferColorTexture = new ColorTexture2D(size.X, size.Y, TextureColorFormat.Rgba32, TextureFilterMode.None);
+        _frameBufferDepthTexture = new DepthStencilTexture2D(size.X, size.Y);
+
+        _frameBuffer.Attach(
+            _frameBufferDepthTexture.CreateFrameBufferAttachment(),
+            _frameBufferColorTexture.CreateFrameBufferAttachment()
+        );
+    }
+
+    private void UnloadFrameBuffer()
+    {
+        _frameBufferDepthTexture.Dispose();
+        _frameBufferColorTexture.Dispose();
+        _frameBuffer.Dispose();
     }
 }
