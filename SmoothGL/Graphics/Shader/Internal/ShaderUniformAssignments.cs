@@ -5,6 +5,7 @@ using System.Text;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 
 
 namespace SmoothGL.Graphics.Internal

@@ -5,6 +5,8 @@ using System.Text;
 using System.Drawing;
 
 using OpenTK;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using SmoothGL.Graphics;
 
 namespace SmoothGL.Samples
@@ -63,7 +65,7 @@ namespace SmoothGL.Samples
         public HelloWorldSample()
             : base("Hello World Sample") { }
 
-        protected override void OnLoad(EventArgs e)
+        protected override void OnLoad()
         {
             // Creates and compiles a shader program directly from vertex and fragment shader code.
             _shaderProgram = new ShaderProgram(VertexShaderCode, FragmentShaderCode);
@@ -101,7 +103,7 @@ namespace SmoothGL.Samples
             _vertexBuffer.SetData(vertices);
         }
 
-        protected override void OnUnload(EventArgs e)
+        protected override void OnUnload()
         {
             // In SmoothGL, it is important that all graphics resources are manually disposed to avoid memory leaks,
             // deallocating graphics memory.

@@ -33,7 +33,7 @@ namespace SmoothGL.Samples
             while (selectedSampleIndex < 0 || selectedSampleIndex >= samples.Length);
 
             Console.WriteLine("Starting {0}.", samples[selectedSampleIndex].Title);
-            samples[selectedSampleIndex].Run(60.0, 60.0);
+            samples[selectedSampleIndex].Run();
         }
     }
 }

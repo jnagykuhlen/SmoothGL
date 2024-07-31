@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using OpenTK;
+using OpenTK.Mathematics;
 
 
 namespace SmoothGL.Graphics

@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using OpenTK;
 using OpenTK.Graphics;
+using OpenTK.Mathematics;
 
 
 namespace SmoothGL.Graphics
 {
     /// <summary>
-    /// Represents texture data in client memory, storing a number of color values of a two-dimensional texure.
+    /// Represents texture data in client memory, storing a number of color values of a two-dimensional texture.
     /// </summary>
     public class TextureData
     {

@@ -5,6 +5,8 @@ using System.Text;
 using System.Drawing;
 
 using OpenTK;
+using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using SmoothGL.Graphics;
 using SmoothGL.Content;
 
@@ -42,7 +44,7 @@ namespace SmoothGL.Samples
             _contentManager.SetContentReader<TextureCube>(new TextureCubeReader(TextureFilterMode.Default, false, CubeTextureLayout.HorizontalCross));
         }
 
-        protected override void OnLoad(EventArgs e)
+        protected override void OnLoad()
         {
             // Setup of the skybox. A cube builder is used to create cube geometry in memory. The faces
             // are flipped inwards since the skybox should surround the scene, seen from inside. From
@@ -115,9 +117,9 @@ namespace SmoothGL.Samples
             // the frame buffer (from which, however, only the depth component is used). Information
             // on the rendered scene will then be stored in these textures, accessible by the
             // post-processing shader.
-            _frameBuffer = new FrameBuffer(Width, Height);
-            _frameBufferColorTexture = new ColorTexture2D(Width, Height, TextureColorFormat.Rgba32, TextureFilterMode.None);
-            _frameBufferDepthTexture = new DepthStencilTexture2D(Width, Height);
+            _frameBuffer = new FrameBuffer(Size.X, Size.Y);
+            _frameBufferColorTexture = new ColorTexture2D(Size.X, Size.Y, TextureColorFormat.Rgba32, TextureFilterMode.None);
+            _frameBufferDepthTexture = new DepthStencilTexture2D(Size.X, Size.Y);
 
             _frameBuffer.Attach(
                 _frameBufferDepthTexture.CreateFrameBufferAttachment(),
@@ -129,7 +131,7 @@ namespace SmoothGL.Samples
             _contentManager.Add(_frameBufferDepthTexture);
         }
 
-        protected override void OnUnload(EventArgs e)
+        protected override void OnUnload()
         {
             // Unloads the content manager. This is the only thing required for cleanup, since
             // all created graphics resources were added to the content manager for automatic
