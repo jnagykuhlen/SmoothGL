@@ -8,25 +8,24 @@ using SmoothGL.Graphics;
 namespace SmoothGL.Samples;
 
 /// <summary>
-///     Base class for all samples that initializes the graphics context and implements
-///     some basic camera control.
+/// Base class for all samples that initializes the graphics context and implements
+/// some basic camera control.
 /// </summary>
-public class SampleWindow : GameWindow
+public abstract class SampleWindow : GameWindow
 {
+    protected const float FarPlane = 20.0f;
+    protected const float NearPlane = 0.1f;
+    
     private float _cameraDistance;
     private float _cameraPitch;
     private float _cameraYaw;
     private bool _drag;
 
-    protected float FarPlane = 20.0f;
-    protected float NearPlane = 0.1f;
-
     /// <summary>
-    ///     Creates a new sample window with fixed size and specified title. A graphics context is
-    ///     initialized for OpenGL version 3.3.
+    /// Creates a new sample window with fixed size and specified title. A graphics context is
+    /// initialized for OpenGL version 3.3.
     /// </summary>
-    /// <param name="title"></param>
-    public SampleWindow(string title)
+    protected SampleWindow()
         : base(GameWindowSettings.Default, NativeWindowSettings.Default)
     {
         ElapsedTime = 0.0f;
@@ -39,17 +38,17 @@ public class SampleWindow : GameWindow
     }
 
     /// <summary>
-    ///     Gets the camera's projection matrix.
+    /// Gets the camera's projection matrix.
     /// </summary>
     protected Matrix4 CameraProjection { get; private set; }
 
     /// <summary>
-    ///     Gets the camera's view matrix. The camera angle and zoom can be adjusted with mouse controls.
+    /// Gets the camera's view matrix. The camera angle and zoom level can be adjusted with mouse controls.
     /// </summary>
     protected Matrix4 CameraView => Matrix4.CreateRotationY(_cameraYaw) * Matrix4.CreateRotationX(_cameraPitch) * Matrix4.CreateTranslation(0, 0, -_cameraDistance);
 
     /// <summary>
-    ///     Gets the time since window initialization in seconds, useful for time-based animations.
+    /// Gets the time since window initialization in seconds, useful for time-based animations.
     /// </summary>
     protected float ElapsedTime { get; private set; }
 
@@ -97,8 +96,8 @@ public class SampleWindow : GameWindow
     }
 
     /// <summary>
-    ///     Re-calculates the camera's projection matrix, which is required when the aspect ratio of the
-    ///     window changes.
+    /// Re-calculates the camera's projection matrix, which is required when the aspect ratio of the
+    /// window changes.
     /// </summary>
     private void UpdateProjection()
     {
@@ -107,8 +106,8 @@ public class SampleWindow : GameWindow
     }
 
     /// <summary>
-    ///     Sets the size of the default frame buffer to the size of the window, which is required when
-    ///     the window is resized.
+    /// Sets the size of the default frame buffer to the size of the window, which is required when
+    /// the window is resized.
     /// </summary>
     private void UpdateViewport()
     {

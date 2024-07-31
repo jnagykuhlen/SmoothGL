@@ -3,54 +3,51 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using SmoothGL.Graphics;
 
-namespace SmoothGL.Samples;
+namespace SmoothGL.Samples.Windows;
 
 /// <summary>
-///     This sample shows the minimal number of steps required to present simple graphics on the screen.
-///     A static, colored triangle is drawn using a custom shader program, a vertex buffer and a vertex array.
+/// This sample shows the minimal number of steps required to present simple graphics on the screen.
+/// A static, colored triangle is drawn using a custom shader program, a vertex buffer and a vertex array.
 /// </summary>
-public class HelloWorldSample : SampleWindow
+public class HelloWorldSampleWindow : SampleWindow
 {
     /// <summary>
-    ///     Vertex shader code for our custom triangle shader. To keep things simple, the string is hardcoded
-    ///     in this sample. In real applications, shaders are loaded from files using a content manager.
+    /// Vertex shader code for our custom triangle shader. To keep things simple, the string is hardcoded
+    /// in this sample. In real applications, shaders are loaded from files using a content manager.
     /// </summary>
-    private const string VertexShaderCode = @"
-            #version 330
-            layout(location = 0) in vec4 vPosition;
-            layout(location = 1) in vec3 vColor;
-            out vec3 fColor;
-            
-            void main()
-            {
-                fColor = vColor;
-	            gl_Position = vPosition;
-            }
-        ";
+    private const string VertexShaderCode = """
+                                            #version 330
+                                            layout(location = 0) in vec4 vPosition;
+                                            layout(location = 1) in vec3 vColor;
+                                            out vec3 fColor;
+                                            
+                                            void main()
+                                            {
+                                                fColor = vColor;
+                                            	gl_Position = vPosition;
+                                            }
+                                            """;
 
     /// <summary>
-    ///     Fragment shader code for our custom triangle shader. Again, the string is hardcoded for simplicity.
+    /// Fragment shader code for our custom triangle shader. Again, the string is hardcoded for simplicity.
     /// </summary>
-    private const string FragmentShaderCode = @"
-            #version 330
-            in vec3 fColor;
-            out vec4 color;
-            
-            void main()
-            {
-	            color = vec4(fColor, 1.0f);
-            }
-        ";
+    private const string FragmentShaderCode = """
+                                              #version 330
+                                              in vec3 fColor;
+                                              out vec4 color;
+                                              
+                                              void main()
+                                              {
+                                              	color = vec4(fColor, 1.0f);
+                                              }
+                                              """;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private ShaderProgram _shaderProgram;
     private VertexArray _vertexArray;
     private VertexBuffer _vertexBuffer;
-
-    public HelloWorldSample()
-        : base("Hello World Sample")
-    {
-    }
-
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    
     protected override void OnLoad()
     {
         // Creates and compiles a shader program directly from vertex and fragment shader code.
@@ -80,11 +77,11 @@ public class HelloWorldSample : SampleWindow
         // data. For that purpose, an array holding instances of our custom VertexPositionColor struct is sent
         // to the vertex buffer.
         VertexPositionColor[] vertices =
-        {
-            new() { Position = new Vector4(-0.6f, -0.6f, 0, 1), Color = new Vector3(1, 0, 0) },
-            new() { Position = new Vector4(0.6f, -0.6f, 0, 1), Color = new Vector3(0, 1, 0) },
-            new() { Position = new Vector4(0, 0.6f, 0, 1), Color = new Vector3(0, 0, 1) }
-        };
+        [
+            new VertexPositionColor(new Vector4(-0.6f, -0.6f, 0, 1), new Vector3(1, 0, 0)),
+            new VertexPositionColor(new Vector4(0.6f, -0.6f, 0, 1), new Vector3(0, 1, 0)),
+            new VertexPositionColor(new Vector4(0, 0.6f, 0, 1), new Vector3(0, 0, 1))
+        ];
 
         _vertexBuffer.SetData(vertices);
     }
@@ -116,12 +113,8 @@ public class HelloWorldSample : SampleWindow
     }
 
     /// <summary>
-    ///     Defines a custom vertex type which represents the vertices of our triangle. Each of the three vertices
-    ///     stores a position as homogeneous coordinates and a color intepreted as a vector with red, green and blue channel.
+    /// Defines a custom vertex type which represents the vertices of our triangle. Each of the three vertices
+    /// stores a position as homogeneous coordinates and a color intepreted as a vector with red, green and blue channel.
     /// </summary>
-    private struct VertexPositionColor
-    {
-        public Vector4 Position;
-        public Vector3 Color;
-    }
+    private record struct VertexPositionColor(Vector4 Position, Vector3 Color);
 }

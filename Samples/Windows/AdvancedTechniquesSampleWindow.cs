@@ -4,18 +4,19 @@ using OpenTK.Windowing.Common;
 using SmoothGL.Content;
 using SmoothGL.Graphics;
 
-namespace SmoothGL.Samples;
+namespace SmoothGL.Samples.Windows;
 
 /// <summary>
-///     This sample shows how different, advanced rendering techniques can be achieved using SmoothGL.
-///     Resources are loaded relying on the content manager, multiple instances of the same geometry are drawn
-///     using hardware instancing and a skybox is rendered to demonstrate how cube mapping works. Furthermore,
-///     the scene is drawn to a custom frame buffer off-screen as a basis for post-processing effects.
+/// This sample shows how different, advanced rendering techniques can be achieved using SmoothGL.
+/// Resources are loaded relying on the content manager, multiple instances of the same geometry are drawn
+/// using hardware instancing and a skybox is rendered to demonstrate how cube mapping works. Furthermore,
+/// the scene is drawn to a custom frame buffer off-screen as a basis for post-processing effects.
 /// </summary>
-public class AdvancedTechniquesSample : SampleWindow
+public class AdvancedTechniquesSampleWindow : SampleWindow
 {
     private readonly ContentManager _contentManager;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private FrameBuffer _frameBuffer;
     private ColorTexture2D _frameBufferColorTexture;
     private DepthStencilTexture2D _frameBufferDepthTexture;
@@ -27,8 +28,7 @@ public class AdvancedTechniquesSample : SampleWindow
     private VertexArray _vertexArraySkybox;
     private VertexArray _vertexArrayTorus;
 
-    public AdvancedTechniquesSample()
-        : base("Advanced Techniques Sample")
+    public AdvancedTechniquesSampleWindow()
     {
         // A content manager is required to load resources such as meshes, textures and shaders from disk.
         // We specify that file paths are relative to the "Content" directory which is the location
@@ -37,6 +37,7 @@ public class AdvancedTechniquesSample : SampleWindow
         _contentManager = ContentManager.CreateDefault("Content");
         _contentManager.SetContentReader(new TextureCubeReader(TextureFilterMode.Default, false, CubeTextureLayout.HorizontalCross));
     }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     protected override void OnLoad()
     {
@@ -167,10 +168,12 @@ public class AdvancedTechniquesSample : SampleWindow
 
         var instanceData = new Matrix4[9];
         for (var i = 0; i < 9; ++i)
+        {
             instanceData[i] = Matrix4.CreateScale(0.6f) *
                               Matrix4.CreateRotationY(2.3f * ElapsedTime) *
                               Matrix4.CreateRotationX(0.8f * ElapsedTime) *
                               Matrix4.CreateTranslation(1.4f * Vector3.UnitX * (i - 4));
+        }
 
         _instanceBuffer.SetData(instanceData);
         _vertexArrayTorus.DrawMultiple(Primitive.Triangles, 9);
