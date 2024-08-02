@@ -8,21 +8,32 @@ ISample[] samples =
 ];
 
 for (var i = 0; i < samples.Length; ++i)
-    Console.WriteLine("({0}) {1}", i + 1, samples[i].Title);
+    Console.WriteLine($"({i + 1}) {samples[i].Title}");
 
 Console.WriteLine();
 Console.WriteLine("Please enter a number to select the sample to start.");
 
-int selectedSampleIndex = 1;
-/*do
+var selectedSampleIndex = ReadIndex(samples.Length);
+if (selectedSampleIndex == null)
+    return;
+
+var selectedSample = samples[selectedSampleIndex.Value];
+
+Console.WriteLine($"Starting {selectedSample.Title}.");
+selectedSample.CreateWindow().Run();
+
+
+static int? ReadIndex(int exclusiveMaximum)
 {
-    var keyInfo = Console.ReadKey(true);
-    if (keyInfo.Key == ConsoleKey.Escape)
-        return;
+    int index;
+    do
+    {
+        var keyInfo = Console.ReadKey(true);
+        if (keyInfo.Key == ConsoleKey.Escape)
+            return null;
 
-    selectedSampleIndex = keyInfo.KeyChar - '1';
-} while (selectedSampleIndex < 0 || selectedSampleIndex >= samples.Length);*/
+        index = keyInfo.KeyChar - '1';
+    } while (index < 0 || index >= exclusiveMaximum);
 
-Console.WriteLine("Starting {0}.", samples[selectedSampleIndex].Title);
-samples[selectedSampleIndex].CreateWindow().Run();
-
+    return index;
+}

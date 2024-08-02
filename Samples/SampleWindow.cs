@@ -45,7 +45,9 @@ public abstract class SampleWindow : GameWindow
     /// <summary>
     /// Gets the camera's view matrix. The camera angle and zoom level can be adjusted with mouse controls.
     /// </summary>
-    protected Matrix4 CameraView => Matrix4.CreateRotationY(_cameraYaw) * Matrix4.CreateRotationX(_cameraPitch) * Matrix4.CreateTranslation(0, 0, -_cameraDistance);
+    protected Matrix4 CameraView => Matrix4.CreateRotationY(_cameraYaw) *
+                                    Matrix4.CreateRotationX(_cameraPitch) *
+                                    Matrix4.CreateTranslation(0, 0, -_cameraDistance);
 
     /// <summary>
     /// Gets the time since window initialization in seconds, useful for time-based animations.
