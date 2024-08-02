@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
-using SmoothGL.Graphics.Internal;
+using SmoothGL.Graphics.Geometry.Internal;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Geometry;
 
 /// <summary>
 /// Stores references to vertex buffers and an optional element buffer to encapsulate a common configuration.
@@ -10,15 +10,18 @@ namespace SmoothGL.Graphics;
 /// </summary>
 public class VertexArray : GraphicsResource
 {
-    private static readonly VertexBuffer[] NoVertexBuffers = new VertexBuffer[0];
-    private static int _currentVertexArrayId;
-    private readonly int _defaultNumberOfElements;
-    private readonly IDrawStrategy _drawStrategy;
+    private static readonly VertexBuffer[] NoVertexBuffers = [];
+    
+    private static int currentVertexArrayId;
 
+    private readonly IDrawStrategy _drawStrategy;
+    private readonly int _defaultNumberOfElements;
     private int _vertexArrayId;
 
-    private VertexArray()
+    private VertexArray(IDrawStrategy drawStrategy, int defaultNumberOfElements)
     {
+        _drawStrategy = drawStrategy;
+        _defaultNumberOfElements = defaultNumberOfElements;
         GL.GenVertexArrays(1, out _vertexArrayId);
     }
 
@@ -36,7 +39,7 @@ public class VertexArray : GraphicsResource
     /// </summary>
     /// <param name="vertexBuffer">Referenced vertex buffer.</param>
     public VertexArray(VertexBuffer vertexBuffer)
-        : this(new[] { vertexBuffer }, NoVertexBuffers)
+        : this([vertexBuffer], NoVertexBuffers)
     {
     }
 
@@ -56,7 +59,7 @@ public class VertexArray : GraphicsResource
     /// <param name="vertexBuffer">Referenced vertex buffer.</param>
     /// <param name="elementBuffer">Referenced element buffer.</param>
     public VertexArray(VertexBuffer vertexBuffer, ElementBuffer elementBuffer)
-        : this(new[] { vertexBuffer }, NoVertexBuffers, elementBuffer)
+        : this([vertexBuffer], NoVertexBuffers, elementBuffer)
     {
     }
 
@@ -68,7 +71,7 @@ public class VertexArray : GraphicsResource
     /// <param name="instanceBuffer">Referenced buffer holding per-instance data.</param>
     /// <param name="elementBuffer">Referenced element buffer.</param>
     public VertexArray(VertexBuffer vertexBuffer, VertexBuffer instanceBuffer, ElementBuffer elementBuffer)
-        : this(new[] { vertexBuffer }, new[] { instanceBuffer }, elementBuffer)
+        : this([vertexBuffer], [instanceBuffer], elementBuffer)
     {
     }
 
@@ -80,7 +83,7 @@ public class VertexArray : GraphicsResource
     /// <param name="instanceBuffer">Referenced buffer holding per-instance data.</param>
     /// <param name="elementBuffer">Referenced element buffer.</param>
     public VertexArray(VertexBuffer[] vertexBuffers, VertexBuffer instanceBuffer, ElementBuffer elementBuffer)
-        : this(vertexBuffers, new[] { instanceBuffer }, elementBuffer)
+        : this(vertexBuffers, [instanceBuffer], elementBuffer)
     {
     }
 
@@ -91,7 +94,7 @@ public class VertexArray : GraphicsResource
     /// <param name="vertexBuffer">Referenced vertex buffer.</param>
     /// <param name="instanceBuffer">Referenced buffer holding per-instance data.</param>
     public VertexArray(VertexBuffer vertexBuffer, VertexBuffer instanceBuffer)
-        : this(new[] { vertexBuffer }, new[] { instanceBuffer })
+        : this([vertexBuffer], [instanceBuffer])
     {
     }
 
@@ -102,7 +105,7 @@ public class VertexArray : GraphicsResource
     /// <param name="vertexBuffers">Referenced vertex buffers.</param>
     /// <param name="instanceBuffer">Referenced buffer holding per-instance data.</param>
     public VertexArray(VertexBuffer[] vertexBuffers, VertexBuffer instanceBuffer)
-        : this(vertexBuffers, new[] { instanceBuffer })
+        : this(vertexBuffers, [instanceBuffer])
     {
     }
 
@@ -113,17 +116,16 @@ public class VertexArray : GraphicsResource
     /// <param name="vertexBuffers">Referenced vertex buffers.</param>
     /// <param name="instanceBuffers">Referenced buffers holding per-instance data.</param>
     public VertexArray(VertexBuffer[] vertexBuffers, VertexBuffer[] instanceBuffers)
-        : this()
+        : this(new ArrayDrawStrategy(), vertexBuffers.Min(vertexBuffer => vertexBuffer.NumberOfVertices))
     {
         Bind();
+        
         foreach (var vertexBuffer in vertexBuffers)
             AttachVertexBuffer(vertexBuffer, false);
 
         foreach (var instanceBuffer in instanceBuffers)
             AttachVertexBuffer(instanceBuffer, true);
-
-        _defaultNumberOfElements = vertexBuffers.Min(v => v.NumberOfVertices);
-        _drawStrategy = new ArrayDrawStrategy();
+        
         Unbind();
     }
 
@@ -135,7 +137,7 @@ public class VertexArray : GraphicsResource
     /// <param name="instanceBuffers">Referenced buffers holding per-instance data.</param>
     /// <param name="elementBuffer">Referenced element buffer.</param>
     public VertexArray(VertexBuffer[] vertexBuffers, VertexBuffer[] instanceBuffers, ElementBuffer elementBuffer)
-        : this()
+        : this(new ElementDrawStrategy(elementBuffer.ElementType, elementBuffer.ElementSize), elementBuffer.NumberOfElements)
     {
         Bind();
         elementBuffer.Bind();
@@ -146,8 +148,6 @@ public class VertexArray : GraphicsResource
         foreach (var instanceBuffer in instanceBuffers)
             AttachVertexBuffer(instanceBuffer, true);
 
-        _defaultNumberOfElements = elementBuffer.NumberOfElements;
-        _drawStrategy = new ElementDrawStrategy(elementBuffer.ElementType, elementBuffer.ElementSize);
         Unbind();
     }
 
@@ -161,7 +161,7 @@ public class VertexArray : GraphicsResource
     /// </summary>
     public static void InvalidateBindingCache()
     {
-        _currentVertexArrayId = 0;
+        currentVertexArrayId = 0;
     }
 
     private void AttachVertexBuffer(VertexBuffer vertexBuffer, bool isInstanceData)
@@ -173,11 +173,11 @@ public class VertexArray : GraphicsResource
     private void Bind(int vertexArrayId)
     {
         CheckDisposed();
-        if (_currentVertexArrayId != vertexArrayId)
+        if (currentVertexArrayId != vertexArrayId)
         {
             Buffer.InvalidateBindingCache();
             GL.BindVertexArray(vertexArrayId);
-            _currentVertexArrayId = vertexArrayId;
+            currentVertexArrayId = vertexArrayId;
         }
     }
 

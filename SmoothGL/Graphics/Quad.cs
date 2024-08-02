@@ -1,4 +1,5 @@
 ﻿using OpenTK.Mathematics;
+using SmoothGL.Graphics.Geometry;
 
 namespace SmoothGL.Graphics;
 

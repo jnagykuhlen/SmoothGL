@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Geometry;
 
 /// <summary>
 /// Describes how vertices from a vertex buffer are connected to each other when being drawn,

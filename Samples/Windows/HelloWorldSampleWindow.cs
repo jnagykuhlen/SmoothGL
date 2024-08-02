@@ -2,6 +2,7 @@
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using SmoothGL.Graphics;
+using SmoothGL.Graphics.Geometry;
 
 namespace SmoothGL.Samples.Windows;
 

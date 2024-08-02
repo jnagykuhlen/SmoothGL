@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Geometry;
 
 /// <summary>
 /// Represents a buffer storing index data, persistent in graphics memory.
@@ -39,17 +39,13 @@ public class ElementBuffer : Buffer
 
     private static int GetElementTypeSize(ElementType elementType)
     {
-        switch (elementType)
+        return elementType switch
         {
-            case ElementType.UnsignedByte:
-                return sizeof(byte);
-            case ElementType.UnsignedShort:
-                return sizeof(ushort);
-            case ElementType.UnsignedInt:
-                return sizeof(uint);
-            default:
-                return 0;
-        }
+            ElementType.UnsignedByte => sizeof(byte),
+            ElementType.UnsignedShort => sizeof(ushort),
+            ElementType.UnsignedInt => sizeof(uint),
+            _ => 0
+        };
     }
 
     /// <summary>
@@ -61,18 +57,6 @@ public class ElementBuffer : Buffer
     {
         NumberOfElements = numberOfElements;
         base.Resize(numberOfElements * GetElementTypeSize(ElementType));
-    }
-
-    private void SetData<T>(T[] data, ElementType requestedElementType)
-        where T : struct
-    {
-        if (ElementType != requestedElementType)
-            throw new ArgumentException(string.Format("Element buffer expects indices of type {0} instead of {1}.", ElementType, requestedElementType));
-
-        if (data.Length > NumberOfElements)
-            throw new ArgumentException("Cannot set data that exceeds buffer size.");
-
-        SetData(data, 0, data.Length * GetElementTypeSize(ElementType));
     }
 
     /// <summary>
@@ -103,5 +87,17 @@ public class ElementBuffer : Buffer
     public void SetData(uint[] data)
     {
         SetData(data, ElementType.UnsignedInt);
+    }
+
+    private void SetData<T>(T[] data, ElementType requestedElementType)
+        where T : struct
+    {
+        if (ElementType != requestedElementType)
+            throw new ArgumentException($"Element buffer expects indices of type {ElementType} instead of {requestedElementType}.");
+
+        if (data.Length > NumberOfElements)
+            throw new ArgumentException("Cannot set data that exceeds buffer size.");
+
+        SetData(data, 0, data.Length * GetElementTypeSize(ElementType));
     }
 }

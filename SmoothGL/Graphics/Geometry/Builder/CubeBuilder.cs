@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Geometry.Builder;
 
 /// <summary>
 /// Represents a builder that constructs a unit cube aligned to the coordinate axes.
@@ -46,6 +46,6 @@ public class CubeBuilder : IGeometryBuilder
             vertices[5], vertices[1], vertices[7]
         };
 
-        return new MeshData(positions, null);
+        return new MeshData(positions);
     }
 }

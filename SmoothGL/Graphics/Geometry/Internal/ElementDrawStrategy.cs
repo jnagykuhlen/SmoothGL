@@ -1,25 +1,17 @@
 ﻿using OpenTK.Graphics.OpenGL;
+using SmoothGL.Graphics.Internal;
 
-namespace SmoothGL.Graphics.Internal;
+namespace SmoothGL.Graphics.Geometry.Internal;
 
-public class ElementDrawStrategy : IDrawStrategy
+public class ElementDrawStrategy(ElementType elementType, int elementSize) : IDrawStrategy
 {
-    private readonly int _elementSize;
-    private readonly ElementType _elementType;
-
-    public ElementDrawStrategy(ElementType elementType, int elementSize)
-    {
-        _elementType = elementType;
-        _elementSize = elementSize;
-    }
-
     public void Draw(Primitive primitiveType, int startElement, int numberOfElements)
     {
-        GL.DrawElements((PrimitiveType)primitiveType, numberOfElements, (DrawElementsType)_elementType, new IntPtr(startElement * _elementSize));
+        GL.DrawElements((PrimitiveType)primitiveType, numberOfElements, (DrawElementsType)elementType, new IntPtr(startElement * elementSize));
     }
 
     public void DrawMultiple(Primitive primitiveType, int startElement, int numberOfElements, int numberOfInstances)
     {
-        GL.DrawElementsInstanced((PrimitiveType)primitiveType, numberOfElements, (DrawElementsType)_elementType, new IntPtr(startElement * _elementSize), numberOfInstances);
+        GL.DrawElementsInstanced((PrimitiveType)primitiveType, numberOfElements, (DrawElementsType)elementType, new IntPtr(startElement * elementSize), numberOfInstances);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Geometry;
 
 /// <summary>
 /// Describes the type of integers used to represent indices in an element buffer.

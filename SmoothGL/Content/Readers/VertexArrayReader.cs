@@ -1,4 +1,5 @@
 ﻿using SmoothGL.Graphics;
+using SmoothGL.Graphics.Geometry;
 
 namespace SmoothGL.Content;
 

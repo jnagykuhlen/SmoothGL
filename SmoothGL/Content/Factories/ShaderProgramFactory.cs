@@ -2,7 +2,7 @@
 using OpenTK.Graphics.OpenGL;
 using SmoothGL.Graphics;
 
-namespace SmoothGL.Content;
+namespace SmoothGL.Content.Factories;
 
 /// <summary>
 /// Serialializable, mutable factory which creates shader programs.
@@ -14,34 +14,34 @@ public class ShaderProgramFactory : IFactory<ShaderProgram>
     /// Path to the vertex shader code file.
     /// </summary>
     [XmlElement(ElementName = "Vertex")]
-    public string VertexShaderFilename { get; set; }
+    public string? VertexShaderFilename { get; set; }
 
     /// <summary>
     /// Path to the tessellation control shader code file.
     /// Set this property to null if the tessellation control shader is not required.
     /// </summary>
     [XmlElement(ElementName = "TessellationControl")]
-    public string TessellationControlFilename { get; set; }
+    public string? TessellationControlFilename { get; set; }
 
     /// <summary>
     /// Path to the tessellation evaluation shader code file.
     /// Set this property to null if the tessellation evaluation shader is not required.
     /// </summary>
     [XmlElement(ElementName = "TessellationEvaluation")]
-    public string TessellationEvaluationFilename { get; set; }
+    public string? TessellationEvaluationFilename { get; set; }
 
     /// <summary>
     /// Path to the geometry shader code file.
     /// Set this property to null if the geometry shader is not required.
     /// </summary>
     [XmlElement(ElementName = "Geometry")]
-    public string GeometryShaderFilename { get; set; }
+    public string? GeometryShaderFilename { get; set; }
 
     /// <summary>
     /// Path to the fragment shader code file.
     /// </summary>
     [XmlElement(ElementName = "Fragment")]
-    public string FragmentShaderFilename { get; set; }
+    public string? FragmentShaderFilename { get; set; }
 
     /// <summary>
     /// Creates a shader program from the individual shaders loaded from the corresponding files.

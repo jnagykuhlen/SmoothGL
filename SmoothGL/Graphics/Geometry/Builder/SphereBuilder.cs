@@ -1,83 +1,55 @@
 ﻿using OpenTK.Mathematics;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Geometry.Builder;
 
 /// <summary>
 /// Represents a builder that constructs a unit sphere with specified level of detail.
 /// </summary>
-public class SphereBuilder : IGeometryBuilder
+public class SphereBuilder(int slices = 16, int stacks = 8) : IGeometryBuilder
 {
-    private const int DefaultSlices = 16;
-    private const int DefaultStacks = 8;
-
-    private readonly int _slices;
-    private readonly int _stacks;
-
-    /// <summary>
-    /// Creates a new sphere builder with default parameters for the level of detail.
-    /// </summary>
-    public SphereBuilder()
-        : this(DefaultSlices, DefaultStacks)
-    {
-    }
-
-    /// <summary>
-    /// Creates a new sphere builder with specified parameters for the level of detail.
-    /// </summary>
-    /// <param name="slices">The number of subdivisions around the y-axis.</param>
-    /// <param name="stacks">The number of subdivisions along the y-axis.</param>
-    public SphereBuilder(int slices, int stacks)
-    {
-        _slices = slices;
-        _stacks = stacks;
-    }
-
     /// <summary>
     /// Builds a unit sphere stored in memory.
     /// </summary>
     /// <returns>Unit sphere.</returns>
     public MeshData Build()
     {
-        var numberOfVertices = (_slices + 1) * (_stacks + 1);
-        var numberOfIndices = _slices * _stacks * 6;
+        var numberOfVertices = (slices + 1) * (stacks + 1);
+        var numberOfIndices = slices * stacks * 6;
 
         var positions = new Vector3[numberOfVertices];
         var normals = new Vector3[numberOfVertices];
-        var texCoords = new Vector2[numberOfVertices];
+        var textureCoordinates = new Vector2[numberOfVertices];
         var indices = new uint[numberOfIndices];
 
-        float phi;
-        float theta;
-        var dphi = MathHelper.Pi / _stacks;
-        var dtheta = MathHelper.TwoPi / _slices;
-        float x, y, z, sc;
+        var deltaPhi = MathHelper.Pi / stacks;
+        var deltaTheta = MathHelper.TwoPi / slices;
         var index = 0;
 
-        for (var stack = 0; stack <= _stacks; ++stack)
+        for (var stack = 0; stack <= stacks; ++stack)
         {
-            phi = MathHelper.PiOver2 - stack * dphi;
-            y = (float)Math.Sin(phi);
-            sc = -(float)Math.Cos(phi);
+            var phi = MathHelper.PiOver2 - stack * deltaPhi;
+            var y = (float)Math.Sin(phi);
+            var scale = -(float)Math.Cos(phi);
 
-            for (var slice = 0; slice <= _slices; ++slice)
+            for (var slice = 0; slice <= slices; ++slice)
             {
-                theta = slice * dtheta;
-                x = sc * (float)Math.Sin(theta);
-                z = sc * (float)Math.Cos(theta);
+                var theta = slice * deltaTheta;
+                var x = scale * (float)Math.Sin(theta);
+                var z = scale * (float)Math.Cos(theta);
 
                 positions[index] = new Vector3(x, y, z);
                 normals[index] = new Vector3(x, y, z);
-                texCoords[index] = new Vector2(slice / (float)_slices, stack / (float)_stacks);
+                textureCoordinates[index] = new Vector2(slice / (float)slices, stack / (float)stacks);
 
                 index++;
             }
         }
 
         index = 0;
-        var k = _slices + 1;
+        var k = slices + 1;
 
-        for (var stack = 0; stack < _stacks; ++stack)
-        for (var slice = 0; slice < _slices; ++slice)
+        for (var stack = 0; stack < stacks; ++stack)
+        for (var slice = 0; slice < slices; ++slice)
         {
             indices[index++] = (uint)((stack + 0) * k + slice);
             indices[index++] = (uint)((stack + 1) * k + slice);
@@ -88,6 +60,6 @@ public class SphereBuilder : IGeometryBuilder
             indices[index++] = (uint)((stack + 1) * k + slice + 1);
         }
 
-        return new MeshData(positions, normals, texCoords, indices);
+        return new MeshData(positions, normals, textureCoordinates, indices);
     }
 }

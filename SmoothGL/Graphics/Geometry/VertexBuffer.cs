@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Geometry;
 
 /// <summary>
 /// Represents a buffer storing vertex data, persistent in graphics memory.

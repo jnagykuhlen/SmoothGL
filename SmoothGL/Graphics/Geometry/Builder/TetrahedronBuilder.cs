@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Geometry.Builder;
 
 /// <summary>
 /// Represents a builder that constructs a regular tetrahedron with edge length two.
@@ -16,21 +16,21 @@ public class TetrahedronBuilder : IGeometryBuilder
         var oneOverSqrtTwo = MathHelper.InverseSqrtFast(2.0f);
 
         Vector3[] vertices =
-        {
+        [
             new(-1, 0, -oneOverSqrtTwo),
             new(1, 0, -oneOverSqrtTwo),
             new(0, -1, oneOverSqrtTwo),
             new(0, 1, oneOverSqrtTwo)
-        };
+        ];
 
         Vector3[] positions =
-        {
+        [
             vertices[2], vertices[1], vertices[3],
             vertices[0], vertices[2], vertices[3],
             vertices[1], vertices[0], vertices[3],
             vertices[0], vertices[1], vertices[2]
-        };
+        ];
 
-        return new MeshData(positions, null);
+        return new MeshData(positions);
     }
 }

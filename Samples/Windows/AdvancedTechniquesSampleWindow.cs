@@ -3,6 +3,8 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using SmoothGL.Content;
 using SmoothGL.Graphics;
+using SmoothGL.Graphics.Geometry;
+using SmoothGL.Graphics.Geometry.Builder;
 
 namespace SmoothGL.Samples.Windows;
 

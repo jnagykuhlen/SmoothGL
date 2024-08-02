@@ -1,20 +1,20 @@
-﻿namespace SmoothGL.Graphics;
+﻿namespace SmoothGL.Graphics.Geometry;
 
 /// <summary>
 /// Defines the layout of vertex elements forming a single vertex.
 /// </summary>
 public class VertexDeclaration
 {
-    private readonly IVertexElement[] _elements;
+    private readonly IVertexElement[] _vertexElements;
 
     /// <summary>
-    /// Creates a new vertex declaration, defining a vertex' layout by the specified vertex elements.
+    /// Creates a new vertex declaration, defining the layout of a vertex by the specified vertex elements.
     /// The stride size (the number of bytes allocated in a buffer for a single vertex) is determined as the
     /// sum of bytes required for the vertex elements. Therefore, the vertices are expected to be tightly packed.
     /// </summary>
-    /// <param name="elements">Vertex elements which define the layout of a single vertex.</param>
-    public VertexDeclaration(params IVertexElement[] elements)
-        : this(elements.Sum(e => e.Size), elements)
+    /// <param name="vertexElements">Vertex elements which define the layout of a single vertex.</param>
+    public VertexDeclaration(params IVertexElement[] vertexElements)
+        : this(vertexElements.Sum(vertexElement => vertexElement.Size), vertexElements)
     {
     }
 
@@ -25,10 +25,10 @@ public class VertexDeclaration
     /// Number of bytes allocated in a buffer for a single vertex. Should be greater or equal to the
     /// sum of bytes required for the vertex elements.
     /// </param>
-    /// <param name="elements">Vertex elements which define the layout of a single vertex.</param>
-    public VertexDeclaration(int strideSize, params IVertexElement[] elements)
+    /// <param name="vertexElements">Vertex elements which define the layout of a single vertex.</param>
+    public VertexDeclaration(int strideSize, params IVertexElement[] vertexElements)
     {
-        _elements = elements;
+        _vertexElements = vertexElements;
         StrideSize = strideSize;
     }
 
@@ -45,10 +45,10 @@ public class VertexDeclaration
     public void ApplyDefinition(bool isInstanceData)
     {
         var offset = 0;
-        for (var i = 0; i < _elements.Length; ++i)
+        foreach (var vertexElement in _vertexElements)
         {
-            _elements[i].ApplyDefinition(StrideSize, offset, isInstanceData ? 1 : 0);
-            offset += _elements[i].Size;
+            vertexElement.ApplyDefinition(StrideSize, offset, isInstanceData ? 1 : 0);
+            offset += vertexElement.Size;
         }
     }
 }

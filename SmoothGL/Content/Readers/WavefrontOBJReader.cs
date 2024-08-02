@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using OpenTK.Mathematics;
 using SmoothGL.Graphics;
+using SmoothGL.Graphics.Geometry;
 
 namespace SmoothGL.Content;
 

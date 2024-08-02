@@ -1,4 +1,4 @@
-﻿namespace SmoothGL.Graphics;
+﻿namespace SmoothGL.Graphics.Geometry.Builder;
 
 /// <summary>
 /// Represents a builder which can be used to construct mesh geometry in memory.

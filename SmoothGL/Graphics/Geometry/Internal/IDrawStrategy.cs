@@ -1,4 +1,4 @@
-﻿namespace SmoothGL.Graphics.Internal;
+﻿namespace SmoothGL.Graphics.Geometry.Internal;
 
 public interface IDrawStrategy
 {

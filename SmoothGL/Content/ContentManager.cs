@@ -1,4 +1,5 @@
-﻿using SmoothGL.Content.Internal;
+﻿using SmoothGL.Content.Factories;
+using SmoothGL.Content.Internal;
 using SmoothGL.Graphics;
 
 namespace SmoothGL.Content;
