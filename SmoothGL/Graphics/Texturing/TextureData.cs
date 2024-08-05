@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Texturing;
 
 /// <summary>
 /// Represents texture data in client memory, storing a number of color values of a two-dimensional texture.
@@ -39,10 +39,7 @@ public class TextureData
     /// Gets the stored color values for the represented texture.
     /// </summary>
     /// <returns>Array of color values.</returns>
-    public Color4[] GetData()
-    {
-        return _data;
-    }
+    public Color4[] GetData() => _data;
 
     /// <summary>
     /// Gets the stored color values for a rectangular area of the represented texture.

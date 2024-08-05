@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Texturing;
 
 /// <summary>
 /// Represents a buffer persistent in graphics memory, storing a 24-bit depth value and an 8-bit stencil value
@@ -27,38 +27,28 @@ public class DepthStencilBuffer : GraphicsResource
 
     protected override string ResourceName => "DepthStencilBuffer";
 
+    protected override void FreeResources()
+    {
+        GL.DeleteRenderbuffers(1, ref _renderBufferId);
+    }
+
     /// <summary>
     /// Creates a new frame buffer attachment that can be used to attach this buffer to a frame buffer
     /// by calling its <see cref="FrameBuffer.Attach(IDepthStencilAttachment, IColorAttachment[])" /> method.
     /// This allows for depth and stencil testing when the frame buffer is set as target.
     /// </summary>
     /// <returns>Frame buffer attachment.</returns>
-    public IDepthStencilAttachment CreateFrameBufferAttachment()
+    public IDepthStencilAttachment CreateFrameBufferAttachment() => new Attachment(_renderBufferId);
+
+    private class Attachment(int id) : IDepthStencilAttachment
     {
-        return new Attachment(_renderBufferId);
-    }
-
-    protected override void FreeResources()
-    {
-        GL.DeleteRenderbuffers(1, ref _renderBufferId);
-    }
-
-    private class Attachment : IDepthStencilAttachment
-    {
-        private readonly int _id;
-
-        public Attachment(int id)
-        {
-            _id = id;
-        }
-
         public void Attach()
         {
             GL.FramebufferRenderbuffer(
                 FramebufferTarget.Framebuffer,
                 FramebufferAttachment.DepthStencilAttachment,
                 RenderbufferTarget.Renderbuffer,
-                _id
+                id
             );
         }
     }

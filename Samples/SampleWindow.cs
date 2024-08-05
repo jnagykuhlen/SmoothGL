@@ -4,6 +4,7 @@ using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using SmoothGL.Graphics;
+using SmoothGL.Graphics.Texturing;
 
 namespace SmoothGL.Samples;
 

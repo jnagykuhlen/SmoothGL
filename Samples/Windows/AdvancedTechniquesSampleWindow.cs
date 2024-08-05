@@ -7,6 +7,7 @@ using SmoothGL.Graphics.Geometry;
 using SmoothGL.Graphics.Geometry.Builder;
 using SmoothGL.Graphics.Shader;
 using SmoothGL.Graphics.State;
+using SmoothGL.Graphics.Texturing;
 
 namespace SmoothGL.Samples.Windows;
 

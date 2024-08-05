@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Texturing;
 
 /// <summary>
 /// Defines a three-dimensional texture persistent in graphics memory, storing a volume of color values (voxels).

@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Texturing;
 
 /// <summary>
 /// Determines how a texture is sampled for texture coordinate values outside the range between

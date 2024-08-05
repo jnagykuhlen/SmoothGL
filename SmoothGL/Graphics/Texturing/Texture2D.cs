@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Texturing;
 
 /// <summary>
 /// Defines a two-dimensional texture persistent in graphics memory, storing a grid of data.

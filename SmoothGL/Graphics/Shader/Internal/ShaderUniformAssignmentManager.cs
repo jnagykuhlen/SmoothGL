@@ -1,4 +1,4 @@
-﻿using SmoothGL.Graphics.Internal;
+﻿using SmoothGL.Graphics.Texturing;
 
 namespace SmoothGL.Graphics.Shader.Internal;
 

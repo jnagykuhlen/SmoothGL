@@ -2,6 +2,7 @@
 using System.Drawing.Imaging;
 using OpenTK.Mathematics;
 using SmoothGL.Graphics;
+using SmoothGL.Graphics.Texturing;
 
 namespace SmoothGL.Content;
 

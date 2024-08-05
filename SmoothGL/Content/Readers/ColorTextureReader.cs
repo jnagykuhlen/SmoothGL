@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using SmoothGL.Graphics;
+using SmoothGL.Graphics.Texturing;
 
 namespace SmoothGL.Content;
 

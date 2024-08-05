@@ -1,58 +1,30 @@
 ﻿using System.Drawing;
 using OpenTK.Graphics.OpenGL;
-using SmoothGL.Graphics.Internal;
+using SmoothGL.Graphics.Texturing.Internal;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Texturing;
 
 /// <summary>
 /// Represents an abstract target for draw operations, i.e., an object
 /// that fragment shader output is written to.
 /// </summary>
-public abstract class FrameBufferTarget : GraphicsResource
+public abstract class FrameBufferTarget(Rectangle viewport) : GraphicsResource
 {
-    private static int _currentFrameBufferId;
-    private static FrameBufferTarget _defaultFrameBuffer;
-    private static FrameBufferTarget _currentFrameBuffer;
-
-    private Rectangle _viewport;
-
-    protected FrameBufferTarget(Rectangle viewport)
-    {
-        _viewport = viewport;
-    }
+    private static int boundFrameBufferId;
+    private static FrameBufferTarget? defaultFrameBufferTarget;
+    private static FrameBufferTarget? currentFrameBufferTarget;
 
     /// <summary>
     /// Gets the default frame buffer. When selected as target, all
     /// draw operations directly affect the pixels on the screen.
     /// </summary>
-    public static FrameBufferTarget Default
-    {
-        get
-        {
-            if (_defaultFrameBuffer == null)
-            {
-                _defaultFrameBuffer = new DefaultFrameBuffer();
-                if (_currentFrameBuffer == null)
-                    _currentFrameBuffer = _defaultFrameBuffer;
-            }
-
-            return _defaultFrameBuffer;
-        }
-    }
+    public static FrameBufferTarget Default => defaultFrameBufferTarget ??= new DefaultFrameBuffer();
 
     /// <summary>
     /// Gets the frame buffer that is currently selected as target, i.e., the frame
     /// buffer that subsequent drawing operations will be performed on.
     /// </summary>
-    public static FrameBufferTarget Current
-    {
-        get
-        {
-            if (_currentFrameBuffer == null)
-                _currentFrameBuffer = Default;
-            return _currentFrameBuffer;
-        }
-    }
+    public static FrameBufferTarget Current => currentFrameBufferTarget ?? Default;
 
     /// <summary>
     /// Gets or sets the viewport for this frame buffer target, determining which
@@ -60,10 +32,10 @@ public abstract class FrameBufferTarget : GraphicsResource
     /// </summary>
     public Rectangle Viewport
     {
-        get => _viewport;
+        get => viewport;
         set
         {
-            _viewport = value;
+            viewport = value;
             if (IsTarget)
                 ApplyViewport();
         }
@@ -73,7 +45,7 @@ public abstract class FrameBufferTarget : GraphicsResource
     /// Gets a value indicating whether this frame buffer is currently selected as
     /// target.
     /// </summary>
-    public bool IsTarget => _currentFrameBuffer == this;
+    public bool IsTarget => currentFrameBufferTarget == this;
 
     protected abstract int Id { get; }
 
@@ -135,25 +107,25 @@ public abstract class FrameBufferTarget : GraphicsResource
 
     protected void Bind()
     {
-        if (_currentFrameBufferId != Id)
+        if (boundFrameBufferId != Id)
         {
             GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, Id);
-            _currentFrameBufferId = Id;
+            boundFrameBufferId = Id;
         }
     }
 
     protected void Unbind()
     {
-        if (_currentFrameBufferId == Id)
+        if (boundFrameBufferId == Id)
         {
             GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
-            _currentFrameBufferId = 0;
+            boundFrameBufferId = 0;
         }
     }
 
     protected void ApplyViewport()
     {
-        GL.Viewport(_viewport);
+        GL.Viewport(viewport);
     }
 
     /// <summary>
@@ -162,11 +134,11 @@ public abstract class FrameBufferTarget : GraphicsResource
     /// </summary>
     public void SetAsTarget()
     {
-        if (_currentFrameBuffer != this)
+        if (currentFrameBufferTarget != this)
         {
             Bind();
             ApplyViewport();
-            _currentFrameBuffer = this;
+            currentFrameBufferTarget = this;
         }
     }
 }

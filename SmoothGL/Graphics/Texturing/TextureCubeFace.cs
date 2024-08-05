@@ -1,4 +1,4 @@
-﻿namespace SmoothGL.Graphics;
+﻿namespace SmoothGL.Graphics.Texturing;
 
 /// <summary>
 /// Describes the six possible faces of a cube texture.

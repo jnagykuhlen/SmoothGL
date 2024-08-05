@@ -1,4 +1,4 @@
-﻿namespace SmoothGL.Graphics;
+﻿namespace SmoothGL.Graphics.Texturing;
 
 /// <summary>
 /// Determines how color values are interpolated when sampling a texture between

@@ -1,5 +1,4 @@
 ﻿using OpenTK.Graphics.OpenGL;
-using SmoothGL.Graphics.Internal;
 
 namespace SmoothGL.Graphics.Geometry.Internal;
 

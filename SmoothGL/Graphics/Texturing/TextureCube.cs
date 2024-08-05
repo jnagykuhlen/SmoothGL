@@ -5,7 +5,7 @@ using OpenTK.Mathematics;
 using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Texturing;
 
 /// <summary>
 /// Defines a cube texture persistent in graphics memory, storing a separate grid of color values for each of the six
@@ -15,7 +15,7 @@ public class TextureCube : Texture
 {
     private const int AllFacesBitMask = 0b111111;
     
-    private int _setFacesBitMask = 0;
+    private int _setFacesBitMask;
     
     /// <summary>
     /// Creates a new cube texture with RGBA format and default filter mode.
@@ -154,29 +154,17 @@ public class TextureCube : Texture
     /// </summary>
     /// <param name="cubeFace">The face to create a frame buffer attachment for.</param>
     /// <returns>Frame buffer attachment.</returns>
-    public IColorAttachment CreateFrameBufferAttachment(TextureCubeFace cubeFace)
+    public IColorAttachment CreateFrameBufferAttachment(TextureCubeFace cubeFace) => new Attachment(Id, cubeFace);
+
+    private class Attachment(int id, TextureCubeFace cubeFace) : IColorAttachment
     {
-        return new Attachment(Id, cubeFace);
-    }
-
-    private class Attachment : IColorAttachment
-    {
-        private readonly TextureCubeFace _cubeFace;
-        private readonly int _id;
-
-        public Attachment(int id, TextureCubeFace cubeFace)
-        {
-            _id = id;
-            _cubeFace = cubeFace;
-        }
-
         public void Attach(int index)
         {
             GL.FramebufferTexture2D(
                 FramebufferTarget.Framebuffer,
                 FramebufferAttachment.ColorAttachment0 + index,
-                TextureTarget.TextureCubeMapPositiveX + (int)_cubeFace,
-                _id,
+                TextureTarget.TextureCubeMapPositiveX + (int)cubeFace,
+                id,
                 0
             );
         }

@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Texturing;
 
 /// <summary>
 /// Represents a custom frame buffer target that allows off-screen rendering. A frame buffer does
@@ -50,28 +50,30 @@ public class FrameBuffer : FrameBufferTarget
     /// This parameter can be null in case that depth and stencil testing are not required.
     /// </param>
     /// <param name="colorAttachments">Color attachments to which fragment shader output is written.</param>
-    public void Attach(IDepthStencilAttachment depthStencilAttachment, params IColorAttachment[] colorAttachments)
+    public void Attach(IDepthStencilAttachment? depthStencilAttachment, params IColorAttachment[] colorAttachments)
     {
         var maxDrawBuffers = GL.GetInteger(GetPName.MaxDrawBuffers);
-        var maxColorAttachments = GL.GetInteger(GetPName.MaxColorAttachments);
-
         if (colorAttachments.Length > maxDrawBuffers)
+        {
             throw new ArgumentException(
-                string.Format("The number of color attachments exceeds the limit of {0} draw buffers.", maxDrawBuffers),
-                "colorAttachments"
+                $"The number of color attachments exceeds the limit of {maxDrawBuffers} draw buffers.",
+                nameof(colorAttachments)
             );
+        }
 
+        var maxColorAttachments = GL.GetInteger(GetPName.MaxColorAttachments);
         if (colorAttachments.Length > maxColorAttachments)
+        {
             throw new ArgumentException(
-                string.Format("The number of color attachments exceeds the limit of {0} attachment points.", maxColorAttachments),
-                "colorAttachments"
+                $"The number of color attachments exceeds the limit of {maxColorAttachments} attachment points.",
+                nameof(colorAttachments)
             );
+        }
 
         var lastTarget = Current;
         Bind();
 
-        if (depthStencilAttachment != null)
-            depthStencilAttachment.Attach();
+        depthStencilAttachment?.Attach();
 
         var drawBuffers = new DrawBuffersEnum[colorAttachments.Length];
         for (var i = 0; i < colorAttachments.Length; ++i)
@@ -86,7 +88,7 @@ public class FrameBuffer : FrameBufferTarget
         CheckStatus();
     }
 
-    protected void CheckStatus()
+    protected static void CheckStatus()
     {
         if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
             throw new InvalidOperationException("Frame buffer is incomplete.");

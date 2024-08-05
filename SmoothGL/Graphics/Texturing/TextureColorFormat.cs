@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Texturing;
 
 /// <summary>
 /// Specifies the format of color values stored in a texture. Possible color components
@@ -14,14 +14,14 @@ public enum TextureColorFormat
     Rgba16 = PixelInternalFormat.Rgba4,
     Rgba32 = PixelInternalFormat.Rgba,
     Rgba64 = PixelInternalFormat.Rgba16,
-    Rgba64float = PixelInternalFormat.Rgba16f,
-    Rgba128float = PixelInternalFormat.Rgba32f,
+    Rgba64Float = PixelInternalFormat.Rgba16f,
+    Rgba128Float = PixelInternalFormat.Rgba32f,
     R8 = PixelInternalFormat.R8,
     R16 = PixelInternalFormat.R16,
-    R16float = PixelInternalFormat.R16f,
-    R32float = PixelInternalFormat.R32f,
+    R16Float = PixelInternalFormat.R16f,
+    R32Float = PixelInternalFormat.R32f,
     Rg16 = PixelInternalFormat.Rg8,
     Rg32 = PixelInternalFormat.Rg16,
-    Rg32float = PixelInternalFormat.Rg16f,
-    Rg64float = PixelInternalFormat.Rg32f
+    Rg32Float = PixelInternalFormat.Rg16f,
+    Rg64Float = PixelInternalFormat.Rg32f
 }

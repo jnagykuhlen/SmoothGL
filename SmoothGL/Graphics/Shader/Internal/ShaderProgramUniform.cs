@@ -1,6 +1,4 @@
-﻿using SmoothGL.Graphics.Internal;
-
-namespace SmoothGL.Graphics.Shader.Internal;
+﻿namespace SmoothGL.Graphics.Shader.Internal;
 
 public class ShaderProgramUniform(string name, ShaderUniformType type, int size, int location, IShaderUniformAssignmentDispatcher dispatcher)
     : ShaderUniform(name, type, size)

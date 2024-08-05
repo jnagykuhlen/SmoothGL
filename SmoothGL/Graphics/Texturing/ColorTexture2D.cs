@@ -5,7 +5,7 @@ using OpenTK.Mathematics;
 using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Texturing;
 
 /// <summary>
 /// Defines a two-dimensional texture persistent in graphics memory, storing a grid of color values.
@@ -120,27 +120,17 @@ public class ColorTexture2D : Texture2D
     /// by calling its <see cref="FrameBuffer.Attach(IDepthStencilAttachment, IColorAttachment[])" /> method.
     /// </summary>
     /// <returns>Frame buffer attachment.</returns>
-    public IColorAttachment CreateFrameBufferAttachment()
+    public IColorAttachment CreateFrameBufferAttachment() => new Attachment(Id);
+
+    private class Attachment(int id) : IColorAttachment
     {
-        return new Attachment(Id);
-    }
-
-    private class Attachment : IColorAttachment
-    {
-        private readonly int _id;
-
-        public Attachment(int id)
-        {
-            _id = id;
-        }
-
         public void Attach(int index)
         {
             GL.FramebufferTexture2D(
                 FramebufferTarget.Framebuffer,
                 FramebufferAttachment.ColorAttachment0 + index,
                 TextureTarget.Texture2D,
-                _id,
+                id,
                 0
             );
         }

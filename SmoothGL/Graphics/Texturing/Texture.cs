@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Texturing;
 
 /// <summary>
 /// Defines a texture persistent in graphics memory.
@@ -66,8 +66,7 @@ public abstract class Texture : GraphicsResource
         GL.TexParameter(_target, TextureParameterName.TextureWrapT, (int)FilterMode.Wrap);
         GL.TexParameter(_target, TextureParameterName.TextureWrapR, (int)FilterMode.Wrap);
 
-        float maxAnisotropy;
-        GL.GetFloat((GetPName)ExtTextureFilterAnisotropic.MaxTextureMaxAnisotropyExt, out maxAnisotropy);
+        GL.GetFloat((GetPName)ExtTextureFilterAnisotropic.MaxTextureMaxAnisotropyExt, out float maxAnisotropy);
 
         var anisotropy = MathHelper.Clamp(FilterMode.Anisotropy, 1.0f, maxAnisotropy);
         GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName)ExtTextureFilterAnisotropic.TextureMaxAnisotropyExt, anisotropy);

@@ -1,15 +1,10 @@
 ﻿using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics.Internal;
+namespace SmoothGL.Graphics.Texturing.Internal;
 
-public class DefaultFrameBuffer : FrameBufferTarget
+public class DefaultFrameBuffer() : FrameBufferTarget(GetDefaultViewport())
 {
-    public DefaultFrameBuffer()
-        : base(GetDefaultViewport())
-    {
-    }
-
     protected override int Id => 0;
 
     protected override string ResourceName => "DefaultFrameBuffer";

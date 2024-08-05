@@ -1,4 +1,4 @@
-﻿namespace SmoothGL.Graphics;
+﻿namespace SmoothGL.Graphics.Texturing;
 
 /// <summary>
 /// Determines how a texture is sampled when stretched, scaled-down or scaled-up.
@@ -8,23 +8,12 @@ public class TextureFilterMode
     /// <summary>
     /// Default texture filter mode with linear interpolation, mipmapping and no anisotropic filtering.
     /// </summary>
-    public static readonly TextureFilterMode Default = new(TextureInterpolation.Linear, 1.0f, true, TextureWrap.Repeat);
+    public static readonly TextureFilterMode Default = new(TextureInterpolation.Linear, 1.0f, true);
 
     /// <summary>
     /// Filter mode that does not apply any filtering when sampling a texture.
     /// </summary>
-    public static readonly TextureFilterMode None = new(TextureInterpolation.Nearest, 1.0f, false, TextureWrap.Repeat);
-
-    /// <summary>
-    /// Creates a new texture filter mode.
-    /// </summary>
-    /// <param name="interpolation">The interpolation that is applied when sampling a texture between its grid points.</param>
-    /// <param name="anisotropy">Maximum number of samples used for anisotropic filtering.</param>
-    /// <param name="mipmapping">Indicates whether mipmapping is enabled.</param>
-    public TextureFilterMode(TextureInterpolation interpolation, float anisotropy, bool mipmapping)
-        : this(interpolation, anisotropy, mipmapping, TextureWrap.Repeat)
-    {
-    }
+    public static readonly TextureFilterMode None = new(TextureInterpolation.Nearest, 1.0f, false);
 
     /// <summary>
     /// Creates a new texture filter mode.
@@ -33,7 +22,7 @@ public class TextureFilterMode
     /// <param name="anisotropy">Maximum number of samples used for anisotropic filtering.</param>
     /// <param name="mipmapping">Indicates whether mipmapping is enabled.</param>
     /// <param name="wrap">Determines how a texture is sampled for texture coordinate outside the actual texture area.</param>
-    public TextureFilterMode(TextureInterpolation interpolation, float anisotropy, bool mipmapping, TextureWrap wrap)
+    public TextureFilterMode(TextureInterpolation interpolation, float anisotropy, bool mipmapping, TextureWrap wrap = TextureWrap.Repeat)
     {
         Interpolation = interpolation;
         Anisotropy = anisotropy;

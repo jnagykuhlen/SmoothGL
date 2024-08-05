@@ -2,6 +2,7 @@
 using SmoothGL.Content.Internal;
 using SmoothGL.Graphics;
 using SmoothGL.Graphics.Shader;
+using SmoothGL.Graphics.Texturing;
 
 namespace SmoothGL.Content;
 

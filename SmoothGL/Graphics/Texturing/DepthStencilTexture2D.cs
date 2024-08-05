@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Texturing;
 
 /// <summary>
 /// Represents a two-dimensional texture persistent in graphics memory, storing a 24-bit depth value and an 8-bit
@@ -30,27 +30,17 @@ public class DepthStencilTexture2D : Texture2D
     /// depth and stencil testing when the frame buffer is set as target.
     /// </summary>
     /// <returns>Frame buffer attachment.</returns>
-    public IDepthStencilAttachment CreateFrameBufferAttachment()
+    public IDepthStencilAttachment CreateFrameBufferAttachment() => new Attachment(Id);
+
+    private class Attachment(int id) : IDepthStencilAttachment
     {
-        return new Attachment(Id);
-    }
-
-    private class Attachment : IDepthStencilAttachment
-    {
-        private readonly int _id;
-
-        public Attachment(int id)
-        {
-            _id = id;
-        }
-
         public void Attach()
         {
             GL.FramebufferTexture2D(
                 FramebufferTarget.Framebuffer,
                 FramebufferAttachment.DepthStencilAttachment,
                 TextureTarget.Texture2D,
-                _id,
+                id,
                 0
             );
         }

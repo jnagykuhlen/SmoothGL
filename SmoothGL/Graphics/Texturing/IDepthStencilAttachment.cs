@@ -1,4 +1,4 @@
-﻿namespace SmoothGL.Graphics;
+﻿namespace SmoothGL.Graphics.Texturing;
 
 /// <summary>
 /// Represents a handle to a storage object which can be attached to a custom frame buffer

@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
+using SmoothGL.Graphics.Texturing;
 
 namespace SmoothGL.Graphics.Shader.Internal;
 
