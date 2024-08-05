@@ -10,5 +10,5 @@ public interface ISample
 
 public record Sample<T>(string Title) : ISample where T : GameWindow, new()
 {
-    public GameWindow CreateWindow() => new T();
+    public GameWindow CreateWindow() => new T { Title = Title };
 }
