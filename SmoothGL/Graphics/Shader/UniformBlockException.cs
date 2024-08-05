@@ -1,4 +1,4 @@
-﻿namespace SmoothGL.Graphics;
+﻿namespace SmoothGL.Graphics.Shader;
 
 /// <summary>
 /// Exception which is thrown when an invalid operation is performed on uniform blocks.

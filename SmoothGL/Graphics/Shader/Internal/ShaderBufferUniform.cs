@@ -1,22 +1,13 @@
-﻿namespace SmoothGL.Graphics.Internal;
+﻿namespace SmoothGL.Graphics.Shader.Internal;
 
-public class ShaderBufferUniform : ShaderUniform
+public class ShaderBufferUniform(string name, ShaderUniformType type, int size, IUnsafeBuffer buffer, int offset)
+    : ShaderUniform(name, type, size)
 {
-    private readonly IShaderUniformAssignment _assignment;
-    private readonly IUnsafeBuffer _buffer;
-    private readonly int _offset;
-
-    public ShaderBufferUniform(string name, ShaderUniformType type, int size, IUnsafeBuffer buffer, int offset)
-        : base(name, type, size)
-    {
-        _buffer = buffer;
-        _assignment = ShaderUniformAssignmentManager.GetAssignment(type);
-        _offset = offset;
-    }
+    private readonly IShaderUniformAssignment _assignment = ShaderUniformAssignmentManager.GetAssignment(type);
 
     protected override void OnValueChanged(object value)
     {
         _assignment.ValidateSingle(this, value);
-        _assignment.WriteSingleToBuffer(_buffer, value, _offset);
+        _assignment.WriteSingleToBuffer(buffer, value, offset);
     }
 }

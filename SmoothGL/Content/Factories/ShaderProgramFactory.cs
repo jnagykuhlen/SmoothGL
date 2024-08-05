@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 using OpenTK.Graphics.OpenGL;
-using SmoothGL.Graphics;
+using SmoothGL.Graphics.Shader;
 
 namespace SmoothGL.Content.Factories;
 

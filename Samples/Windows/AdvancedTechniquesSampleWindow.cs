@@ -5,6 +5,7 @@ using SmoothGL.Content;
 using SmoothGL.Graphics;
 using SmoothGL.Graphics.Geometry;
 using SmoothGL.Graphics.Geometry.Builder;
+using SmoothGL.Graphics.Shader;
 
 namespace SmoothGL.Samples.Windows;
 

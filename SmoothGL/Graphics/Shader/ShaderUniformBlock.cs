@@ -1,4 +1,4 @@
-﻿namespace SmoothGL.Graphics;
+﻿namespace SmoothGL.Graphics.Shader;
 
 /// <summary>
 /// Represents a shader uniform block associated with a single shader program instance.
@@ -20,11 +20,6 @@ public class ShaderUniformBlock
     }
 
     /// <summary>
-    /// Gets or sets the uniform buffer which is attached to this shader uniform block.
-    /// </summary>
-    public UniformBuffer Buffer { get; set; }
-
-    /// <summary>
     /// Gets the name of this uniform block.
     /// </summary>
     public string Name { get; }
@@ -39,4 +34,9 @@ public class ShaderUniformBlock
     /// defined by the block definition in GLSL shader code.
     /// </summary>
     public UniformBufferLayout Layout { get; }
+
+    /// <summary>
+    /// Gets or sets the uniform buffer which is attached to this shader uniform block.
+    /// </summary>
+    public UniformBuffer? Buffer { get; set; }
 }

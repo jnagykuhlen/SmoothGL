@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
-using SmoothGL.Graphics.Internal;
+using SmoothGL.Graphics.Shader.Internal;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Shader;
 
 /// <summary>
 /// Represents a buffer storing a number of uniforms, persistent in graphics memory.
@@ -28,11 +28,8 @@ public class UniformBuffer : Buffer
 
     protected override string ResourceName => "StructuredUniformBuffer";
 
-    private ShaderUniform CreateUniform(UniformBufferElement element)
-    {
-        var assignment = ShaderUniformAssignmentManager.GetAssignment(element.Type);
-        return new ShaderBufferUniform(element.Name, element.Type, 1, this, element.Offset);
-    }
+    private ShaderUniform CreateUniform(UniformBufferElement element) =>
+        new ShaderBufferUniform(element.Name, element.Type, 1, this, element.Offset);
 
     /// <summary>
     /// Gets the uniform with the specified name contained in this uniform buffer.
@@ -40,11 +37,5 @@ public class UniformBuffer : Buffer
     /// </summary>
     /// <param name="name">Name of the uniform.</param>
     /// <returns>Uniform.</returns>
-    public ShaderUniform Uniform(string name)
-    {
-        ShaderUniform result;
-        if (_uniforms.TryGetValue(name, out result))
-            return result;
-        return null;
-    }
+    public ShaderUniform? Uniform(string name) => _uniforms.GetValueOrDefault(name);
 }

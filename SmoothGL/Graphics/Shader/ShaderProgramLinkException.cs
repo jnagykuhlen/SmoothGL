@@ -1,4 +1,4 @@
-﻿namespace SmoothGL.Graphics;
+﻿namespace SmoothGL.Graphics.Shader;
 
 /// <summary>
 /// Exception which is thrown when linking of compiled shaders fails.

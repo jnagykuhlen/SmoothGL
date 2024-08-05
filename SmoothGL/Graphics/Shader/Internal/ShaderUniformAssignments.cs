@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 
-namespace SmoothGL.Graphics.Internal;
+namespace SmoothGL.Graphics.Shader.Internal;
 
 public class ShaderUniformAssignmentBool : ShaderUniformAssignment<bool>
 {

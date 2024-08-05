@@ -1,12 +1,12 @@
-﻿namespace SmoothGL.Graphics.Internal;
+﻿namespace SmoothGL.Graphics.Shader.Internal;
 
 public abstract class ShaderUniformAssignment<T> : IShaderUniformAssignment
 {
     public void ValidateSingle(ShaderUniform uniform, object value)
     {
-        if (!(value is T))
+        if (value is not T)
             throw new ShaderUniformException(
-                string.Format("Cannot assign value of type {0} to uniform {1} of type {2}.", value.GetType().Name, uniform.Name, uniform.Type),
+                $"Cannot assign value of type {value.GetType().Name} to uniform {uniform.Name} of type {uniform.Type}.",
                 uniform.Name,
                 uniform.Type
             );
@@ -18,21 +18,14 @@ public abstract class ShaderUniformAssignment<T> : IShaderUniformAssignment
 
         if (array == null || array.Length != uniform.Size)
         {
-            var baseMessage = string.Format
-            (
-                "Cannot assign value of type {0} to uniform {1} of type {2}. ",
-                value.GetType().Name,
-                uniform.Name,
-                uniform.Type
-            );
+            var specificMessage = array switch
+            {
+                null => $"Value is not an array of type {typeof(T[]).Name}.",
+                _ => $"Array size of {array.Length} does not match the required size of {uniform.Size}."
+            };
 
-            string specificMessage;
-            if (array == null)
-                specificMessage = string.Format("Value is not an array of type {0}.", typeof(T[]).Name);
-            else
-                specificMessage = string.Format("Array size of {0} does not match the required size of {1}.", array.Length, uniform.Size);
-
-            throw new ShaderUniformException(baseMessage + specificMessage, uniform.Name, uniform.Type);
+            var message = $"Cannot assign value of type {value.GetType().Name} to uniform {uniform.Name} of type {uniform.Type}. {specificMessage}";
+            throw new ShaderUniformException(message, uniform.Name, uniform.Type);
         }
     }
 

@@ -1,4 +1,4 @@
-﻿namespace SmoothGL.Graphics.Internal;
+﻿namespace SmoothGL.Graphics.Shader.Internal;
 
 public class ShaderUniformArrayAssignmentDispatcher : IShaderUniformAssignmentDispatcher
 {

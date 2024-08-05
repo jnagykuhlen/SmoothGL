@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Shader;
 
 /// <summary>
 /// Describes the data types which are valid for shader uniforms.

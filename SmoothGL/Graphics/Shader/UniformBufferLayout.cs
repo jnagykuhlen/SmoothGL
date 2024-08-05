@@ -1,4 +1,4 @@
-﻿namespace SmoothGL.Graphics;
+﻿namespace SmoothGL.Graphics.Shader;
 
 /// <summary>
 /// Describes how the uniforms included in a uniform buffer are arranged in memory.

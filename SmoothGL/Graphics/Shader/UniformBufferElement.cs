@@ -1,4 +1,4 @@
-﻿namespace SmoothGL.Graphics;
+﻿namespace SmoothGL.Graphics.Shader;
 
 /// <summary>
 /// Describes a single uniform in a uniform buffer.
@@ -13,25 +13,31 @@ public class UniformBufferElement
     /// <param name="offset">Offset of this uniform relative to the start of the containing uniform buffer, in bytes.</param>
     public UniformBufferElement(string name, ShaderUniformType type, int offset)
     {
-        if (type == ShaderUniformType.Sampler1D ||
-            type == ShaderUniformType.Sampler2D ||
-            type == ShaderUniformType.Sampler3D ||
-            type == ShaderUniformType.SamplerCube)
-            throw new ArgumentException("Texture samplers are not allowed to be defined in uniform blocks.");
+        if (type is
+            ShaderUniformType.Sampler1D or
+            ShaderUniformType.Sampler2D or
+            ShaderUniformType.Sampler3D or
+            ShaderUniformType.SamplerCube)
+        {
+            throw new ArgumentException("Texture samplers are not allowed to be defined in uniform blocks.", nameof(type));
+        }
 
-        if (type == ShaderUniformType.Double ||
-            type == ShaderUniformType.Double2 ||
-            type == ShaderUniformType.Double3 ||
-            type == ShaderUniformType.Double4 ||
-            type == ShaderUniformType.Matrix3)
+        if (type is
+            ShaderUniformType.Double or
+            ShaderUniformType.Double2 or
+            ShaderUniformType.Double3 or
+            ShaderUniformType.Double4 or
+            ShaderUniformType.Matrix3)
+        {
             throw new ShaderUniformException(
-                string.Format("The uniform type {0} is currently not supported for uniform buffer elements.", type),
+                $"The uniform type {type} is currently not supported for uniform buffer elements.",
                 name,
                 type
             );
+        }
 
         if (offset < 0)
-            throw new ArgumentOutOfRangeException("offset", "Offset must not be negative.");
+            throw new ArgumentOutOfRangeException(nameof(offset), "Offset must not be negative.");
 
         Name = name;
         Type = type;

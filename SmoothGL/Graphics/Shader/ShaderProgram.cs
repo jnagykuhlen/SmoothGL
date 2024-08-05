@@ -1,18 +1,18 @@
 ﻿using OpenTK.Graphics.OpenGL;
-using SmoothGL.Graphics.Internal;
+using SmoothGL.Graphics.Shader.Internal;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.Shader;
 
 /// <summary>
 /// Represents a shader program linked from a number of compiled shaders.
 /// </summary>
 public class ShaderProgram : GraphicsResource
 {
-    private static int _currentProgramId;
+    private static int currentProgramId;
 
     private readonly int _programId;
-    private Dictionary<string, ShaderUniformBlock> _uniformBlocks;
-    private Dictionary<string, ShaderProgramUniform> _uniforms;
+    private readonly Dictionary<string, ShaderProgramUniform> _uniforms = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, ShaderUniformBlock> _uniformBlocks = new(StringComparer.Ordinal);
 
     /// <summary>
     /// Creates a new shader program with vertex and fragment shader stage.
@@ -58,28 +58,30 @@ public class ShaderProgram : GraphicsResource
     /// <param name="tessellationEvaluationShaderCode">Tessellation evaluation shader source code.</param>
     /// <param name="geometryShaderCode">Geometry shader source code.</param>
     /// <param name="fragmentShaderCode">Fragment shader source code.</param>
-    public ShaderProgram(string vertexShaderCode,
-        string tessellationControlShaderCode,
-        string tessellationEvaluationShaderCode,
-        string geometryShaderCode,
+    public ShaderProgram(
+        string vertexShaderCode,
+        string? tessellationControlShaderCode,
+        string? tessellationEvaluationShaderCode,
+        string? geometryShaderCode,
         string fragmentShaderCode)
     {
         var shaderIds = new List<int>(5);
-
         try
         {
-            if (vertexShaderCode != null)
-                shaderIds.Add(CreateShader(ShaderType.VertexShader, vertexShaderCode));
+            shaderIds.Add(CreateShader(ShaderType.VertexShader, vertexShaderCode));
+            
             if (tessellationControlShaderCode != null)
                 shaderIds.Add(CreateShader(ShaderType.TessControlShader, tessellationControlShaderCode));
+            
             if (tessellationEvaluationShaderCode != null)
                 shaderIds.Add(CreateShader(ShaderType.TessEvaluationShader, tessellationEvaluationShaderCode));
+            
             if (geometryShaderCode != null)
                 shaderIds.Add(CreateShader(ShaderType.GeometryShader, geometryShaderCode));
-            if (fragmentShaderCode != null)
-                shaderIds.Add(CreateShader(ShaderType.FragmentShader, fragmentShaderCode));
+            
+            shaderIds.Add(CreateShader(ShaderType.FragmentShader, fragmentShaderCode));
 
-            _programId = LinkProgram(shaderIds.ToArray());
+            _programId = LinkProgram(shaderIds);
         }
         finally
         {
@@ -104,20 +106,18 @@ public class ShaderProgram : GraphicsResource
     /// Gets a value indicating whether this shader program is currently in use for subsequent draw operations,
     /// i.e., its <see cref="Use" /> method was called after using any other shader program.
     /// </summary>
-    public bool IsActive => _currentProgramId == _programId;
+    public bool IsActive => currentProgramId == _programId;
 
     protected override string ResourceName => "ShaderProgram";
 
-    private static int LinkProgram(int[] shaderIds)
+    private static int LinkProgram(IReadOnlyCollection<int> shaderIds)
     {
         var programId = GL.CreateProgram();
         foreach (var shaderId in shaderIds)
             GL.AttachShader(programId, shaderId);
 
         GL.LinkProgram(programId);
-
-        int linked;
-        GL.GetProgram(programId, GetProgramParameterName.LinkStatus, out linked);
+        GL.GetProgram(programId, GetProgramParameterName.LinkStatus, out var linked);
 
         if (linked == 0)
         {
@@ -129,14 +129,12 @@ public class ShaderProgram : GraphicsResource
         return programId;
     }
 
-    private int CreateShader(ShaderType shaderType, string shaderCode)
+    private static int CreateShader(ShaderType shaderType, string shaderCode)
     {
         var shaderId = GL.CreateShader(shaderType);
         GL.ShaderSource(shaderId, shaderCode);
         GL.CompileShader(shaderId);
-
-        int compiled;
-        GL.GetShader(shaderId, ShaderParameter.CompileStatus, out compiled);
+        GL.GetShader(shaderId, ShaderParameter.CompileStatus, out var compiled);
 
         if (compiled == 0)
         {
@@ -148,23 +146,21 @@ public class ShaderProgram : GraphicsResource
         return shaderId;
     }
 
-    private void DeleteShader(int shaderId)
+    private static void DeleteShader(int shaderId)
     {
-        GL.DeleteShader(shaderId);
+        if (shaderId != 0)
+            GL.DeleteShader(shaderId);
     }
 
     private void InitializeUniforms()
     {
         GL.UseProgram(_programId);
 
-        int numberOfUniforms;
-        int numberOfUniformBlocks;
+        GL.GetProgram(_programId, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms);
+        GL.GetProgram(_programId, GetProgramParameterName.ActiveUniformBlocks, out var numberOfUniformBlocks);
 
-        GL.GetProgram(_programId, GetProgramParameterName.ActiveUniforms, out numberOfUniforms);
-        GL.GetProgram(_programId, GetProgramParameterName.ActiveUniformBlocks, out numberOfUniformBlocks);
-
-        _uniforms = new Dictionary<string, ShaderProgramUniform>(numberOfUniforms, StringComparer.Ordinal);
-        _uniformBlocks = new Dictionary<string, ShaderUniformBlock>(numberOfUniformBlocks, StringComparer.Ordinal);
+        _uniforms.EnsureCapacity(numberOfUniforms);
+        _uniformBlocks.EnsureCapacity(numberOfUniformBlocks);
 
         var uniformBlockElements = new List<UniformBufferElement>[numberOfUniformBlocks];
         for (var i = 0; i < numberOfUniformBlocks; ++i)
@@ -175,29 +171,26 @@ public class ShaderProgram : GraphicsResource
 
         for (var i = 0; i < numberOfUniforms; ++i)
         {
-            int uniformSize;
-            int uniformBlockIndex;
-            ActiveUniformType uniformRawType;
-            var uniformName = GL.GetActiveUniform(_programId, i, out uniformSize, out uniformRawType);
+            var uniformName = GL.GetActiveUniform(_programId, i, out var uniformSize, out var uniformRawType);
             var uniformLocation = GL.GetUniformLocation(_programId, uniformName);
-            GL.GetActiveUniforms(_programId, 1, ref i, ActiveUniformParameter.UniformBlockIndex, out uniformBlockIndex);
+            GL.GetActiveUniforms(_programId, 1, ref i, ActiveUniformParameter.UniformBlockIndex, out var uniformBlockIndex);
             var uniformType = (ShaderUniformType)uniformRawType;
 
             if (uniformName.EndsWith("[0]"))
-                uniformName = uniformName.Substring(0, uniformName.Length - 3);
+                uniformName = uniformName[..^3];
 
             if (uniformBlockIndex == -1)
             {
                 if (!Enum.IsDefined(typeof(ShaderUniformType), uniformType))
                     throw new ShaderUniformException(
-                        string.Format("The uniform type {0} specified in the shader for uniform {1} is not supported.", uniformType, uniformName),
+                        $"The uniform type {uniformType} specified in the shader for uniform {uniformName} is not supported.",
                         uniformName,
                         uniformType
                     );
 
-                IShaderUniformAssignmentDispatcher dispatcher = ShaderUniformSingleAssignmentDispatcher.Instance;
-                if (uniformSize > 1)
-                    dispatcher = ShaderUniformArrayAssignmentDispatcher.Instance;
+                IShaderUniformAssignmentDispatcher dispatcher = uniformSize > 1
+                    ? ShaderUniformArrayAssignmentDispatcher.Instance
+                    : ShaderUniformSingleAssignmentDispatcher.Instance;
 
                 if (uniformType == ShaderUniformType.Sampler1D ||
                     uniformType == ShaderUniformType.Sampler2D ||
@@ -206,7 +199,7 @@ public class ShaderProgram : GraphicsResource
                 {
                     if (textureIndex + uniformSize > maxTextureIndex)
                         throw new ShaderUniformException(
-                            string.Format("Texture uniform {0} exceeds the limit of {1} texture units.", uniformName, maxTextureIndex),
+                            $"Texture uniform {uniformName} exceeds the limit of {maxTextureIndex} texture units.",
                             uniformName,
                             uniformType
                         );
@@ -229,8 +222,7 @@ public class ShaderProgram : GraphicsResource
                 // Currently, arrays in uniform blocks are not supported.
                 if (uniformSize == 1)
                 {
-                    int uniformOffset;
-                    GL.GetActiveUniforms(_programId, 1, ref i, ActiveUniformParameter.UniformOffset, out uniformOffset);
+                    GL.GetActiveUniforms(_programId, 1, ref i, ActiveUniformParameter.UniformOffset, out var uniformOffset);
                     uniformBlockElements[uniformBlockIndex].Add(new UniformBufferElement(uniformName, uniformType, uniformOffset));
                 }
             }
@@ -238,9 +230,8 @@ public class ShaderProgram : GraphicsResource
 
         for (var i = 0; i < numberOfUniformBlocks; ++i)
         {
-            int uniformBlockSize;
             var uniformBlockName = GL.GetActiveUniformBlockName(_programId, i);
-            GL.GetActiveUniformBlock(_programId, i, ActiveUniformBlockParameter.UniformBlockDataSize, out uniformBlockSize);
+            GL.GetActiveUniformBlock(_programId, i, ActiveUniformBlockParameter.UniformBlockDataSize, out var uniformBlockSize);
             GL.UniformBlockBinding(_programId, i, i);
 
             var layout = new UniformBufferLayout(uniformBlockSize, uniformBlockElements[i].ToArray());
@@ -256,18 +247,17 @@ public class ShaderProgram : GraphicsResource
     {
         CheckDisposed();
 
-        if (_currentProgramId != _programId)
+        if (currentProgramId != _programId)
         {
             GL.UseProgram(_programId);
-            _currentProgramId = _programId;
+            currentProgramId = _programId;
         }
 
         foreach (var uniform in _uniforms.Values)
             uniform.Apply();
 
         foreach (var uniformBlock in UniformBlocks)
-            if (uniformBlock.Buffer != null)
-                uniformBlock.Buffer.Bind(uniformBlock.Location);
+            uniformBlock.Buffer?.Bind(uniformBlock.Location);
     }
 
     /// <summary>
@@ -277,31 +267,21 @@ public class ShaderProgram : GraphicsResource
     /// </summary>
     /// <param name="name">Name of the uniform.</param>
     /// <returns>Uniform.</returns>
-    public ShaderUniform Uniform(string name)
-    {
-        ShaderProgramUniform result;
-        if (_uniforms.TryGetValue(name, out result))
-            return result;
-        return null;
-    }
+    public ShaderUniform Uniform(string name) => _uniforms.GetValueOrDefault(name) ??
+                                                 throw new ArgumentException($"Uniform {name} does not exist.", nameof(name));
 
     /// <summary>
     /// Gets the uniform block with the specified name. Returns null if such uniform block does not exist.
     /// </summary>
     /// <param name="name">Name of the uniform block.</param>
     /// <returns>Uniform block.</returns>
-    public ShaderUniformBlock UniformBlock(string name)
-    {
-        ShaderUniformBlock result;
-        if (_uniformBlocks.TryGetValue(name, out result))
-            return result;
-        return null;
-    }
+    public ShaderUniformBlock UniformBlock(string name) => _uniformBlocks.GetValueOrDefault(name) ??
+                                                            throw new ArgumentException($"Uniform block {name} does not exist.", nameof(name));
 
     protected override void FreeResources()
     {
-        if (_currentProgramId == _programId)
-            _currentProgramId = 0;
+        if (currentProgramId == _programId)
+            currentProgramId = 0;
 
         if (_programId != 0)
             GL.DeleteProgram(_programId);
