@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.State;
 
 /// <summary>
 /// Encapsulates rendering state variables related to the rasterizer stage. Rendering state objects are immutable.
@@ -10,12 +10,12 @@ public class StencilState : IGraphicsState
     /// <summary>
     /// Stencil state which does not perform any stencil testing.
     /// </summary>
-    public static readonly StencilState None = new(false, null, null, 0, 0, 0);
+    public static readonly StencilState None = new(false, StencilFaceState.None, StencilFaceState.None, 0, 0, 0);
 
     /// <summary>
     /// Creates a new stencil state object.
     /// </summary>
-    /// <param name="stencilTestEnabled">indicates whether stencil testing is enabled.</param>
+    /// <param name="stencilTestEnabled">Indicates whether stencil testing is enabled.</param>
     /// <param name="stencilFrontState">
     /// Operations which are performed for front faces dependent on the result of the stencil
     /// test.
@@ -25,7 +25,7 @@ public class StencilState : IGraphicsState
     /// test.
     /// </param>
     /// <param name="referenceStencil">
-    /// reference stencil value, which is written to the stencil buffer when performing
+    /// Reference stencil value, which is written to the stencil buffer when performing
     /// <see cref="StencilOperation.Replace" />.
     /// </param>
     /// <param name="stencilReadMask">Bit mask defining which bits are read from the stencil buffer.</param>

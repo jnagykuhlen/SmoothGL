@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.State;
 
 /// <summary>
 /// Defines a compare function for depth and stencil operations.

@@ -1,4 +1,4 @@
-﻿namespace SmoothGL.Graphics;
+﻿namespace SmoothGL.Graphics.State;
 
 /// <summary>
 /// Describes the operations which are performed dependent on the result of the stencil test,
@@ -6,6 +6,16 @@
 /// </summary>
 public class StencilFaceState
 {
+    /// <summary>
+    /// Stencil face state that does not change any stencil values.
+    /// </summary>
+    public static readonly StencilFaceState None = new (
+        StencilOperation.Keep,
+        StencilOperation.Keep,
+        StencilOperation.Keep,
+        CompareFunction.Never
+    );
+    
     /// <summary>
     /// Creates a new set of stencil operations which are performed for a certain face orientation.
     /// </summary>

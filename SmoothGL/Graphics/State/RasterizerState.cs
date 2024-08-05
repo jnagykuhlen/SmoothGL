@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.State;
 
 /// <summary>
 /// Encapsulates rendering state variables related to the rasterizer stage. Rendering state objects are immutable.

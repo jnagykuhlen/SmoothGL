@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.State;
 
 /// <summary>
 /// Encapsulates rendering state variables related to blending. Rendering state objects are immutable.
@@ -173,15 +173,10 @@ public class BlendState : IGraphicsState
         }
 
         GL.ColorMask(
-            WriteChannelEnabled(ColorWriteChannels.Red),
-            WriteChannelEnabled(ColorWriteChannels.Green),
-            WriteChannelEnabled(ColorWriteChannels.Blue),
-            WriteChannelEnabled(ColorWriteChannels.Alpha)
+            ColorWriteChannels.HasFlag(ColorWriteChannels.Red),
+            ColorWriteChannels.HasFlag(ColorWriteChannels.Green),
+            ColorWriteChannels.HasFlag(ColorWriteChannels.Blue),
+            ColorWriteChannels.HasFlag(ColorWriteChannels.Alpha)
         );
-    }
-
-    private bool WriteChannelEnabled(ColorWriteChannels channel)
-    {
-        return (ColorWriteChannels & channel) == channel;
     }
 }

@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace SmoothGL.Graphics;
+namespace SmoothGL.Graphics.State;
 
 /// <summary>
 /// Defines possible operations which can be applied to a value in the stencil buffer.

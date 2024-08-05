@@ -1,4 +1,4 @@
-﻿namespace SmoothGL.Graphics;
+﻿namespace SmoothGL.Graphics.State;
 
 /// <summary>
 /// Defines which color channels of the current framebuffer are affected by blending operations.
@@ -11,5 +11,5 @@ public enum ColorWriteChannels
     Green = 0x02,
     Blue = 0x04,
     Alpha = 0x08,
-    All = 0x0f
+    All = Red | Green | Blue | Alpha
 }

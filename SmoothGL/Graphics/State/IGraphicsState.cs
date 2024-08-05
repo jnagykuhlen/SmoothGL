@@ -1,4 +1,4 @@
-﻿namespace SmoothGL.Graphics;
+﻿namespace SmoothGL.Graphics.State;
 
 /// <summary>
 /// Encapsulates a number of rendering state variables.
