@@ -1,8 +1,6 @@
-﻿using System.Drawing;
-using SmoothGL.Graphics;
-using SmoothGL.Graphics.Texturing;
+﻿using SmoothGL.Graphics.Texturing;
 
-namespace SmoothGL.Content;
+namespace SmoothGL.Content.Readers;
 
 /// <summary>
 /// Reader class which reads a color texture from a stream.
@@ -10,17 +8,14 @@ namespace SmoothGL.Content;
 public class ColorTextureReader : IContentReader<ColorTexture2D>
 {
     private readonly TextureFilterMode _filterMode;
-    private readonly bool _flipVertically;
 
     /// <summary>
     /// Creates a new color texture reader, specifying a texture filtering mode which is applied to loaded color textures.
     /// </summary>
     /// <param name="filterMode">Defines the filtering mode applied to all loaded textures.</param>
-    /// <param name="flipVertically">Indicates whether the y-axis should be inverted during the read process.</param>
-    public ColorTextureReader(TextureFilterMode filterMode, bool flipVertically)
+    public ColorTextureReader(TextureFilterMode filterMode)
     {
         _filterMode = filterMode;
-        _flipVertically = flipVertically;
     }
 
     /// <summary>
@@ -32,15 +27,11 @@ public class ColorTextureReader : IContentReader<ColorTexture2D>
     /// <returns>The read object.</returns>
     public ColorTexture2D Read(Stream stream, Type requestedType, ContentManager contentManager)
     {
-        using (var bitmap = new Bitmap(stream))
-        {
-            if (_flipVertically)
-                bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
+        var imageData = contentManager.Load<ImageData>(stream);
 
-            var texture = new ColorTexture2D(bitmap.Width, bitmap.Height, TextureColorFormat.Rgba32, _filterMode);
-            texture.SetData(bitmap);
-            return texture;
-        }
+        var texture = new ColorTexture2D(imageData.Width, imageData.Height, TextureColorFormat.Rgba32, _filterMode);
+        texture.SetImageData(imageData);
+        return texture;
     }
 
     /// <summary>

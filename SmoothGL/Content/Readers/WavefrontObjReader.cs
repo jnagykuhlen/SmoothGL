@@ -1,14 +1,13 @@
 ﻿using System.Globalization;
 using OpenTK.Mathematics;
-using SmoothGL.Graphics;
 using SmoothGL.Graphics.Geometry;
 
-namespace SmoothGL.Content;
+namespace SmoothGL.Content.Readers;
 
 /// <summary>
 /// Reader class which loads mesh data from a stream, in accordance with the wavefront OBJ specification.
 /// </summary>
-public class WavefrontOBJReader : IContentReader<MeshData>
+public class WavefrontObjReader : IContentReader<MeshData>
 {
     /// <summary>
     /// Reads mesh data from a stream.
@@ -24,22 +23,26 @@ public class WavefrontOBJReader : IContentReader<MeshData>
         var textureCoordinates = new List<Vector2>();
         var indices = new List<uint>();
 
-        var reader = new StreamReader(stream);
-
-        string line;
-        while ((line = reader.ReadLine()) != null)
+        foreach (var line in ReadAllLines(stream))
         {
-            line = line.Trim();
             if (line.StartsWith("vt"))
-                textureCoordinates.Add(ParseTextureCoordinate(line.Substring(2, line.Length - 2).Trim()));
+                textureCoordinates.Add(ParseTextureCoordinate(line[2..].Trim()));
             else if (line.StartsWith("vn"))
-                normals.Add(ParseNormal(line.Substring(2, line.Length - 2).Trim()));
-            else if (line.StartsWith("v"))
-                vertices.Add(ParseVertex(line.Substring(1, line.Length - 1).Trim()));
-            else if (line.StartsWith("f")) indices.AddRange(ParseFace(line.Substring(1, line.Length - 1).Trim()));
+                normals.Add(ParseNormal(line[2..].Trim()));
+            else if (line.StartsWith('v'))
+                vertices.Add(ParseVertex(line[1..].Trim()));
+            else if (line.StartsWith('f'))
+                indices.AddRange(ParseFace(line[1..].Trim()));
         }
 
         return new MeshData(vertices.ToArray(), normals.ToArray(), textureCoordinates.ToArray(), indices.ToArray());
+    }
+
+    private static IEnumerable<string> ReadAllLines(Stream stream)
+    {
+        var streamReader = new StreamReader(stream);
+        while (streamReader.ReadLine() is { } line)
+            yield return line.Trim();
     }
 
     /// <summary>
@@ -60,13 +63,15 @@ public class WavefrontOBJReader : IContentReader<MeshData>
 
         try
         {
-            return componentStrings.Where(s => !string.IsNullOrWhiteSpace(s)).Take(numberOfComponents)
-                .Select(s => float.Parse(s.Trim(), CultureInfo.InvariantCulture))
+            return componentStrings
+                .Where(componentString => !string.IsNullOrWhiteSpace(componentString))
+                .Take(numberOfComponents)
+                .Select(componentString => float.Parse(componentString.Trim(), CultureInfo.InvariantCulture))
                 .ToArray();
         }
         catch (FormatException formatException)
         {
-            throw new InvalidDataException(string.Format("Unable to parse vector string \"{0}\".", text), formatException);
+            throw new InvalidDataException($"Unable to parse vector string \"{text}\".", formatException);
         }
     }
 
@@ -94,10 +99,10 @@ public class WavefrontOBJReader : IContentReader<MeshData>
         if (indexStrings.Length < 3)
             throw new InvalidDataException("Wrong Wavefront OBJ file format.");
 
-        return Triangulate(indexStrings.Select(s => ParseIndex(s.Trim())));
+        return Triangulate(indexStrings.Select(indexString => ParseIndex(indexString.Trim())));
     }
 
-    private IEnumerable<uint> Triangulate(IEnumerable<uint> indices)
+    private static IEnumerable<uint> Triangulate(IEnumerable<uint> indices)
     {
         var first = indices.ElementAt(0);
         var last = indices.ElementAt(1);
@@ -114,11 +119,12 @@ public class WavefrontOBJReader : IContentReader<MeshData>
 
     private uint ParseIndex(string text)
     {
-        var indices = text.Split('/').Where(s => !string.IsNullOrWhiteSpace(s))
-            .Select(s => uint.Parse(s.Trim(), CultureInfo.InvariantCulture))
+        var indices = text.Split('/')
+            .Where(indexString => !string.IsNullOrWhiteSpace(indexString))
+            .Select(indexString => uint.Parse(indexString.Trim(), CultureInfo.InvariantCulture))
             .ToArray();
 
-        if (indices.Any(i => i != indices[0]))
+        if (indices.Any(index => index != indices[0]))
             throw new InvalidDataException("Wavefront OBJ loader does not support different indices for vertex components.");
 
         return indices[0] - 1;

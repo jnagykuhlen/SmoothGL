@@ -1,4 +1,4 @@
-﻿namespace SmoothGL.Content;
+﻿namespace SmoothGL.Content.Readers;
 
 /// <summary>
 /// Specifies the position of a tile in a source image corresponding to a cube face.

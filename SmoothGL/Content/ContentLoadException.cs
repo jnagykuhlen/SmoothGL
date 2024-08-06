@@ -10,12 +10,12 @@ public class ContentLoadException : Exception
     /// </summary>
     /// <param name="message">Exception message.</param>
     /// <param name="innerException">Inner exception which indicated that the read operation failed.</param>
-    /// <param name="filename">Path to the content file for which loading failed.</param>
+    /// <param name="filePath">Path to the content file for which loading failed.</param>
     /// <param name="contentType">Requested content type for which loading failed.</param>
-    public ContentLoadException(string message, Exception innerException, string filename, Type contentType)
+    public ContentLoadException(string message, Exception? innerException, string? filePath, Type contentType)
         : base(message, innerException)
     {
-        Filename = filename;
+        FilePath = filePath;
         ContentType = contentType;
     }
 
@@ -23,17 +23,17 @@ public class ContentLoadException : Exception
     /// Creates a new ContentLoadException.
     /// </summary>
     /// <param name="message">Exception message.</param>
-    /// <param name="filename">Path to the content file for which loading failed.</param>
+    /// <param name="stream">Stream of the content for which loading failed.</param>
     /// <param name="contentType">Requested content type for which loading failed.</param>
-    public ContentLoadException(string message, string filename, Type contentType)
-        : this(message, null, filename, contentType)
+    public ContentLoadException(string message, Stream stream, Type contentType)
+        : this(message, null, (stream as FileStream)?.Name, contentType)
     {
     }
 
     /// <summary>
     /// Gets the path to the content file for which loading failed.
     /// </summary>
-    public string Filename { get; }
+    public string? FilePath { get; }
 
     /// <summary>
     /// Gets the requested content type for which loading failed.

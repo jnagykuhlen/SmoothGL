@@ -1,7 +1,6 @@
-﻿using SmoothGL.Graphics;
-using SmoothGL.Graphics.Texturing;
+﻿using SmoothGL.Graphics.Texturing;
 
-namespace SmoothGL.Content;
+namespace SmoothGL.Content.Readers;
 
 /// <summary>
 /// Specifies how the six individual faces of a cube texture are arranged in a two-dimensional image file.
@@ -70,32 +69,26 @@ public class CubeTextureLayout
         CubeTextureElement elementNegativeZ)
     {
         if (gridWidth <= 0)
-            throw new ArgumentOutOfRangeException("gridWidth", "Grid width must be positive.");
+            throw new ArgumentOutOfRangeException(nameof(gridWidth), "Grid width must be positive.");
 
         if (gridHeight <= 0)
-            throw new ArgumentOutOfRangeException("gridHeight", "Grid height must be positive.");
+            throw new ArgumentOutOfRangeException(nameof(gridHeight), "Grid height must be positive.");
 
         GridWidth = gridWidth;
         GridHeight = gridHeight;
 
-        _elements = new[]
-        {
+        _elements =
+        [
             elementPositiveX,
             elementNegativeX,
             elementPositiveY,
             elementNegativeY,
             elementPositiveZ,
             elementNegativeZ
-        };
+        ];
 
-        foreach (var element in _elements)
-        {
-            if (element == null)
-                throw new ArgumentNullException("element", "Cube texture layout elements must not contain null values.");
-
-            if (element.GridX < 0 || element.GridX >= gridWidth || element.GridY < 0 || element.GridY >= gridHeight)
-                throw new ArgumentException("Element location must be contained in the specified grid.", "elements");
-        }
+        if (_elements.Any(element => element.GridX < 0 || element.GridX >= gridWidth || element.GridY < 0 || element.GridY >= gridHeight))
+            throw new ArgumentException("Element location must be contained in the specified grid.");
     }
 
     /// <summary>
@@ -116,18 +109,15 @@ public class CubeTextureLayout
     /// <returns>Cube texture layout.</returns>
     public static CubeTextureLayout FromCubeFaceOrder(TextureCubeFace[] cubeFaceOrder)
     {
-        if (cubeFaceOrder == null)
-            throw new ArgumentNullException("cubeFaceOrder");
-
         if (cubeFaceOrder.Length != 6)
-            throw new ArgumentException("Cube face order array must contain exactly six values.", "cubeFaceOrder");
+            throw new ArgumentException("Cube face order array must contain exactly six values.", nameof(cubeFaceOrder));
 
         var elements = new CubeTextureElement[6];
         for (var i = 0; i < 6; ++i)
             elements[(int)cubeFaceOrder[i]] = new CubeTextureElement(i, 0);
 
-        if (elements.Any(e => e == null))
-            throw new ArgumentException("Cube face order array must contain each face exactly once.", "cubeFaceOrder");
+        if (elements.Any(element => element == null!))
+            throw new ArgumentException("Cube face order array must contain each face exactly once.", nameof(cubeFaceOrder));
 
         return new CubeTextureLayout(6, 1, elements);
     }
@@ -137,8 +127,5 @@ public class CubeTextureLayout
     /// </summary>
     /// <param name="cubeFace">Cube face for which the tile coordinates in the grid are requested.</param>
     /// <returns>Position of the corresponding tile in the grid.</returns>
-    public CubeTextureElement GetElement(TextureCubeFace cubeFace)
-    {
-        return _elements[(int)cubeFace];
-    }
+    public CubeTextureElement GetElement(TextureCubeFace cubeFace) => _elements[(int)cubeFace];
 }

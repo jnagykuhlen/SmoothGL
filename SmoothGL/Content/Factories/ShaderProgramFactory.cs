@@ -5,7 +5,7 @@ using SmoothGL.Graphics.Shader;
 namespace SmoothGL.Content.Factories;
 
 /// <summary>
-/// Serialializable, mutable factory which creates shader programs.
+/// Serializable, mutable factory which creates shader programs.
 /// </summary>
 [XmlRoot(ElementName = "ShaderProgram")]
 public class ShaderProgramFactory : IFactory<ShaderProgram>

@@ -4,7 +4,7 @@
 /// Defines an interface for content readers which load instances of the specified type from a stream.
 /// </summary>
 /// <typeparam name="T">Type of the objects this class reads.</typeparam>
-public interface IContentReader<out T>
+public interface IContentReader<out T> where T : notnull
 {
     /// <summary>
     /// Indicates whether this class can also read subtypes of the specified type.

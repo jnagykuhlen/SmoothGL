@@ -5,7 +5,7 @@
 /// this reader returns a cached version instead of requesting a new one from the internal reader.
 /// </summary>
 /// <typeparam name="T">Type of objects read.</typeparam>
-public class CachedReader<T> : IContentReader<CachedResult>, ICachedReader
+public class CachedReader<T> : IContentReader<CachedResult>, ICachedReader where T : notnull
 {
     private readonly Dictionary<string, T> _cache;
     private readonly IContentReader<T> _internalReader;
@@ -16,9 +16,6 @@ public class CachedReader<T> : IContentReader<CachedResult>, ICachedReader
     /// <param name="internalReader">The internal reader used to load objects which are not cached yet.</param>
     public CachedReader(IContentReader<T> internalReader)
     {
-        if (internalReader == null)
-            throw new ArgumentNullException("internalReader");
-
         _internalReader = internalReader;
         _cache = new Dictionary<string, T>();
     }
@@ -41,17 +38,16 @@ public class CachedReader<T> : IContentReader<CachedResult>, ICachedReader
     /// <returns>The read object.</returns>
     public CachedResult Read(Stream stream, Type requestedType, ContentManager contentManager)
     {
-        var fileStream = stream as FileStream;
-        if (fileStream == null) return new CachedResult(_internalReader.Read(stream, requestedType, contentManager), true);
+        if (stream is not FileStream fileStream)
+            return new CachedResult(_internalReader.Read(stream, requestedType, contentManager), true);
 
-        var filename = fileStream.Name;
+        var filePath = fileStream.Name;
 
-        T result;
-        if (_cache.TryGetValue(filename, out result))
-            return new CachedResult(result, false);
+        if (_cache.TryGetValue(filePath, out var cachedResult))
+            return new CachedResult(cachedResult, false);
 
-        result = _internalReader.Read(stream, requestedType, contentManager);
-        _cache.Add(filename, result);
+        var result = _internalReader.Read(stream, requestedType, contentManager);
+        _cache.Add(filePath, result);
 
         return new CachedResult(result, true);
     }
@@ -66,3 +62,5 @@ public class CachedReader<T> : IContentReader<CachedResult>, ICachedReader
     /// </summary>
     public string ReaderName => "Cached" + _internalReader.ReaderName;
 }
+
+public record CachedResult(object Value, bool IsNew);

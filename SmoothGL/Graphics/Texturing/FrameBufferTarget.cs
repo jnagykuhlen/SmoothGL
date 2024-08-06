@@ -18,13 +18,21 @@ public abstract class FrameBufferTarget(Rectangle viewport) : GraphicsResource
     /// Gets the default frame buffer. When selected as target, all
     /// draw operations directly affect the pixels on the screen.
     /// </summary>
-    public static FrameBufferTarget Default => defaultFrameBufferTarget ??= new DefaultFrameBuffer();
+    public static FrameBufferTarget Default
+    {
+        get
+        {
+            defaultFrameBufferTarget ??= new DefaultFrameBuffer();
+            currentFrameBufferTarget ??= defaultFrameBufferTarget;
+            return defaultFrameBufferTarget;
+        }
+    }
 
     /// <summary>
     /// Gets the frame buffer that is currently selected as target, i.e., the frame
     /// buffer that subsequent drawing operations will be performed on.
     /// </summary>
-    public static FrameBufferTarget Current => currentFrameBufferTarget ?? Default;
+    public static FrameBufferTarget Current => currentFrameBufferTarget ??= Default;
 
     /// <summary>
     /// Gets or sets the viewport for this frame buffer target, determining which
@@ -121,6 +129,9 @@ public abstract class FrameBufferTarget(Rectangle viewport) : GraphicsResource
             GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
             boundFrameBufferId = 0;
         }
+        
+        if (IsTarget)
+            Default.SetAsTarget();
     }
 
     protected void ApplyViewport()

@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-using System.Drawing.Imaging;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 
@@ -14,9 +12,9 @@ namespace SmoothGL.Graphics.Texturing;
 public class TextureCube : Texture
 {
     private const int AllFacesBitMask = 0b111111;
-    
+
     private int _setFacesBitMask;
-    
+
     /// <summary>
     /// Creates a new cube texture with RGBA format and default filter mode.
     /// </summary>
@@ -64,32 +62,6 @@ public class TextureCube : Texture
     public TextureColorFormat Format { get; }
 
     /// <summary>
-    /// Stores data from a bitmap in the specified face of this texture. The bitmap size must match the face size of this
-    /// texture.
-    /// </summary>
-    /// <param name="bitmap">Bitmap to store in the specified face.</param>
-    /// <param name="cubeFace">The face to store bitmap data in.</param>
-    public void SetData(Bitmap bitmap, TextureCubeFace cubeFace)
-    {
-        if (bitmap.Width != Width || bitmap.Height != Height)
-            throw new ArgumentException("The size of the provided bitmap does not match the face size of this texture.");
-
-        var bitmapRectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-        var bitmapData = bitmap.LockBits(bitmapRectangle, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-        try
-        {
-            Bind();
-            GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + (int)cubeFace, 0, (PixelInternalFormat)Format, Width, Height, 0, PixelFormat.Bgra, PixelType.UnsignedInt8888Reversed, bitmapData.Scan0);
-            TryUpdateMipmaps(cubeFace);
-        }
-        finally
-        {
-            bitmap.UnlockBits(bitmapData);
-        }
-    }
-
-    /// <summary>
     /// Stores color data in the specified face of this texture. The provided data array must have exactly width * height
     /// elements.
     /// </summary>
@@ -102,6 +74,22 @@ public class TextureCube : Texture
 
         Bind();
         GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + (int)cubeFace, 0, (PixelInternalFormat)Format, Width, Height, 0, PixelFormat.Rgba, PixelType.Float, data);
+        TryUpdateMipmaps(cubeFace);
+    }
+
+    /// <summary>
+    /// Stores image data in the specified face of this texture. The image size must match the face size of this
+    /// texture.
+    /// </summary>
+    /// <param name="imageData">Image data to store in the specified face.</param>
+    /// <param name="cubeFace">The face to store image data in.</param>
+    public void SetData(ImageData imageData, TextureCubeFace cubeFace)
+    {
+        if (imageData.Width != Width || imageData.Height != Height)
+            throw new ArgumentException("The size of the provided image data does not match the size of this texture.");
+
+        Bind();
+        GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + (int)cubeFace, 0, (PixelInternalFormat)Format, Width, Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, imageData.Data);
         TryUpdateMipmaps(cubeFace);
     }
 
@@ -126,26 +114,17 @@ public class TextureCube : Texture
     }
 
     /// <summary>
-    /// Creates a new bitmap from the color data stored in the specified face of this texture.
+    /// Creates image data from the color data stored in the specified face of this texture.
     /// </summary>
-    /// <returns>New bitmap with color data from this texture.</returns>
-    public Bitmap ToBitmap(TextureCubeFace cubeFace)
+    /// <returns>New image data with color data from this texture.</returns>
+    public ImageData GetImageData(TextureCubeFace cubeFace)
     {
-        var bitmap = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-        var bitmapRectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-        var bitmapData = bitmap.LockBits(bitmapRectangle, ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        var data = new byte[4 * Width * Height];
 
-        try
-        {
-            Bind();
-            GL.GetTexImage(TextureTarget.TextureCubeMapPositiveX + (int)cubeFace, 0, PixelFormat.Bgra, PixelType.UnsignedInt8888Reversed, bitmapData.Scan0);
-        }
-        finally
-        {
-            bitmap.UnlockBits(bitmapData);
-        }
+        Bind();
+        GL.GetTexImage(TextureTarget.TextureCubeMapPositiveX + (int)cubeFace, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data);
 
-        return bitmap;
+        return new ImageData(Width, Height, data);
     }
 
     /// <summary>

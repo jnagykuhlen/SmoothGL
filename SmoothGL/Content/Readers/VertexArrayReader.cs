@@ -1,7 +1,6 @@
-﻿using SmoothGL.Graphics;
-using SmoothGL.Graphics.Geometry;
+﻿using SmoothGL.Graphics.Geometry;
 
-namespace SmoothGL.Content;
+namespace SmoothGL.Content.Readers;
 
 /// <summary>
 /// Reader class which reads a vertex array from a stream.

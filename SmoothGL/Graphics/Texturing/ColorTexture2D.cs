@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-using System.Drawing.Imaging;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 
@@ -43,30 +41,6 @@ public class ColorTexture2D : Texture2D
     protected override string ResourceName => "ColorTexture";
 
     /// <summary>
-    /// Stores data from a bitmap in this texture. The provided bitmap must have the same size as this texture.
-    /// </summary>
-    /// <param name="bitmap">Bitmap to store in the texture.</param>
-    public void SetData(Bitmap bitmap)
-    {
-        if (bitmap.Width != Width || bitmap.Height != Height)
-            throw new ArgumentException("The size of the provided bitmap does not match the size of this texture.");
-
-        var bitmapRectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-        var bitmapData = bitmap.LockBits(bitmapRectangle, ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-        try
-        {
-            Bind();
-            GL.TexImage2D(TextureTarget.Texture2D, 0, (PixelInternalFormat)Format, Width, Height, 0, PixelFormat.Bgra, PixelType.UnsignedInt8888Reversed, bitmapData.Scan0);
-            UpdateMipmaps();
-        }
-        finally
-        {
-            bitmap.UnlockBits(bitmapData);
-        }
-    }
-
-    /// <summary>
     /// Stores color data in this texture. The provided data array must have exactly width * height elements.
     /// </summary>
     /// <param name="data">Color data to store in the texture.</param>
@@ -77,6 +51,20 @@ public class ColorTexture2D : Texture2D
 
         Bind();
         GL.TexImage2D(TextureTarget.Texture2D, 0, (PixelInternalFormat)Format, Width, Height, 0, PixelFormat.Rgba, PixelType.Float, data);
+        UpdateMipmaps();
+    }
+
+    /// <summary>
+    /// Stores image data in this texture. The image must have the same size as this texture.
+    /// </summary>
+    /// <param name="imageData">Image data to store in the texture.</param>
+    public void SetImageData(ImageData imageData)
+    {
+        if (imageData.Width != Width || imageData.Height != Height)
+            throw new ArgumentException("The size of the provided image data does not match the size of this texture.");
+
+        Bind();
+        GL.TexImage2D(TextureTarget.Texture2D, 0, (PixelInternalFormat)Format, Width, Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, imageData.Data);
         UpdateMipmaps();
     }
 
@@ -93,26 +81,17 @@ public class ColorTexture2D : Texture2D
     }
 
     /// <summary>
-    /// Creates a new bitmap from the color data stored in this texture.
+    /// Creates image data from the color data stored in this texture.
     /// </summary>
-    /// <returns>New bitmap with color data from this texture.</returns>
-    public Bitmap ToBitmap()
+    /// <returns>New image data with color data from this texture.</returns>
+    public ImageData GetImageData()
     {
-        var bitmap = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-        var bitmapRectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-        var bitmapData = bitmap.LockBits(bitmapRectangle, ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        var data = new byte[4 * Width * Height];
+        
+        Bind();
+        GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data);
 
-        try
-        {
-            Bind();
-            GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Bgra, PixelType.UnsignedInt8888Reversed, bitmapData.Scan0);
-        }
-        finally
-        {
-            bitmap.UnlockBits(bitmapData);
-        }
-
-        return bitmap;
+        return new ImageData(Width, Height, data);
     }
 
     /// <summary>

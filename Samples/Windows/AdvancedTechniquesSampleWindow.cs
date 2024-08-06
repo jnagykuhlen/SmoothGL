@@ -2,6 +2,7 @@
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using SmoothGL.Content;
+using SmoothGL.Content.Readers;
 using SmoothGL.Graphics;
 using SmoothGL.Graphics.Geometry;
 using SmoothGL.Graphics.Geometry.Builder;
@@ -41,7 +42,7 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
         // where our content files will be stored. The default content reader for cube textures is
         // overwritten to load images with the provided layout.
         _contentManager = ContentManager.CreateDefault("Content");
-        _contentManager.SetContentReader(new TextureCubeReader(TextureFilterMode.Default, false, CubeTextureLayout.HorizontalCross));
+        _contentManager.SetContentReader(new TextureCubeReader(TextureFilterMode.Default, CubeTextureLayout.HorizontalCross));
     }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 

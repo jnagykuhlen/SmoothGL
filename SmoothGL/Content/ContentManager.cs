@@ -1,8 +1,9 @@
 ﻿using SmoothGL.Content.Factories;
 using SmoothGL.Content.Internal;
-using SmoothGL.Graphics;
+using SmoothGL.Content.Readers;
 using SmoothGL.Graphics.Shader;
 using SmoothGL.Graphics.Texturing;
+using StringReader = SmoothGL.Content.Readers.StringReader;
 
 namespace SmoothGL.Content;
 
@@ -21,7 +22,7 @@ public class ContentManager : IDisposable
     /// <param name="rootPath">Root directory the paths of content files are relative to.</param>
     public ContentManager(string rootPath)
     {
-        RootPath = rootPath ?? "";
+        RootPath = rootPath;
         _contentReaders = new Dictionary<Type, IContentReader<object>>();
         _disposables = new List<IDisposable>();
         _disposed = false;
@@ -55,29 +56,17 @@ public class ContentManager : IDisposable
         var contentManager = new ContentManager(rootPath);
         contentManager.SetContentReader(new SerializationReader());
         contentManager.SetContentReader(new StringReader());
-        contentManager.SetContentReader(new TextureDataReader(true));
-        contentManager.SetContentReader(new TextureCubeReader(TextureFilterMode.Default, false));
+        contentManager.SetContentReader(new ImageDataReader());
+        contentManager.SetContentReader(new TextureCubeReader(TextureFilterMode.Default));
         contentManager.SetContentReader(new FactoryReader<ShaderProgram, ShaderProgramFactory>());
-        contentManager.SetContentReader(new WavefrontOBJReader());
+        contentManager.SetContentReader(new WavefrontObjReader());
         contentManager.SetContentReader(new VertexArrayReader());
 
-        var colorTextureReader = new ColorTextureReader(TextureFilterMode.Default, true);
+        var colorTextureReader = new ColorTextureReader(TextureFilterMode.Default);
         contentManager.SetContentReader<Texture2D>(colorTextureReader);
         contentManager.SetContentReader(colorTextureReader);
 
         return contentManager;
-    }
-
-    /// <summary>
-    /// Registers a content reader which handles loading of content of the specified type.
-    /// When a reader is already registered for this type, it will be replaced. The content manager is
-    /// allowed to cache created content objects of this type.
-    /// </summary>
-    /// <typeparam name="T">Content type which can be loaded by the reader.</typeparam>
-    /// <param name="contentReader">Content reader of the specified type.</param>
-    public void SetContentReader<T>(IContentReader<T> contentReader)
-    {
-        SetContentReader(contentReader, true);
     }
 
     /// <summary>
@@ -89,45 +78,34 @@ public class ContentManager : IDisposable
     /// <typeparam name="T">Content type which can be loaded by the reader.</typeparam>
     /// <param name="contentReader">Content reader of the specified type.</param>
     /// <param name="allowCaching">Indicates whether the content manager is allowed to cache created content objects.</param>
-    public void SetContentReader<T>(IContentReader<T> contentReader, bool allowCaching)
+    public void SetContentReader<T>(IContentReader<T> contentReader, bool allowCaching = true) where T : notnull
     {
-        if (contentReader == null)
-            throw new ArgumentNullException("contentReader");
-
-        var cachedReader = (IContentReader<object>)contentReader;
-        if (allowCaching)
-            cachedReader = new CachedReader<T>(contentReader);
-
-        _contentReaders[typeof(T)] = cachedReader;
+        _contentReaders[typeof(T)] = allowCaching
+            ? new CachedReader<T>(contentReader)
+            : (IContentReader<object>)contentReader;
     }
 
     /// <summary>
     /// Loads content from a file.
     /// </summary>
     /// <typeparam name="T">The requested content type to load.</typeparam>
-    /// <param name="filename">Path to the file storing content data.</param>
+    /// <param name="relativeFilePath">Relative path to the file storing content data.</param>
     /// <returns>Content object.</returns>
-    public T Load<T>(string filename)
+    public T Load<T>(string relativeFilePath)
     {
-        if (filename == null)
-            throw new ArgumentNullException("filename");
-
-        filename = Path.Combine(RootPath, filename);
-
+        var filePath = Path.Combine(RootPath, relativeFilePath);
         try
         {
-            using (var stream = File.OpenRead(filename))
-            {
-                return Load<T>(stream);
-            }
+            using var stream = File.OpenRead(filePath);
+            return Load<T>(stream);
         }
         catch (FileNotFoundException fileNotFoundException)
         {
-            throw new ContentLoadException("Cannot find content file " + filename + ".", fileNotFoundException, filename, typeof(T));
+            throw new ContentLoadException($"Cannot find content file {filePath}.", fileNotFoundException, filePath, typeof(T));
         }
         catch (Exception exception)
         {
-            throw new ContentLoadException("Unable to load content file " + filename + ":\n" + exception.Message, exception, filename, typeof(T));
+            throw new ContentLoadException($"Unable to load content file {filePath}:\n{exception.Message}", exception, filePath, typeof(T));
         }
     }
 
@@ -139,46 +117,33 @@ public class ContentManager : IDisposable
     /// <returns>Content object.</returns>
     public T Load<T>(Stream stream)
     {
-        if (stream == null)
-            throw new ArgumentNullException("stream");
-
         if (_disposed)
-            throw new ObjectDisposedException("ContentManager", "The object is already disposed.");
-
-        string filename = null;
-        var fileStream = stream as FileStream;
-        if (fileStream != null)
-            filename = fileStream.Name;
+            throw new ObjectDisposedException(nameof(ContentManager), "The object is already disposed.");
 
         var requestedType = typeof(T);
         var type = requestedType;
         do
         {
-            IContentReader<object> contentReader;
-            if (_contentReaders.TryGetValue(type, out contentReader))
-                if (contentReader.CanReadSubtypes || type == requestedType)
+            if (_contentReaders.TryGetValue(type, out var contentReader) && (contentReader.CanReadSubtypes || type == requestedType))
+            {
+                var result = contentReader.Read(stream, requestedType, this);
+                if (result is CachedResult cachedResult)
                 {
-                    var result = contentReader.Read(stream, requestedType, this);
-                    var cachedResult = result as CachedResult;
-
-                    if (cachedResult != null)
-                    {
-                        result = cachedResult.Value;
-                        if (!cachedResult.IsNew)
-                            return (T)result;
-                    }
-
-                    var disposable = result as IDisposable;
-                    if (disposable != null)
-                        _disposables.Add(disposable);
-
-                    return (T)result;
+                    result = cachedResult.Value;
+                    if (!cachedResult.IsNew)
+                        return (T)result;
                 }
+
+                if (result is IDisposable disposable)
+                    _disposables.Add(disposable);
+
+                return (T)result;
+            }
 
             type = type.BaseType;
         } while (type != null);
-
-        throw new ContentLoadException(string.Format("There is no content reader registered for type {0}.", requestedType), filename, requestedType);
+        
+        throw new ContentLoadException($"There is no content reader registered for type {requestedType}.", stream, requestedType);
     }
 
     /// <summary>
@@ -202,24 +167,12 @@ public class ContentManager : IDisposable
 
         foreach (var disposable in _disposables)
             disposable.Dispose();
+
         _disposables.Clear();
     }
 
     ~ContentManager()
     {
         Dispose();
-    }
-
-    private class ContentReaderData
-    {
-        public ContentReaderData(IContentReader<object> reader, bool allowCaching)
-        {
-            Reader = reader;
-            AllowCaching = allowCaching;
-        }
-
-        public IContentReader<object> Reader { get; }
-
-        public bool AllowCaching { get; }
     }
 }

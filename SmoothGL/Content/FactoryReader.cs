@@ -5,9 +5,10 @@
 /// loads a factory for this type and uses it to create the content object.
 /// </summary>
 /// <typeparam name="TProduct">Content type read by this reader.</typeparam>
-/// <typeparam name="TFactory">Type of a factory which is capable of creating the requested content type.</typeparam>
+/// <typeparam name="TFactory">Type of factory which is capable of creating the requested content type.</typeparam>
 public class FactoryReader<TProduct, TFactory> : IContentReader<TProduct>
     where TFactory : IFactory<TProduct>
+    where TProduct : notnull
 {
     /// <summary>
     /// Reads a content object from a stream by loading a factory which then creates the requested product.

@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace SmoothGL.Content;
+namespace SmoothGL.Content.Readers;
 
 /// <summary>
 /// Reader class which deserializes objects of arbitrary type from a stream.
@@ -18,7 +18,7 @@ public class SerializationReader : IContentReader<object>
     public object Read(Stream stream, Type requestedType, ContentManager contentManager)
     {
         var serializer = new XmlSerializer(requestedType);
-        return serializer.Deserialize(stream);
+        return serializer.Deserialize(stream) ?? throw new ContentLoadException("Deserialization failed.", stream, typeof(object));
     }
 
     /// <summary>
