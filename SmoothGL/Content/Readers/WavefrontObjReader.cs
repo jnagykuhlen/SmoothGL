@@ -25,14 +25,14 @@ public class WavefrontObjReader : IContentReader<MeshData>
 
         foreach (var line in ReadAllLines(stream))
         {
-            if (line.StartsWith("vt"))
-                textureCoordinates.Add(ParseTextureCoordinate(line[2..].Trim()));
-            else if (line.StartsWith("vn"))
-                normals.Add(ParseNormal(line[2..].Trim()));
-            else if (line.StartsWith('v'))
-                vertices.Add(ParseVertex(line[1..].Trim()));
-            else if (line.StartsWith('f'))
-                indices.AddRange(ParseFace(line[1..].Trim()));
+            if (line.StartsWith("vt "))
+                textureCoordinates.Add(ParseTextureCoordinate(line[3..].Trim()));
+            else if (line.StartsWith("vn "))
+                normals.Add(ParseNormal(line[3..].Trim()));
+            else if (line.StartsWith("v "))
+                vertices.Add(ParseVertex(line[2..].Trim()));
+            else if (line.StartsWith("f "))
+                indices.AddRange(ParseFace(line[2..].Trim()));
         }
 
         return new MeshData(vertices.ToArray(), normals.ToArray(), textureCoordinates.ToArray(), indices.ToArray());
@@ -99,15 +99,15 @@ public class WavefrontObjReader : IContentReader<MeshData>
         if (indexStrings.Length < 3)
             throw new InvalidDataException("Wrong Wavefront OBJ file format.");
 
-        return Triangulate(indexStrings.Select(indexString => ParseIndex(indexString.Trim())));
+        return Triangulate(indexStrings.Select(indexString => ParseIndex(indexString.Trim())).ToArray());
     }
 
-    private static IEnumerable<uint> Triangulate(IEnumerable<uint> indices)
+    private static IEnumerable<uint> Triangulate(uint[] indices)
     {
-        var first = indices.ElementAt(0);
-        var last = indices.ElementAt(1);
+        var first = indices[0];
+        var last = indices[1];
 
-        foreach (var current in indices.Skip(2))
+        foreach (var current in indices[2..])
         {
             yield return first;
             yield return last;
