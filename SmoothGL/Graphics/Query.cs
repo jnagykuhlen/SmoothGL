@@ -32,8 +32,7 @@ public abstract class Query : GraphicsResource
             if (_active)
                 return false;
 
-            int finished;
-            GL.GetQueryObject(_queryId, GetQueryObjectParam.QueryResultAvailable, out finished);
+            GL.GetQueryObject(_queryId, GetQueryObjectParam.QueryResultAvailable, out int finished);
             return finished != 0;
         }
     }
@@ -41,15 +40,14 @@ public abstract class Query : GraphicsResource
     /// <summary>
     /// Gets the query result if it is available.
     /// </summary>
-    protected int Result
+    protected long Result
     {
         get
         {
             if (_active)
                 throw new InvalidOperationException("End query before accessing the result.");
 
-            int result;
-            GL.GetQueryObject(_queryId, GetQueryObjectParam.QueryResult, out result);
+            GL.GetQueryObject(_queryId, GetQueryObjectParam.QueryResult, out long result);
             return result;
         }
     }
@@ -65,6 +63,7 @@ public abstract class Query : GraphicsResource
     {
         if (_active)
             throw new InvalidOperationException("Cannot begin query because it is already active.");
+        
         GL.BeginQuery(_target, _queryId);
         _active = true;
     }
@@ -77,6 +76,7 @@ public abstract class Query : GraphicsResource
     {
         if (!_active)
             throw new InvalidOperationException("Cannot end query because it is not active.");
+        
         GL.EndQuery(_target);
         _active = false;
     }
