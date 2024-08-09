@@ -135,10 +135,12 @@ public class ShaderProgramFactory : IFactory<ShaderProgram>
     {
         public static readonly PathEqualityComparer Instance = new();
     
-        public bool Equals(string? first, string? second) => first != null && second != null && UnifyPath(first) == UnifyPath(second);
-        public int GetHashCode(string value) => UnifyPath(value).GetHashCode();
+        public bool Equals(string? first, string? second) =>
+            first != null && second != null && string.Equals(NormalizePath(first), NormalizePath(second), StringComparison.InvariantCultureIgnoreCase);
+        
+        public int GetHashCode(string value) => NormalizePath(value).GetHashCode();
     
-        private static string UnifyPath(string path) =>
-            path.ToLowerInvariant().Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+        private static string NormalizePath(string path) =>
+            Path.GetFullPath(path).TrimEnd('\\');
     }
 }
