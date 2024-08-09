@@ -11,19 +11,19 @@ public class ShaderCompilationException : Exception
     /// Creates a new ShaderCompilationException.
     /// </summary>
     /// <param name="message">Message specifying why the shader does not compile.</param>
-    /// <param name="shaderType">Type of the shader which does not compile.</param>
+    /// <param name="shaderStage">Shader stage which does not compile.</param>
     /// <param name="shaderCode">Incorrect shader code causing the compilation error.</param>
-    public ShaderCompilationException(string message, ShaderType shaderType, string? shaderCode = null)
+    public ShaderCompilationException(string message, ShaderStage shaderStage, string? shaderCode = null)
         : base(message)
     {
-        ShaderType = shaderType;
+        ShaderStage = shaderStage;
         ShaderCode = shaderCode;
     }
 
     /// <summary>
-    /// Gets the type of the shader which does not compile.
+    /// Gets the shader stage which does not compile.
     /// </summary>
-    public ShaderType ShaderType { get; }
+    public ShaderStage ShaderStage { get; }
 
     /// <summary>
     /// Gets the incorrect shader code causing the compilation error.

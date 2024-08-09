@@ -19,7 +19,7 @@ public class FactoryReader<TProduct, TFactory> : IContentReader<TProduct>
     /// <returns>The read object.</returns>
     public TProduct Read(Stream stream, Type requestedType, ContentManager contentManager)
     {
-        IFactory<TProduct> factory = contentManager.Load<TFactory>(stream);
+        var factory = contentManager.Load<TFactory>(stream);
         return factory.Create(contentManager);
     }
 

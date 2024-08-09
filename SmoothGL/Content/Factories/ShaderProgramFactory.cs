@@ -1,5 +1,4 @@
 ﻿using System.Xml.Serialization;
-using OpenTK.Graphics.OpenGL;
 using SmoothGL.Graphics.Shader;
 
 namespace SmoothGL.Content.Factories;
@@ -10,38 +9,40 @@ namespace SmoothGL.Content.Factories;
 [XmlRoot(ElementName = "ShaderProgram")]
 public class ShaderProgramFactory : IFactory<ShaderProgram>
 {
+    private const string IncludeToken = "#include";
+
     /// <summary>
     /// Path to the vertex shader code file.
     /// </summary>
     [XmlElement(ElementName = "Vertex")]
-    public string? VertexShaderFilename { get; set; }
+    public string? VertexShaderFilePath { get; set; }
 
     /// <summary>
     /// Path to the tessellation control shader code file.
     /// Set this property to null if the tessellation control shader is not required.
     /// </summary>
     [XmlElement(ElementName = "TessellationControl")]
-    public string? TessellationControlFilename { get; set; }
+    public string? TessellationControlFilePath { get; set; }
 
     /// <summary>
     /// Path to the tessellation evaluation shader code file.
     /// Set this property to null if the tessellation evaluation shader is not required.
     /// </summary>
     [XmlElement(ElementName = "TessellationEvaluation")]
-    public string? TessellationEvaluationFilename { get; set; }
+    public string? TessellationEvaluationFilePath { get; set; }
 
     /// <summary>
     /// Path to the geometry shader code file.
     /// Set this property to null if the geometry shader is not required.
     /// </summary>
     [XmlElement(ElementName = "Geometry")]
-    public string? GeometryShaderFilename { get; set; }
+    public string? GeometryShaderFilePath { get; set; }
 
     /// <summary>
     /// Path to the fragment shader code file.
     /// </summary>
     [XmlElement(ElementName = "Fragment")]
-    public string? FragmentShaderFilename { get; set; }
+    public string? FragmentShaderFilePath { get; set; }
 
     /// <summary>
     /// Creates a shader program from the individual shaders loaded from the corresponding files.
@@ -50,25 +51,18 @@ public class ShaderProgramFactory : IFactory<ShaderProgram>
     /// <returns>Shader program.</returns>
     public ShaderProgram Create(ContentManager contentManager)
     {
-        string vertexShaderCode = null;
-        string tessellationControlShaderCode = null;
-        string tessellationEvaluationShaderCode = null;
-        string geometryShaderCode = null;
-        string fragmentShaderCode = null;
-
-        if (VertexShaderFilename != null)
-            vertexShaderCode = LoadShaderCode(contentManager, VertexShaderFilename);
-        if (TessellationControlFilename != null)
-            tessellationControlShaderCode = LoadShaderCode(contentManager, TessellationControlFilename);
-        if (TessellationEvaluationFilename != null)
-            tessellationEvaluationShaderCode = LoadShaderCode(contentManager, TessellationEvaluationFilename);
-        if (GeometryShaderFilename != null)
-            geometryShaderCode = LoadShaderCode(contentManager, GeometryShaderFilename);
-        if (FragmentShaderFilename != null)
-            fragmentShaderCode = LoadShaderCode(contentManager, FragmentShaderFilename);
-
         try
         {
+            var vertexShaderCode = TryLoadShaderCode(contentManager, VertexShaderFilePath) ??
+                                   throw new ShaderCompilationException("Vertex shader file must be provided.", ShaderStage.Vertex);
+
+            var tessellationControlShaderCode = TryLoadShaderCode(contentManager, TessellationControlFilePath);
+            var tessellationEvaluationShaderCode = TryLoadShaderCode(contentManager, TessellationEvaluationFilePath);
+            var geometryShaderCode = TryLoadShaderCode(contentManager, GeometryShaderFilePath);
+
+            var fragmentShaderCode = TryLoadShaderCode(contentManager, FragmentShaderFilePath) ??
+                                     throw new ShaderCompilationException("Fragment shader file must be provided.", ShaderStage.Fragment);
+
             return new ShaderProgram(
                 vertexShaderCode,
                 tessellationControlShaderCode,
@@ -77,67 +71,52 @@ public class ShaderProgramFactory : IFactory<ShaderProgram>
                 fragmentShaderCode
             );
         }
-        catch (ShaderCompilationException sce)
+        catch (ShaderCompilationException exception)
         {
-            var sourceFile = "";
-            switch (sce.ShaderType)
+            var filePath = exception.ShaderStage switch
             {
-                case ShaderType.VertexShader:
-                    sourceFile = VertexShaderFilename;
-                    break;
-                case ShaderType.TessControlShader:
-                    sourceFile = TessellationControlFilename;
-                    break;
-                case ShaderType.TessEvaluationShader:
-                    sourceFile = TessellationEvaluationFilename;
-                    break;
-                case ShaderType.GeometryShader:
-                    sourceFile = GeometryShaderFilename;
-                    break;
-                case ShaderType.FragmentShader:
-                    sourceFile = FragmentShaderFilename;
-                    break;
-            }
+                ShaderStage.Vertex => VertexShaderFilePath,
+                ShaderStage.TessellationControl => TessellationControlFilePath,
+                ShaderStage.TessellationEvaluation => TessellationEvaluationFilePath,
+                ShaderStage.Geometry => GeometryShaderFilePath,
+                ShaderStage.Fragment => FragmentShaderFilePath,
+                _ => "<unknown shader file>"
+            };
 
-            throw new ShaderCompilationException(string.Format("In File {0}: {1}", sourceFile, sce.Message), sce.ShaderType, sce.ShaderCode);
+            throw new ShaderCompilationException($"Shader compilation error in file {filePath}: {exception.Message}", exception.ShaderStage, exception.ShaderCode);
         }
     }
 
-    private static string LoadShaderCode(ContentManager contentManager, string filename)
+    private static string? TryLoadShaderCode(ContentManager contentManager, string? filePath) =>
+        filePath == null ? null : LoadShaderCode(contentManager, filePath);
+
+    private static string LoadShaderCode(ContentManager contentManager, string filePath)
     {
-        return LoadShaderCode(contentManager, UnifyPath(filename), new HashSet<string>());
-    }
+        var shaderCode = contentManager.Load<string>(filePath);
 
-    private static string LoadShaderCode(ContentManager contentManager, string filename, HashSet<string> filesIncluded)
-    {
-        const string IncludeToken = "#include";
+        var filesIncluded = new HashSet<string>(PathEqualityComparer.Instance) { filePath };
+        var baseDirectory = Path.GetDirectoryName(filePath) ?? "";
 
-        var shaderCode = contentManager.Load<string>(filename);
-
-        filesIncluded.Add(filename);
-
-        int index;
-        while ((index = shaderCode.IndexOf(IncludeToken)) >= 0)
+        var index = 0;
+        while ((index = shaderCode.IndexOf(IncludeToken, index, StringComparison.InvariantCulture)) >= 0)
         {
-            var endIndex = shaderCode.IndexOf(Environment.NewLine, index);
-            if (endIndex < 0)
-                endIndex = shaderCode.IndexOfAny(new[] { '\n', '\r' }, index);
+            var endIndex = shaderCode.IndexOfAny(['\n', '\r'], index);
             if (endIndex < 0)
                 endIndex = shaderCode.Length;
 
             var includeCode = "";
 
-            var pathIndex = index + IncludeToken.Length;
-            var includePath = shaderCode.Substring(pathIndex, endIndex - pathIndex).Trim();
+            var includeArgumentIndex = index + IncludeToken.Length;
+            var includeArgument = shaderCode.Substring(includeArgumentIndex, endIndex - includeArgumentIndex).Trim();
 
-            if (includePath[0] == '\"' && includePath[includePath.Length - 1] == '\"')
+            if (includeArgument[0] == '\"' && includeArgument[^1] == '\"')
             {
-                includePath = includePath.Substring(1, includePath.Length - 2);
-                includePath = UnifyPath(Path.Combine(Path.GetDirectoryName(filename), includePath));
+                var relativeIncludePath = includeArgument[1..^1];
+                var includePath = Path.Combine(baseDirectory, relativeIncludePath);
 
                 if (!filesIncluded.Contains(includePath))
                 {
-                    includeCode = LoadShaderCode(contentManager, includePath, filesIncluded);
+                    includeCode = contentManager.Load<string>(includePath);
                     filesIncluded.Add(includePath);
                 }
             }
@@ -151,9 +130,15 @@ public class ShaderProgramFactory : IFactory<ShaderProgram>
 
         return shaderCode;
     }
-
-    private static string UnifyPath(string path)
+    
+    private class PathEqualityComparer : IEqualityComparer<string>
     {
-        return path.ToLowerInvariant().Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+        public static readonly PathEqualityComparer Instance = new();
+    
+        public bool Equals(string? first, string? second) => first != null && second != null && UnifyPath(first) == UnifyPath(second);
+        public int GetHashCode(string value) => UnifyPath(value).GetHashCode();
+    
+        private static string UnifyPath(string path) =>
+            path.ToLowerInvariant().Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
     }
 }

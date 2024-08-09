@@ -140,7 +140,7 @@ public class ShaderProgram : GraphicsResource
         {
             var message = GL.GetShaderInfoLog(shaderId);
             GL.DeleteShader(shaderId);
-            throw new ShaderCompilationException(message, shaderType, shaderCode);
+            throw new ShaderCompilationException(message, (ShaderStage)shaderType, shaderCode);
         }
 
         return shaderId;
