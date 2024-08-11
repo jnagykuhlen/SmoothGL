@@ -16,7 +16,7 @@ public abstract class GraphicsResource : IDisposable
     /// <summary>
     /// Override this method to return the name of the resource.
     /// </summary>
-    protected virtual string ResourceName => "GraphicsResource";
+    protected virtual string ResourceName => GetType().Name;
 
     /// <summary>
     /// Gets a value indicating whether this resource has been disposed.
@@ -55,6 +55,7 @@ public abstract class GraphicsResource : IDisposable
     ~GraphicsResource()
     {
         if (!Disposed)
+        {
             try
             {
                 Dispose();
@@ -62,13 +63,10 @@ public abstract class GraphicsResource : IDisposable
             catch (Exception exception)
             {
                 throw new GraphicsResourceNotDisposedException(
-                    string.Format(
-                        "{0} has not been disposed before finalization and cannot be disposed automatically. " +
-                        "Make sure that all graphics resources are disposed manually to avoid memory leaks.",
-                        ResourceName
-                    ),
+                    $"{ResourceName} has not been disposed before finalization and cannot be disposed automatically. Make sure that all graphics resources are disposed manually to avoid memory leaks.",
                     exception
                 );
             }
+        }
     }
 }

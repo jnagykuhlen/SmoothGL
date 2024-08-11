@@ -19,7 +19,13 @@ public class Quad : GraphicsResource
         var declaration = new VertexDeclaration(
             new VertexElementFloat(0, 4)
         );
-        Vector4[] data = { new(1, 1, 0, 1), new(-1, 1, 0, 1), new(1, -1, 0, 1), new(-1, -1, 0, 1) };
+
+        Vector4[] data = [
+            new Vector4(1, 1, 0, 1),
+            new Vector4(-1, 1, 0, 1),
+            new Vector4(1, -1, 0, 1),
+            new Vector4(-1, -1, 0, 1)
+        ];
 
         _vertexBuffer = new VertexBuffer(4, declaration, BufferUsage.Static);
         _vertexBuffer.SetData(data);

@@ -1,6 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL;
-
-namespace SmoothGL.Graphics.Shader;
+﻿namespace SmoothGL.Graphics.Shader;
 
 /// <summary>
 /// Exception which is thrown when a shader fails to compile.

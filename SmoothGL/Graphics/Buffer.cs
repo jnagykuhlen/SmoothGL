@@ -8,7 +8,7 @@ namespace SmoothGL.Graphics;
 /// </summary>
 public abstract class Buffer : GraphicsResource, IUnsafeBuffer
 {
-    private static int _currentBufferId;
+    private static int currentBufferId;
 
     private int _bufferId;
     private readonly BufferTarget _target;
@@ -27,8 +27,6 @@ public abstract class Buffer : GraphicsResource, IUnsafeBuffer
         GL.GenBuffers(1, out _bufferId);
         Resize(size);
     }
-
-    protected int Id => _bufferId;
 
     protected override string ResourceName => "Buffer";
 
@@ -58,7 +56,7 @@ public abstract class Buffer : GraphicsResource, IUnsafeBuffer
     /// </summary>
     public static void InvalidateBindingCache()
     {
-        _currentBufferId = 0;
+        currentBufferId = 0;
     }
 
     /// <summary>
@@ -67,10 +65,10 @@ public abstract class Buffer : GraphicsResource, IUnsafeBuffer
     public void Bind()
     {
         CheckDisposed();
-        if (_currentBufferId != _bufferId)
+        if (currentBufferId != _bufferId)
         {
             GL.BindBuffer(_target, _bufferId);
-            _currentBufferId = _bufferId;
+            currentBufferId = _bufferId;
         }
     }
 
@@ -92,7 +90,7 @@ public abstract class Buffer : GraphicsResource, IUnsafeBuffer
     protected void Resize(int size)
     {
         if (size < 0)
-            throw new ArgumentOutOfRangeException("size", "Buffer size must be non-negative.");
+            throw new ArgumentOutOfRangeException(nameof(size), "Buffer size must be non-negative.");
 
         Bind();
         GL.BufferData(_target, new IntPtr(size), IntPtr.Zero, (BufferUsageHint)Usage);
@@ -148,8 +146,8 @@ public abstract class Buffer : GraphicsResource, IUnsafeBuffer
 
     protected sealed override void FreeResources()
     {
-        if (_currentBufferId == _bufferId)
-            _currentBufferId = 0;
+        if (currentBufferId == _bufferId)
+            currentBufferId = 0;
 
         GL.DeleteBuffers(1, ref _bufferId);
     }
