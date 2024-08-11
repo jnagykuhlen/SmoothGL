@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmoothGL", "SmoothGL\Smooth
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples", "Samples\Samples.csproj", "{F95FFCB2-9E10-47CE-9980-42C27EE41E17}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmoothGL.Tests", "SmoothGL.Tests\SmoothGL.Tests.csproj", "{B725C326-4472-4D3E-A363-5ECE5FE330AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,18 @@ Global
 		{F95FFCB2-9E10-47CE-9980-42C27EE41E17}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{F95FFCB2-9E10-47CE-9980-42C27EE41E17}.Release|x86.ActiveCfg = Release|Any CPU
 		{F95FFCB2-9E10-47CE-9980-42C27EE41E17}.Release|x86.Build.0 = Release|Any CPU
+		{B725C326-4472-4D3E-A363-5ECE5FE330AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B725C326-4472-4D3E-A363-5ECE5FE330AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B725C326-4472-4D3E-A363-5ECE5FE330AE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B725C326-4472-4D3E-A363-5ECE5FE330AE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B725C326-4472-4D3E-A363-5ECE5FE330AE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B725C326-4472-4D3E-A363-5ECE5FE330AE}.Debug|x86.Build.0 = Debug|Any CPU
+		{B725C326-4472-4D3E-A363-5ECE5FE330AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B725C326-4472-4D3E-A363-5ECE5FE330AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B725C326-4472-4D3E-A363-5ECE5FE330AE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B725C326-4472-4D3E-A363-5ECE5FE330AE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B725C326-4472-4D3E-A363-5ECE5FE330AE}.Release|x86.ActiveCfg = Release|Any CPU
+		{B725C326-4472-4D3E-A363-5ECE5FE330AE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,5 @@
 ﻿using System.Xml.Serialization;
+using SmoothGL.Content.Internal;
 using SmoothGL.Graphics.Shader;
 
 namespace SmoothGL.Content.Factories;
@@ -93,54 +94,21 @@ public class ShaderProgramFactory : IFactory<ShaderProgram>
     private static string LoadShaderCode(ContentManager contentManager, string filePath)
     {
         var shaderCode = contentManager.Load<string>(filePath);
-
         var filesIncluded = new HashSet<string>(PathEqualityComparer.Instance) { filePath };
         var baseDirectory = Path.GetDirectoryName(filePath) ?? "";
 
-        var index = 0;
-        while ((index = shaderCode.IndexOf(IncludeToken, index, StringComparison.InvariantCulture)) >= 0)
+        return StringReplace.ReplaceRecursive(shaderCode, IncludeToken, argument =>
         {
-            var endIndex = shaderCode.IndexOfAny(['\n', '\r'], index);
-            if (endIndex < 0)
-                endIndex = shaderCode.Length;
+            if (argument[0] != '\"' || argument[^1] != '\"')
+                return "#error Include path must be enclosed by quotation marks.";
+            
+            var relativeIncludePath = argument[1..^1];
+            var includePath = Path.Combine(baseDirectory, relativeIncludePath);
 
-            var includeCode = "";
-
-            var includeArgumentIndex = index + IncludeToken.Length;
-            var includeArgument = shaderCode.Substring(includeArgumentIndex, endIndex - includeArgumentIndex).Trim();
-
-            if (includeArgument[0] == '\"' && includeArgument[^1] == '\"')
-            {
-                var relativeIncludePath = includeArgument[1..^1];
-                var includePath = Path.Combine(baseDirectory, relativeIncludePath);
-
-                if (!filesIncluded.Contains(includePath))
-                {
-                    includeCode = contentManager.Load<string>(includePath);
-                    filesIncluded.Add(includePath);
-                }
-            }
-            else
-            {
-                includeCode = "#error Include path must be enclosed by quotation marks.";
-            }
-
-            shaderCode = shaderCode.Remove(index, endIndex - index).Insert(index, includeCode);
-        }
-
-        return shaderCode;
-    }
-    
-    private class PathEqualityComparer : IEqualityComparer<string>
-    {
-        public static readonly PathEqualityComparer Instance = new();
-    
-        public bool Equals(string? first, string? second) =>
-            first != null && second != null && string.Equals(NormalizePath(first), NormalizePath(second), StringComparison.InvariantCultureIgnoreCase);
-        
-        public int GetHashCode(string value) => NormalizePath(value).GetHashCode();
-    
-        private static string NormalizePath(string path) =>
-            Path.GetFullPath(path).TrimEnd('\\');
+            if (!filesIncluded.Add(includePath))
+                return "";
+            
+            return contentManager.Load<string>(includePath);
+        });
     }
 }
