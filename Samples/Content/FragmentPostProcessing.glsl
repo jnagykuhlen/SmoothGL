@@ -19,13 +19,14 @@ void main()
 	vec3 colorSample  = texture(TextureColor, fTexCoord).xyz;
 	float depthSample = texture(TextureDepth, fTexCoord).r;
 
-	vec3 components[3] = vec3[]
+	vec3 components[4] = vec3[]
 	(
 		colorSample,
+        colorSample,
 		vec3((colorSample.x + colorSample.y + colorSample.z) / 3.0f),
 		vec3(linearizeDepth(depthSample))
 	);
 	
-	int index = clamp(int(3.0f * fTexCoord.x + 0.1f * (fTexCoord.y - 0.5f)), 0, 2);
+	int index = clamp(int(4.0f * fTexCoord.x + 0.1f * (fTexCoord.y - 0.5f)), 0, 3);
 	color = vec4(components[index], 1.0f);
 }
