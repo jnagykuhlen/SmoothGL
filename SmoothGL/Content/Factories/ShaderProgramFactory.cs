@@ -1,13 +1,12 @@
-﻿using System.Xml.Serialization;
+﻿using System.Text.Json.Serialization;
 using SmoothGL.Content.Internal;
 using SmoothGL.Graphics.Shader;
 
 namespace SmoothGL.Content.Factories;
 
 /// <summary>
-/// Serializable, mutable factory which creates shader programs.
+/// Serializable factory which creates shader programs.
 /// </summary>
-[XmlRoot(ElementName = "ShaderProgram")]
 public class ShaderProgramFactory : IFactory<ShaderProgram>
 {
     private const string IncludeToken = "#include";
@@ -15,35 +14,35 @@ public class ShaderProgramFactory : IFactory<ShaderProgram>
     /// <summary>
     /// Path to the vertex shader code file.
     /// </summary>
-    [XmlElement(ElementName = "Vertex")]
-    public string? VertexShaderFilePath { get; set; }
+    [JsonPropertyName("vertex"), JsonRequired]
+    public required string VertexShaderFilePath { get; set; }
 
     /// <summary>
     /// Path to the tessellation control shader code file.
     /// Set this property to null if the tessellation control shader is not required.
     /// </summary>
-    [XmlElement(ElementName = "TessellationControl")]
+    [JsonPropertyName("tessellationControl")]
     public string? TessellationControlFilePath { get; set; }
 
     /// <summary>
     /// Path to the tessellation evaluation shader code file.
     /// Set this property to null if the tessellation evaluation shader is not required.
     /// </summary>
-    [XmlElement(ElementName = "TessellationEvaluation")]
+    [JsonPropertyName("tessellationEvaluation")]
     public string? TessellationEvaluationFilePath { get; set; }
 
     /// <summary>
     /// Path to the geometry shader code file.
     /// Set this property to null if the geometry shader is not required.
     /// </summary>
-    [XmlElement(ElementName = "Geometry")]
+    [JsonPropertyName("geometry")]
     public string? GeometryShaderFilePath { get; set; }
 
     /// <summary>
     /// Path to the fragment shader code file.
     /// </summary>
-    [XmlElement(ElementName = "Fragment")]
-    public string? FragmentShaderFilePath { get; set; }
+    [JsonPropertyName("fragment"), JsonRequired]
+    public required string FragmentShaderFilePath { get; set; }
 
     /// <summary>
     /// Creates a shader program from the individual shaders loaded from the corresponding files.
@@ -54,15 +53,11 @@ public class ShaderProgramFactory : IFactory<ShaderProgram>
     {
         try
         {
-            var vertexShaderCode = TryLoadShaderCode(contentManager, VertexShaderFilePath) ??
-                                   throw new ShaderCompilationException("Vertex shader file must be provided.", ShaderStage.Vertex);
-
+            var vertexShaderCode = LoadShaderCode(contentManager, VertexShaderFilePath);
             var tessellationControlShaderCode = TryLoadShaderCode(contentManager, TessellationControlFilePath);
             var tessellationEvaluationShaderCode = TryLoadShaderCode(contentManager, TessellationEvaluationFilePath);
             var geometryShaderCode = TryLoadShaderCode(contentManager, GeometryShaderFilePath);
-
-            var fragmentShaderCode = TryLoadShaderCode(contentManager, FragmentShaderFilePath) ??
-                                     throw new ShaderCompilationException("Fragment shader file must be provided.", ShaderStage.Fragment);
+            var fragmentShaderCode = LoadShaderCode(contentManager, FragmentShaderFilePath);
 
             return new ShaderProgram(
                 vertexShaderCode,
@@ -81,7 +76,7 @@ public class ShaderProgramFactory : IFactory<ShaderProgram>
                 ShaderStage.TessellationEvaluation => TessellationEvaluationFilePath,
                 ShaderStage.Geometry => GeometryShaderFilePath,
                 ShaderStage.Fragment => FragmentShaderFilePath,
-                _ => "<unknown shader file>"
+                _ => "<unknown>"
             };
 
             throw new ShaderCompilationException($"Shader compilation error in file {filePath}: {exception.Message}", exception.ShaderStage, exception.ShaderCode);
@@ -101,13 +96,13 @@ public class ShaderProgramFactory : IFactory<ShaderProgram>
         {
             if (argument[0] != '\"' || argument[^1] != '\"')
                 return "#error Include path must be enclosed by quotation marks.";
-            
+
             var relativeIncludePath = argument[1..^1];
             var includePath = Path.Combine(baseDirectory, relativeIncludePath);
 
             if (!filesIncluded.Add(includePath))
                 return "";
-            
+
             return contentManager.Load<string>(includePath);
         });
     }

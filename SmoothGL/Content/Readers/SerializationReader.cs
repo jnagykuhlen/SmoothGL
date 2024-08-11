@@ -1,10 +1,10 @@
-﻿using System.Xml.Serialization;
+﻿using System.Text.Json;
 
 namespace SmoothGL.Content.Readers;
 
 /// <summary>
 /// Reader class which deserializes objects of arbitrary type from a stream.
-/// This reader is based on the XmlSerializer class.
+/// This reader is based on .NET JSON serialization.
 /// </summary>
 public class SerializationReader : IContentReader<object>
 {
@@ -15,11 +15,8 @@ public class SerializationReader : IContentReader<object>
     /// <param name="requestedType">The concrete type requested.</param>
     /// <param name="contentManager">Content manager used to load additional data.</param>
     /// <returns>The read object.</returns>
-    public object Read(Stream stream, Type requestedType, ContentManager contentManager)
-    {
-        var serializer = new XmlSerializer(requestedType);
-        return serializer.Deserialize(stream) ?? throw new ContentLoadException("Deserialization failed.", stream, typeof(object));
-    }
+    public object Read(Stream stream, Type requestedType, ContentManager contentManager) =>
+        JsonSerializer.Deserialize(stream, requestedType) ?? throw new ContentLoadException("Deserialized null.", stream, typeof(object));
 
     /// <summary>
     /// Indicates whether this class can also read subtypes of the specified type.

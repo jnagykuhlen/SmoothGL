@@ -1,0 +1,4 @@
+﻿{
+    "vertex": "VertexPostProcessing.glsl",
+    "fragment": "FragmentPostProcessing.glsl"
+}

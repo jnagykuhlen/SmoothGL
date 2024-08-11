@@ -94,11 +94,11 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
 
         // Loads different shaders that are required to draw the torus model, the skybox and
         // to apply a post-processing step to the entire screen after rendering the scene.
-        // By default, the content manager expects a simple XML file that lists the paths
+        // By default, the content manager expects a simple JSON file that lists the paths
         // to the GLSL source code per shader stage.
-        _shaderTorus = _contentManager.Load<ShaderProgram>("ShaderTorus.xml");
-        _shaderSky = _contentManager.Load<ShaderProgram>("ShaderSky.xml");
-        _shaderPostProcessing = _contentManager.Load<ShaderProgram>("ShaderPostProcessing.xml");
+        _shaderTorus = _contentManager.Load<ShaderProgram>("shader-torus.json");
+        _shaderSky = _contentManager.Load<ShaderProgram>("shader-sky.json");
+        _shaderPostProcessing = _contentManager.Load<ShaderProgram>("shader-post-processing.json");
 
         // Sets the values of shader uniforms that do not change during the main loop. Color and
         // cube textures can be assigned to uniform samplers like any other primitive value.

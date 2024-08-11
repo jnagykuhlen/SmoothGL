@@ -1,0 +1,4 @@
+﻿{
+    "vertex": "VertexTorus.glsl",
+    "fragment": "FragmentTorus.glsl"
+}

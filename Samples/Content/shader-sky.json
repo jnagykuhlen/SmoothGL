@@ -1,0 +1,4 @@
+﻿{
+    "vertex": "VertexSky.glsl",
+    "fragment": "FragmentSky.glsl"
+}
