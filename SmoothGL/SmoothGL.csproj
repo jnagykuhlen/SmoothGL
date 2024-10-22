@@ -9,6 +9,10 @@
         <RootNamespace>SmoothGL</RootNamespace>
         <AssemblyName>SmoothGL</AssemblyName>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>SmoothGL</Title>
+        <Authors>Jonas Nagy-Kuhlen</Authors>
+        <Description>An easy-to-use framework for OpenGL graphics in C#</Description>
     </PropertyGroup>
 
     <ItemGroup>
