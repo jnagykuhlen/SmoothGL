@@ -150,11 +150,12 @@ public class ContentManager : IDisposable
     /// Adds a disposable content object so that its lifetime is managed by this content manager.
     /// </summary>
     /// <param name="disposable"></param>
-    public void Add(IDisposable disposable)
+    public T Add<T>(T disposable) where T : IDisposable
     {
         if (_disposed)
-            throw new ObjectDisposedException("ContentManager", "The object is already disposed.");
+            throw new ObjectDisposedException(nameof(ContentManager), "The object is already disposed.");
         _disposables.Add(disposable);
+        return disposable;
     }
 
     /// <summary>
