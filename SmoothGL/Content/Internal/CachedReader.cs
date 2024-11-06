@@ -56,11 +56,6 @@ public class CachedReader<T> : IContentReader<CachedResult>, ICachedReader where
     /// Indicates whether this class can also read subtypes of the specified type.
     /// </summary>
     public bool CanReadSubtypes => _internalReader.CanReadSubtypes;
-
-    /// <summary>
-    /// Gets the name of this reader.
-    /// </summary>
-    public string ReaderName => "Cached" + _internalReader.ReaderName;
 }
 
 public record CachedResult(object Value, bool IsNew);

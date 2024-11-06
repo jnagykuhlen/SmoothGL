@@ -12,11 +12,6 @@ public interface IContentReader<out T> where T : notnull
     bool CanReadSubtypes { get; }
 
     /// <summary>
-    /// Gets the name of this reader.
-    /// </summary>
-    string ReaderName { get; }
-
-    /// <summary>
     /// Reads an instance of the reader's type from a stream.
     /// </summary>
     /// <param name="stream">Stream to read data from.</param>
