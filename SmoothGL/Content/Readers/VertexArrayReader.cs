@@ -30,9 +30,4 @@ public class VertexArrayReader : IContentReader<VertexArray>
     /// Indicates whether this class can also read subtypes of the specified type.
     /// </summary>
     public bool CanReadSubtypes => false;
-
-    /// <summary>
-    /// Gets the name of this reader.
-    /// </summary>
-    public string ReaderName => "VertexArrayReader";
 }

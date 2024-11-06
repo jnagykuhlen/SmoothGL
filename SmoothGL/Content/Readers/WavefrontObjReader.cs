@@ -50,11 +50,6 @@ public class WavefrontObjReader : IContentReader<MeshData>
     /// </summary>
     public bool CanReadSubtypes => false;
 
-    /// <summary>
-    /// Gets the name of this reader.
-    /// </summary>
-    public string ReaderName => "MeshDataReader";
-
     private float[] ParseVector(string text, int numberOfComponents)
     {
         var componentStrings = text.Split(' ');
