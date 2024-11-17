@@ -3,48 +3,24 @@ using SmoothGL.Content.Internal;
 using SmoothGL.Content.Readers;
 using SmoothGL.Graphics.Shader;
 using SmoothGL.Graphics.Texturing;
-using StringReader = SmoothGL.Content.Readers.StringReader;
 
 namespace SmoothGL.Content;
 
 /// <summary>
 /// Handles loading of content from files or streams and takes care of disposing loaded content automatically.
+/// <param name="rootPath">Root directory the paths of content files are relative to.</param>
 /// </summary>
-public class ContentManager : IDisposable
+public class ContentManager(string rootPath) : IDisposable
 {
-    private readonly Dictionary<Type, IContentReader<object>> _contentReaders;
-    private readonly List<IDisposable> _disposables;
+    private readonly Dictionary<Type, IContentReader<object>> _contentReaders = new();
+    private readonly Dictionary<(Type, NormalizedPath), object> _cachedObjects = new();
+    private readonly List<IDisposable> _disposables = new();
     private bool _disposed;
-
-    /// <summary>
-    /// Creates a new content manager without any registered content readers.
-    /// </summary>
-    /// <param name="rootPath">Root directory the paths of content files are relative to.</param>
-    public ContentManager(string rootPath)
-    {
-        RootPath = rootPath;
-        _contentReaders = new Dictionary<Type, IContentReader<object>>();
-        _disposables = new List<IDisposable>();
-        _disposed = false;
-    }
 
     /// <summary>
     /// Gets the root directory that paths of content files are relative to.
     /// </summary>
-    public string RootPath { get; }
-
-    /// <summary>
-    /// Disposes all content objects managed by this content manager, as well as the content manager itself.
-    /// </summary>
-    public void Dispose()
-    {
-        if (!_disposed)
-        {
-            Unload();
-            GC.SuppressFinalize(this);
-            _disposed = true;
-        }
-    }
+    public string RootPath { get; } = rootPath;
 
     /// <summary>
     /// Creates a new content manager with readers for default content types already registered.
@@ -55,7 +31,7 @@ public class ContentManager : IDisposable
     {
         var contentManager = new ContentManager(rootPath);
         contentManager.SetContentReader(new SerializationReader());
-        contentManager.SetContentReader(new StringReader());
+        contentManager.SetContentReader(new Readers.StringReader());
         contentManager.SetContentReader(new ImageDataReader());
         contentManager.SetContentReader(new TextureCubeReader(TextureFilterMode.Default));
         contentManager.SetContentReader(new FactoryReader<ShaderProgram, ShaderProgramFactory>());
@@ -77,12 +53,9 @@ public class ContentManager : IDisposable
     /// </summary>
     /// <typeparam name="T">Content type which can be loaded by the reader.</typeparam>
     /// <param name="contentReader">Content reader of the specified type.</param>
-    /// <param name="allowCaching">Indicates whether the content manager is allowed to cache created content objects.</param>
-    public void SetContentReader<T>(IContentReader<T> contentReader, bool allowCaching = true) where T : notnull
+    public void SetContentReader<T>(IContentReader<T> contentReader) where T : notnull
     {
-        _contentReaders[typeof(T)] = allowCaching
-            ? new CachedReader<T>(contentReader)
-            : (IContentReader<object>)contentReader;
+        _contentReaders[typeof(T)] = (IContentReader<object>)contentReader;
     }
 
     /// <summary>
@@ -91,13 +64,20 @@ public class ContentManager : IDisposable
     /// <typeparam name="T">The requested content type to load.</typeparam>
     /// <param name="relativeFilePath">Relative path to the file storing content data.</param>
     /// <returns>Content object.</returns>
-    public T Load<T>(string relativeFilePath)
+    public T Load<T>(string relativeFilePath) where T : notnull
     {
         var filePath = Path.Combine(RootPath, relativeFilePath);
         try
         {
-            using var stream = File.OpenRead(filePath);
-            return Load<T>(stream);
+            if (_cachedObjects.TryGetValue((typeof(T), relativeFilePath), out var cachedObject))
+                return (T)cachedObject;
+
+            using var fileStream = File.OpenRead(filePath);
+            var newObject = Load<T>(fileStream);
+
+            _cachedObjects[(typeof(T), relativeFilePath)] = newObject;
+
+            return newObject;
         }
         catch (FileNotFoundException fileNotFoundException)
         {
@@ -115,34 +95,29 @@ public class ContentManager : IDisposable
     /// <typeparam name="T">The requested content type to load.</typeparam>
     /// <param name="stream">Stream from which content data is read.</param>
     /// <returns>Content object.</returns>
-    public T Load<T>(Stream stream)
+    public T Load<T>(Stream stream) where T : notnull
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(ContentManager), "The object is already disposed.");
+        CheckDisposed();
 
-        var requestedType = typeof(T);
+        var newObject = (T)Read(stream, typeof(T));
+
+        if (newObject is IDisposable disposable)
+            _disposables.Add(disposable);
+
+        return newObject;
+    }
+
+    private object Read(Stream stream, Type requestedType)
+    {
         var type = requestedType;
         do
         {
             if (_contentReaders.TryGetValue(type, out var contentReader) && (contentReader.CanReadSubtypes || type == requestedType))
-            {
-                var result = contentReader.Read(stream, requestedType, this);
-                if (result is CachedResult cachedResult)
-                {
-                    result = cachedResult.Value;
-                    if (!cachedResult.IsNew)
-                        return (T)result;
-                }
-
-                if (result is IDisposable disposable)
-                    _disposables.Add(disposable);
-
-                return (T)result;
-            }
+                return contentReader.Read(stream, requestedType, this);
 
             type = type.BaseType;
         } while (type != null);
-        
+
         throw new ContentLoadException($"There is no content reader registered for type {requestedType}.", stream, requestedType);
     }
 
@@ -152,8 +127,7 @@ public class ContentManager : IDisposable
     /// <param name="disposable"></param>
     public T Add<T>(T disposable) where T : IDisposable
     {
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(ContentManager), "The object is already disposed.");
+        CheckDisposed();
         _disposables.Add(disposable);
         return disposable;
     }
@@ -163,13 +137,30 @@ public class ContentManager : IDisposable
     /// </summary>
     public void Unload()
     {
-        foreach (var cachedReader in _contentReaders.Values.OfType<ICachedReader>())
-            cachedReader.ClearCache();
-
         foreach (var disposable in _disposables)
             disposable.Dispose();
 
         _disposables.Clear();
+        _cachedObjects.Clear();
+    }
+
+    /// <summary>
+    /// Disposes all content objects managed by this content manager, as well as the content manager itself.
+    /// </summary>
+    public void Dispose()
+    {
+        if (!_disposed)
+        {
+            Unload();
+            GC.SuppressFinalize(this);
+            _disposed = true;
+        }
+    }
+
+    private void CheckDisposed()
+    {
+        if (_disposed)
+            throw new ObjectDisposedException(nameof(ContentManager), "The object is already disposed.");
     }
 
     ~ContentManager()

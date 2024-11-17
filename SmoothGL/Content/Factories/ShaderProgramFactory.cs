@@ -89,7 +89,7 @@ public class ShaderProgramFactory : IFactory<ShaderProgram>
     private static string LoadShaderCode(ContentManager contentManager, string filePath)
     {
         var shaderCode = contentManager.Load<string>(filePath);
-        var filesIncluded = new HashSet<string>(PathEqualityComparer.Instance) { filePath };
+        var filesIncluded = new HashSet<NormalizedPath> { filePath };
         var baseDirectory = Path.GetDirectoryName(filePath) ?? "";
 
         return StringReplace.ReplaceRecursive(shaderCode, IncludeToken, argument =>
