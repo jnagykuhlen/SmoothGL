@@ -17,12 +17,8 @@ public class VertexArrayReader : IContentReader<VertexArray>
     public VertexArray Read(Stream stream, Type requestedType, ContentManager contentManager)
     {
         var meshData = contentManager.Load<MeshData>(stream);
-        var vertexBuffer = meshData.ToVertexBuffer();
-        var elementBuffer = meshData.ToElementBuffer();
-
-        contentManager.Add(vertexBuffer);
-        contentManager.Add(elementBuffer);
-
+        var vertexBuffer = contentManager.Add(meshData.ToVertexBuffer());
+        var elementBuffer = contentManager.Add(meshData.ToElementBuffer());
         return new VertexArray(vertexBuffer, elementBuffer);
     }
 

@@ -30,7 +30,7 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
     private ShaderProgram _shaderTorus;
     private VertexArray _vertexArraySkybox;
     private VertexArray _vertexArrayTorus;
-    
+
     private FrameBuffer _frameBuffer;
     private ColorTexture2D _frameBufferColorTexture;
     private DepthStencilTexture2D _frameBufferDepthTexture;
@@ -51,16 +51,12 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
         // Setup of the skybox. A cube builder is used to create cube geometry in memory. The faces
         // are flipped inwards since the skybox should surround the scene, seen from inside. From
         // this mesh data, a vertex buffer and vertex array is created as a corresponding
-        // representation on the GPU that can be drawn later on.
+        // representation on the GPU that can be drawn later on. Using ContentManager.Add() makes sure
+        // that the resources are disposed when unloading the content manager, avoiding manual cleanup.
         var meshDataSkybox = new CubeBuilder().Build().GetFlippedTriangleOrientation();
-        var vertexBufferSkybox = meshDataSkybox.ToVertexBuffer(MeshData.VertexPositionSelector, VertexPosition.VertexDeclaration);
+        var vertexBufferSkybox = _contentManager.Add(meshDataSkybox.ToVertexBuffer(MeshData.VertexPositionSelector, VertexPosition.VertexDeclaration));
 
-        _vertexArraySkybox = new VertexArray(vertexBufferSkybox);
-
-        // Adds the created graphics resources to the content manager. This makes sure that the
-        // resources are disposed when unloading the content manager, avoiding manual cleanup.
-        _contentManager.Add(vertexBufferSkybox);
-        _contentManager.Add(_vertexArraySkybox);
+        _vertexArraySkybox = _contentManager.Add(new VertexArray(vertexBufferSkybox));
 
         // Defines the layout of data that is passed to the vertex shader per instance. Since we
         // would like to draw a number of instances of the same model with different transformations,
@@ -73,24 +69,17 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
             new VertexElementFloat(6, 4)
         );
 
-        _instanceBuffer = new VertexBuffer(9, instanceDeclaration, BufferUsage.Dynamic);
-
         // Loads a mesh resource stored in the Wavefront OBJ format using the content manager.
         // From the loaded mesh data, a vertex array with corresponding vertex buffer and
         // element buffer is created. Note that the previously created instance buffer is
         // also passed to the vertex array constructor to allow drawing of multiple instances
         // of this vertex array at once.
         var meshDataTorus = _contentManager.Load<MeshData>("Torus.obj");
-        var vertexBufferTorus = meshDataTorus.ToVertexBuffer();
-        var elementBufferTorus = meshDataTorus.ToElementBuffer();
+        var vertexBufferTorus = _contentManager.Add(meshDataTorus.ToVertexBuffer());
+        var elementBufferTorus = _contentManager.Add(meshDataTorus.ToElementBuffer());
 
-        _vertexArrayTorus = new VertexArray(vertexBufferTorus, _instanceBuffer, elementBufferTorus);
-
-        // Again, the graphics resources are added to the content manager for automatic disposal.
-        _contentManager.Add(vertexBufferTorus);
-        _contentManager.Add(elementBufferTorus);
-        _contentManager.Add(_vertexArrayTorus);
-        _contentManager.Add(_instanceBuffer);
+        _instanceBuffer = _contentManager.Add(new VertexBuffer(9, instanceDeclaration, BufferUsage.Dynamic));
+        _vertexArrayTorus = _contentManager.Add(new VertexArray(vertexBufferTorus, _instanceBuffer, elementBufferTorus));
 
         // Loads different shaders that are required to draw the torus model, the skybox and
         // to apply a post-processing step to the entire screen after rendering the scene.
@@ -111,9 +100,8 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
         // whole screen. This is required for post-processing effects: First, the scene is rendered
         // off-screen and the resulting textures are then drawn to the quad with a post-processing
         // shader, which allows for modifications per pixel.
-        _quad = new Quad();
-        _contentManager.Add(_quad);
-        
+        _quad = _contentManager.Add(new Quad());
+
         // Creates a frame buffer, which is used as a target for off-screen rendering. Besides a
         // texture with normal RGBA color channels, a depth-stencil texture is also attached to
         // the frame buffer (from which, however, only the depth component is used). Information
