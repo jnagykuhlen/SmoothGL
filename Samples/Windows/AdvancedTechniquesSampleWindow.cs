@@ -185,7 +185,7 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
     protected override void OnUpdateFrame(FrameEventArgs e)
     {
         base.OnUpdateFrame(e);
-        _contentManager.CheckForHotSwap();
+        _contentManager.UpdateContent();
     }
 
     protected override void OnResize(ResizeEventArgs e)

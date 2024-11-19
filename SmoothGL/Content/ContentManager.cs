@@ -12,12 +12,12 @@ namespace SmoothGL.Content;
 /// </summary>
 public class ContentManager(string rootPath) : IDisposable
 {
-    private static readonly TimeSpan HotSwapCheckInterval = TimeSpan.FromSeconds(1);
+    private static readonly TimeSpan ContentUpdateInterval = TimeSpan.FromSeconds(1);
     
     private readonly Dictionary<Type, IContentReader<object>> _contentReaders = new();
-    private readonly Dictionary<(Type, NormalizedPath), ObjectCache> _objectCaches = new();
+    private readonly Dictionary<(Type, NormalizedPath), object> _cachedObjects = new();
     private readonly List<IDisposable> _disposables = new();
-    private DateTime _lastCheckForHotSwap = DateTime.MinValue;
+    private DateTime _lastContentUpdateTime = DateTime.Now;
     private bool _disposed;
 
     /// <summary>
@@ -72,13 +72,13 @@ public class ContentManager(string rootPath) : IDisposable
         var filePath = Path.Combine(RootPath, relativeFilePath);
         try
         {
-            if (_objectCaches.TryGetValue((typeof(T), filePath), out var fileCache))
-                return (T)fileCache.CachedObject;
+            if (_cachedObjects.TryGetValue((typeof(T), filePath), out var cachedObject))
+                return (T)cachedObject;
 
             using var fileStream = File.OpenRead(filePath);
             var newObject = Load<T>(fileStream);
 
-            _objectCaches[(typeof(T), filePath)] = new ObjectCache(newObject, File.GetLastWriteTime(filePath));
+            _cachedObjects[(typeof(T), filePath)] = newObject;
 
             return newObject;
         }
@@ -135,36 +135,34 @@ public class ContentManager(string rootPath) : IDisposable
         return disposable;
     }
 
-    public void CheckForHotSwap()
+    public void UpdateContent()
     {
-        var currentTime = DateTime.Now;
-        if (currentTime - _lastCheckForHotSwap < HotSwapCheckInterval)
+        var currentContentUpdateTime = DateTime.Now;
+        if (currentContentUpdateTime < _lastContentUpdateTime + ContentUpdateInterval)
             return;
         
-        _lastCheckForHotSwap = currentTime;
-        
-        foreach (var ((_, filePath), objectCache) in _objectCaches)
+        foreach (var ((type, filePath), cachedObject) in _cachedObjects)
         {
-            if (objectCache.CachedObject is IHotSwappable hotSwappable)
+            if (cachedObject is IHotSwappable hotSwappable)
             {
                 var lastWriteTime = File.GetLastWriteTime(filePath);
-                if (lastWriteTime > objectCache.LastWriteTime)
+                if (_lastContentUpdateTime < lastWriteTime && lastWriteTime <= currentContentUpdateTime)
                 {
                     try
                     {
                         using var fileStream = File.OpenRead(filePath);
-                        hotSwappable.HotSwap(Read(fileStream, objectCache.CachedObject.GetType()));
+                        hotSwappable.HotSwap(Read(fileStream, type));
                         Console.WriteLine($"Hot swap for file '{filePath}' successful.");
                     }
                     catch (Exception exception)
                     {
                         Console.Error.WriteLine($"Hot swap for file '{filePath}' failed: {exception.Message}");
                     }
-                    
-                    objectCache.LastWriteTime = lastWriteTime;
                 }
             }
         }
+        
+        _lastContentUpdateTime = currentContentUpdateTime;
     }
 
     /// <summary>
@@ -176,7 +174,7 @@ public class ContentManager(string rootPath) : IDisposable
             disposable.Dispose();
 
         _disposables.Clear();
-        _objectCaches.Clear();
+        _cachedObjects.Clear();
     }
 
     /// <summary>
@@ -201,11 +199,5 @@ public class ContentManager(string rootPath) : IDisposable
     ~ContentManager()
     {
         Dispose();
-    }
-
-    private class ObjectCache(object cachedObject, DateTime lastWriteTime)
-    {
-        public object CachedObject { get; } = cachedObject;
-        public DateTime LastWriteTime { get; set; } = lastWriteTime;
     }
 }
