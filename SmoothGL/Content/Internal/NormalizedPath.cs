@@ -8,7 +8,8 @@ public class NormalizedPath(string filePath)
         other is NormalizedPath otherNormalizedPath && otherNormalizedPath.FilePath == FilePath;
 
     public override int GetHashCode() => FilePath.GetHashCode();
-    
+    public override string ToString() => FilePath;
+
     public static implicit operator string(NormalizedPath normalizedPath) => normalizedPath.FilePath;
     public static implicit operator NormalizedPath(string filePath) => new(filePath);
 

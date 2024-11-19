@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using SmoothGL.Content;
 using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 
 
@@ -8,7 +9,7 @@ namespace SmoothGL.Graphics.Texturing;
 /// <summary>
 /// Defines a two-dimensional texture persistent in graphics memory, storing a grid of color values.
 /// </summary>
-public class ColorTexture2D : Texture2D
+public class ColorTexture2D : Texture2D, IHotSwappable
 {
     /// <summary>
     /// Creates a new color texture with RGBA format and default filter mode.
@@ -36,7 +37,7 @@ public class ColorTexture2D : Texture2D
     /// <summary>
     /// Gets the format of each color value in memory.
     /// </summary>
-    public TextureColorFormat Format { get; }
+    public TextureColorFormat Format { get; private set; }
 
     protected override string ResourceName => "ColorTexture";
 
@@ -112,6 +113,15 @@ public class ColorTexture2D : Texture2D
                 id,
                 0
             );
+        }
+    }
+
+    void IHotSwappable.HotSwap(object other)
+    {
+        if (other is ColorTexture2D otherTexture)
+        {
+            base.HotSwap(otherTexture);
+            Format = otherTexture.Format;
         }
     }
 }

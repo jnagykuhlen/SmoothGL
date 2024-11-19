@@ -8,7 +8,7 @@ namespace SmoothGL.Graphics.Texturing;
 /// </summary>
 public abstract class Texture : GraphicsResource
 {
-    private readonly TextureTarget _target;
+    private TextureTarget _target;
     private int _textureId;
 
     protected Texture(TextureTarget target, TextureFilterMode filterMode)
@@ -32,10 +32,7 @@ public abstract class Texture : GraphicsResource
     /// <summary>
     /// Binds this texture to the graphics device. This method is not required to be called by client code.
     /// </summary>
-    public void Bind()
-    {
-        GL.BindTexture(_target, _textureId);
-    }
+    public void Bind() => GL.BindTexture(_target, _textureId);
 
     protected void UpdateMipmaps()
     {
@@ -72,8 +69,13 @@ public abstract class Texture : GraphicsResource
         GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName)ExtTextureFilterAnisotropic.TextureMaxAnisotropyExt, anisotropy);
     }
 
-    protected sealed override void FreeResources()
+    protected sealed override void FreeResources() => GL.DeleteTextures(1, ref _textureId);
+
+    protected void HotSwap(Texture otherTexture)
     {
-        GL.DeleteTextures(1, ref _textureId);
+        FreeResources();
+        GC.SuppressFinalize(otherTexture);
+        _textureId = otherTexture._textureId;
+        _target = otherTexture._target;
     }
 }

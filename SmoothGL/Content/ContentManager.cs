@@ -12,9 +12,12 @@ namespace SmoothGL.Content;
 /// </summary>
 public class ContentManager(string rootPath) : IDisposable
 {
+    private static readonly TimeSpan HotSwapCheckInterval = TimeSpan.FromSeconds(1);
+    
     private readonly Dictionary<Type, IContentReader<object>> _contentReaders = new();
-    private readonly Dictionary<(Type, NormalizedPath), object> _cachedObjects = new();
+    private readonly Dictionary<(Type, NormalizedPath), ObjectCache> _objectCaches = new();
     private readonly List<IDisposable> _disposables = new();
+    private DateTime _lastCheckForHotSwap = DateTime.MinValue;
     private bool _disposed;
 
     /// <summary>
@@ -69,13 +72,13 @@ public class ContentManager(string rootPath) : IDisposable
         var filePath = Path.Combine(RootPath, relativeFilePath);
         try
         {
-            if (_cachedObjects.TryGetValue((typeof(T), relativeFilePath), out var cachedObject))
-                return (T)cachedObject;
+            if (_objectCaches.TryGetValue((typeof(T), filePath), out var fileCache))
+                return (T)fileCache.CachedObject;
 
             using var fileStream = File.OpenRead(filePath);
             var newObject = Load<T>(fileStream);
 
-            _cachedObjects[(typeof(T), relativeFilePath)] = newObject;
+            _objectCaches[(typeof(T), filePath)] = new ObjectCache(newObject, File.GetLastWriteTime(filePath));
 
             return newObject;
         }
@@ -132,6 +135,38 @@ public class ContentManager(string rootPath) : IDisposable
         return disposable;
     }
 
+    public void CheckForHotSwap()
+    {
+        var currentTime = DateTime.Now;
+        if (currentTime - _lastCheckForHotSwap < HotSwapCheckInterval)
+            return;
+        
+        _lastCheckForHotSwap = currentTime;
+        
+        foreach (var ((_, filePath), objectCache) in _objectCaches)
+        {
+            if (objectCache.CachedObject is IHotSwappable hotSwappable)
+            {
+                var lastWriteTime = File.GetLastWriteTime(filePath);
+                if (lastWriteTime > objectCache.LastWriteTime)
+                {
+                    try
+                    {
+                        using var fileStream = File.OpenRead(filePath);
+                        hotSwappable.HotSwap(Read(fileStream, objectCache.CachedObject.GetType()));
+                        Console.WriteLine($"Hot swap for file '{filePath}' successful.");
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.Error.WriteLine($"Hot swap for file '{filePath}' failed: {exception.Message}");
+                    }
+                    
+                    objectCache.LastWriteTime = lastWriteTime;
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// Disposes all content objects managed by this content manager.
     /// </summary>
@@ -141,7 +176,7 @@ public class ContentManager(string rootPath) : IDisposable
             disposable.Dispose();
 
         _disposables.Clear();
-        _cachedObjects.Clear();
+        _objectCaches.Clear();
     }
 
     /// <summary>
@@ -166,5 +201,11 @@ public class ContentManager(string rootPath) : IDisposable
     ~ContentManager()
     {
         Dispose();
+    }
+
+    private class ObjectCache(object cachedObject, DateTime lastWriteTime)
+    {
+        public object CachedObject { get; } = cachedObject;
+        public DateTime LastWriteTime { get; set; } = lastWriteTime;
     }
 }

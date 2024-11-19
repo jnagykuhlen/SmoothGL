@@ -182,6 +182,12 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
         SwapBuffers();
     }
 
+    protected override void OnUpdateFrame(FrameEventArgs e)
+    {
+        base.OnUpdateFrame(e);
+        _contentManager.CheckForHotSwap();
+    }
+
     protected override void OnResize(ResizeEventArgs e)
     {
         base.OnResize(e);

@@ -20,10 +20,17 @@ public abstract class Texture2D : Texture
     /// <summary>
     /// Gets the width of this texture in pixels.
     /// </summary>
-    public int Width { get; }
+    public int Width { get; private set; }
 
     /// <summary>
     /// Gets the height of this texture in pixels.
     /// </summary>
-    public int Height { get; }
+    public int Height { get; private set; }
+
+    protected void HotSwap(Texture2D otherTexture)
+    {
+        base.HotSwap(otherTexture);
+        Width = otherTexture.Width;
+        Height = otherTexture.Height;
+    }
 }
