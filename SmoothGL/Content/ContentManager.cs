@@ -10,7 +10,7 @@ namespace SmoothGL.Content;
 /// Handles loading of content from files or streams and takes care of disposing loaded content automatically.
 /// <param name="rootPath">Root directory the paths of content files are relative to.</param>
 /// </summary>
-public class ContentManager(string rootPath) : IDisposable
+public class ContentManager(string rootPath) : IContentProvider, IDisposable
 {
     private static readonly TimeSpan ContentUpdateInterval = TimeSpan.FromSeconds(1);
     

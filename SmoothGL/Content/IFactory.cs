@@ -9,7 +9,7 @@ public interface IFactory<out T>
     /// <summary>
     /// Creates a product of the specified type.
     /// </summary>
-    /// <param name="contentManager">Content manager used to load additional data.</param>
+    /// <param name="contentProvider">Content manager used to load additional data.</param>
     /// <returns>Product.</returns>
-    T Create(ContentManager contentManager);
+    T Create(IContentProvider contentProvider);
 }

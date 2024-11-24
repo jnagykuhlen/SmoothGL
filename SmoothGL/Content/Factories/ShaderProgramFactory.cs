@@ -47,17 +47,17 @@ public class ShaderProgramFactory : IFactory<ShaderProgram>
     /// <summary>
     /// Creates a shader program from the individual shaders loaded from the corresponding files.
     /// </summary>
-    /// <param name="contentManager">Content manager used to load the shader files.</param>
+    /// <param name="contentProvider">Content provider used to load the shader files.</param>
     /// <returns>Shader program.</returns>
-    public ShaderProgram Create(ContentManager contentManager)
+    public ShaderProgram Create(IContentProvider contentProvider)
     {
         try
         {
-            var vertexShaderCode = LoadShaderCode(contentManager, VertexShaderFilePath);
-            var tessellationControlShaderCode = TryLoadShaderCode(contentManager, TessellationControlFilePath);
-            var tessellationEvaluationShaderCode = TryLoadShaderCode(contentManager, TessellationEvaluationFilePath);
-            var geometryShaderCode = TryLoadShaderCode(contentManager, GeometryShaderFilePath);
-            var fragmentShaderCode = LoadShaderCode(contentManager, FragmentShaderFilePath);
+            var vertexShaderCode = LoadShaderCode(contentProvider, VertexShaderFilePath);
+            var tessellationControlShaderCode = TryLoadShaderCode(contentProvider, TessellationControlFilePath);
+            var tessellationEvaluationShaderCode = TryLoadShaderCode(contentProvider, TessellationEvaluationFilePath);
+            var geometryShaderCode = TryLoadShaderCode(contentProvider, GeometryShaderFilePath);
+            var fragmentShaderCode = LoadShaderCode(contentProvider, FragmentShaderFilePath);
 
             return new ShaderProgram(
                 vertexShaderCode,
@@ -83,12 +83,12 @@ public class ShaderProgramFactory : IFactory<ShaderProgram>
         }
     }
 
-    private static string? TryLoadShaderCode(ContentManager contentManager, string? filePath) =>
-        filePath == null ? null : LoadShaderCode(contentManager, filePath);
+    private static string? TryLoadShaderCode(IContentProvider contentProvider, string? filePath) =>
+        filePath == null ? null : LoadShaderCode(contentProvider, filePath);
 
-    private static string LoadShaderCode(ContentManager contentManager, string filePath)
+    private static string LoadShaderCode(IContentProvider contentProvider, string filePath)
     {
-        var shaderCode = contentManager.Load<string>(filePath);
+        var shaderCode = contentProvider.Load<string>(filePath);
         var filesIncluded = new HashSet<NormalizedPath> { filePath };
         var baseDirectory = Path.GetDirectoryName(filePath) ?? "";
 
@@ -103,7 +103,7 @@ public class ShaderProgramFactory : IFactory<ShaderProgram>
             if (!filesIncluded.Add(includePath))
                 return "";
 
-            return contentManager.Load<string>(includePath);
+            return contentProvider.Load<string>(includePath);
         });
     }
 }

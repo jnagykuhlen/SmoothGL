@@ -13,9 +13,9 @@ public class SerializationReader : IContentReader<object>
     /// </summary>
     /// <param name="stream">Stream to read data from.</param>
     /// <param name="requestedType">The concrete type requested.</param>
-    /// <param name="contentManager">Content manager used to load additional data.</param>
+    /// <param name="contentProvider">Content provider used to load additional data.</param>
     /// <returns>The read object.</returns>
-    public object Read(Stream stream, Type requestedType, ContentManager contentManager) =>
+    public object Read(Stream stream, Type requestedType, IContentProvider contentProvider) =>
         JsonSerializer.Deserialize(stream, requestedType) ?? throw new ContentLoadException("Deserialized null.", stream, typeof(object));
 
     /// <summary>

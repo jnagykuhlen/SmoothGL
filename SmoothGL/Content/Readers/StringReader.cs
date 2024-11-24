@@ -10,9 +10,9 @@ public class StringReader : IContentReader<string>
     /// </summary>
     /// <param name="stream">Stream to read data from.</param>
     /// <param name="requestedType">The concrete type requested. Should be the specified type or subtypes.</param>
-    /// <param name="contentManager">Content manager used to load additional data.</param>
+    /// <param name="contentProvider">Content provider used to load additional data.</param>
     /// <returns>The read object.</returns>
-    public string Read(Stream stream, Type requestedType, ContentManager contentManager)
+    public string Read(Stream stream, Type requestedType, IContentProvider contentProvider)
     {
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
