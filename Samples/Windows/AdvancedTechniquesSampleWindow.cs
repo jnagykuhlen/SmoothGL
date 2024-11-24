@@ -107,7 +107,7 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
         // the frame buffer (from which, however, only the depth component is used). Information
         // on the rendered scene will then be stored in these textures, accessible by the
         // post-processing shader.
-        LoadFrameBuffer(Size);
+        LoadFrameBuffer(ClientSize);
     }
 
     protected override void OnUnload()

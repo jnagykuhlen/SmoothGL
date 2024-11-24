@@ -103,7 +103,7 @@ public abstract class SampleWindow : GameWindow
     /// </summary>
     private void UpdateProjection()
     {
-        var aspectRatio = (float)Size.X / Size.Y;
+        var aspectRatio = (float)ClientSize.X / ClientSize.Y;
         CameraProjection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60), aspectRatio, NearPlane, FarPlane);
     }
 
@@ -113,6 +113,6 @@ public abstract class SampleWindow : GameWindow
     /// </summary>
     private void UpdateViewport()
     {
-        FrameBufferTarget.Default.Viewport = new Rectangle(0, 0, Size.X, Size.Y);
+        FrameBufferTarget.Default.Viewport = new Rectangle(0, 0, ClientSize.X, ClientSize.Y);
     }
 }
