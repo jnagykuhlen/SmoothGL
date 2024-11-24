@@ -10,11 +10,14 @@ namespace SmoothGL.Content;
 /// Handles loading of content from files or streams and takes care of disposing loaded content automatically.
 /// <param name="rootPath">Root directory the paths of content files are relative to.</param>
 /// </summary>
-public class ContentManager(string rootPath) : IContentProvider, IDisposable
+public class HotSwappingContentManager(string rootPath) : IContentProvider
 {
+    private static readonly TimeSpan UpdateInterval = TimeSpan.FromSeconds(1);
+
     private readonly Dictionary<Type, IContentReader<object>> _contentReaders = new();
-    private readonly Dictionary<(Type, NormalizedPath), object> _cachedObjects = new();
+    private readonly Dictionary<(Type, NormalizedPath), ContentNode> _cachedContentNodes = new();
     private readonly List<IDisposable> _disposables = new();
+    private DateTime _lastUpdateTime = DateTime.Now;
     private bool _disposed;
 
     /// <summary>
@@ -22,9 +25,9 @@ public class ContentManager(string rootPath) : IContentProvider, IDisposable
     /// </summary>
     /// <param name="rootPath">Root directory the paths of content files are relative to.</param>
     /// <returns>Content manager.</returns>
-    public static ContentManager CreateDefault(string rootPath)
+    public static HotSwappingContentManager CreateDefault(string rootPath)
     {
-        var contentManager = new ContentManager(rootPath);
+        var contentManager = new HotSwappingContentManager(rootPath);
         contentManager.SetContentReader(new SerializationReader());
         contentManager.SetContentReader(new Readers.StringReader());
         contentManager.SetContentReader(new ImageDataReader());
@@ -66,15 +69,22 @@ public class ContentManager(string rootPath) : IContentProvider, IDisposable
         var filePath = Path.Combine(rootPath, relativeFilePath);
         try
         {
-            if (_cachedObjects.TryGetValue((typeof(T), filePath), out var cachedObject))
-                return (T)cachedObject;
+            if (_cachedContentNodes.TryGetValue((typeof(T), relativeFilePath), out var cachedContentNode))
+                return (T)cachedContentNode.CachedObject;
 
-            using var fileStream = File.OpenRead(filePath);
-            var newObject = Load<T>(fileStream);
+            var contentProviderProxy = new ContentProviderProxy(this);
+            var newObject = Read(typeof(T), relativeFilePath, contentProviderProxy);
+            var contentNode = new ContentNode(newObject, relativeFilePath, typeof(T));
 
-            _cachedObjects[(typeof(T), filePath)] = newObject;
+            foreach (var dependency in contentProviderProxy.Dependencies)
+                _cachedContentNodes[dependency].Predecessor = contentNode;
 
-            return newObject;
+            _cachedContentNodes[(typeof(T), relativeFilePath)] = contentNode;
+
+            if (newObject is IDisposable disposable)
+                _disposables.Add(disposable);
+
+            return (T)newObject;
         }
         catch (FileNotFoundException fileNotFoundException)
         {
@@ -96,7 +106,7 @@ public class ContentManager(string rootPath) : IContentProvider, IDisposable
     {
         CheckDisposed();
 
-        var newObject = Read<T>(stream);
+        var newObject = (T)Read(typeof(T), stream, this);
 
         if (newObject is IDisposable disposable)
             _disposables.Add(disposable);
@@ -104,14 +114,20 @@ public class ContentManager(string rootPath) : IContentProvider, IDisposable
         return newObject;
     }
 
-    private T Read<T>(Stream stream)
+    private object Read(Type requestedType, string relativeFilePath, IContentProvider contentProvider)
     {
-        var requestedType = typeof(T);
+        var filePath = Path.Combine(rootPath, relativeFilePath);
+        using var fileStream = File.OpenRead(filePath);
+        return Read(requestedType, fileStream, contentProvider);
+    }
+
+    private object Read(Type requestedType, Stream stream, IContentProvider contentProvider)
+    {
         var type = requestedType;
         do
         {
             if (_contentReaders.TryGetValue(type, out var contentReader) && (contentReader.CanReadSubtypes || type == requestedType))
-                return (T)contentReader.Read(stream, requestedType, this);
+                return contentReader.Read(stream, requestedType, contentProvider);
 
             type = type.BaseType;
         } while (type != null);
@@ -130,6 +146,70 @@ public class ContentManager(string rootPath) : IContentProvider, IDisposable
         return disposable;
     }
 
+    public void UpdateContent()
+    {
+        var currentUpdateTime = DateTime.Now;
+        if (currentUpdateTime >= _lastUpdateTime + UpdateInterval)
+        {
+            CheckForFilesChanged();
+            _lastUpdateTime = currentUpdateTime;
+        }
+    }
+
+    private void CheckForFilesChanged()
+    {
+        var cachedContentNodes = new List<ContentNode>(_cachedContentNodes.Values);
+        foreach (var cachedContentNode in cachedContentNodes)
+        {
+            var filePath = Path.Combine(rootPath, cachedContentNode.RelativeFilePath);
+            if (FileChanged(filePath))
+                HotSwap(cachedContentNode);
+        }
+    }
+
+    private bool FileChanged(string filePath) => File.GetLastWriteTime(filePath) > _lastUpdateTime;
+
+    private void HotSwap(ContentNode? contentNode)
+    {
+        var uncachedContentNodes = new List<ContentNode>();
+
+        while (contentNode != null)
+        {
+            if (contentNode.CachedObject is IHotSwappable hotSwappableCachedObject)
+            {
+                var type = contentNode.Type;
+                var relativeFilePath = contentNode.RelativeFilePath;
+
+                try
+                {
+                    var contentProviderProxy = new ContentProviderProxy(this);
+                    var newObject = Read(type, relativeFilePath, contentProviderProxy);
+                    
+                    foreach (var dependency in contentProviderProxy.Dependencies)
+                        _cachedContentNodes[dependency].Predecessor = contentNode;
+                    
+                    hotSwappableCachedObject.HotSwap(newObject);
+
+                    Console.WriteLine($"Hot swap for '{relativeFilePath}' successful");
+                }
+                catch (Exception exception)
+                {
+                    foreach (var uncachedContentNode in uncachedContentNodes)
+                        _cachedContentNodes[(uncachedContentNode.Type, uncachedContentNode.RelativeFilePath)] = uncachedContentNode;
+
+                    Console.WriteLine($"Hot swap for '{relativeFilePath}' failed: {exception.Message}");
+                }
+
+                break;
+            }
+
+            _cachedContentNodes.Remove((contentNode.Type, contentNode.RelativeFilePath));
+            uncachedContentNodes.Add(contentNode);
+
+            contentNode = contentNode.Predecessor;
+        }
+    }
+
     /// <summary>
     /// Disposes all content objects managed by this content manager.
     /// </summary>
@@ -139,7 +219,7 @@ public class ContentManager(string rootPath) : IContentProvider, IDisposable
             disposable.Dispose();
 
         _disposables.Clear();
-        _cachedObjects.Clear();
+        _cachedContentNodes.Clear();
     }
 
     /// <summary>
@@ -161,8 +241,30 @@ public class ContentManager(string rootPath) : IContentProvider, IDisposable
             throw new ObjectDisposedException(nameof(ContentManager), "The object is already disposed.");
     }
 
-    ~ContentManager()
+    ~HotSwappingContentManager()
     {
         Dispose();
+    }
+
+    private class ContentProviderProxy(IContentProvider innerProvider) : IContentProvider
+    {
+        public List<(Type, NormalizedPath)> Dependencies { get; } = new();
+
+        public T Load<T>(string relativeFilePath) where T : notnull
+        {
+            Dependencies.Add((typeof(T), relativeFilePath));
+            return innerProvider.Load<T>(relativeFilePath);
+        }
+
+        public T Load<T>(Stream stream) where T : notnull => innerProvider.Load<T>(stream);
+        public T Add<T>(T disposable) where T : IDisposable => innerProvider.Add(disposable);
+    }
+
+    private class ContentNode(object cachedObject, NormalizedPath relativeFilePath, Type type)
+    {
+        public object CachedObject { get; } = cachedObject;
+        public NormalizedPath RelativeFilePath { get; } = relativeFilePath;
+        public Type Type { get; } = type;
+        public ContentNode? Predecessor { get; set; }
     }
 }
