@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
+using SmoothGL.Content;
 using SmoothGL.Graphics.Shader.Internal;
 
 namespace SmoothGL.Graphics.Shader;
@@ -6,13 +7,13 @@ namespace SmoothGL.Graphics.Shader;
 /// <summary>
 /// Represents a shader program linked from a number of compiled shaders.
 /// </summary>
-public class ShaderProgram : GraphicsResource
+public class ShaderProgram : GraphicsResource, IHotSwappable
 {
     private static int currentProgramId;
 
-    private readonly int _programId;
-    private readonly Dictionary<string, ShaderProgramUniform> _uniforms = new(StringComparer.Ordinal);
-    private readonly Dictionary<string, ShaderUniformBlock> _uniformBlocks = new(StringComparer.Ordinal);
+    private int _programId;
+    private Dictionary<string, ShaderProgramUniform> _uniforms = new(StringComparer.Ordinal);
+    private Dictionary<string, ShaderUniformBlock> _uniformBlocks = new(StringComparer.Ordinal);
 
     /// <summary>
     /// Creates a new shader program with vertex and fragment shader stage.
@@ -283,5 +284,33 @@ public class ShaderProgram : GraphicsResource
 
         if (_programId != 0)
             GL.DeleteProgram(_programId);
+    }
+    
+    void IHotSwappable.HotSwap(object other)
+    {
+        if (other is ShaderProgram otherShaderProgram)
+        {
+            foreach (var uniform in Uniforms)
+            {
+                var value = uniform.Value;
+                var otherUniform = otherShaderProgram.Uniform(uniform.Name);
+
+                if (value != null && otherUniform != null && otherUniform.Type == uniform.Type && otherUniform.Size == uniform.Size)
+                    otherUniform.SetValue(value);
+            }
+            
+            foreach (var uniformBlock in otherShaderProgram.UniformBlocks)
+            {
+                var otherUniformBlock = otherShaderProgram.UniformBlock(uniformBlock.Name);
+                if (otherUniformBlock != null)
+                    otherUniformBlock.Buffer = uniformBlock.Buffer;
+            }
+
+            FreeResources();
+            GC.SuppressFinalize(otherShaderProgram);
+            _programId = otherShaderProgram._programId;
+            _uniforms = otherShaderProgram._uniforms;
+            _uniformBlocks = otherShaderProgram._uniformBlocks;
+        }
     }
 }
