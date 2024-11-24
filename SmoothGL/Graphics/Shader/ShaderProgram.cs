@@ -267,16 +267,14 @@ public class ShaderProgram : GraphicsResource
     /// </summary>
     /// <param name="name">Name of the uniform.</param>
     /// <returns>Uniform.</returns>
-    public ShaderUniform Uniform(string name) => _uniforms.GetValueOrDefault(name) ??
-                                                 throw new ArgumentException($"Uniform {name} does not exist.", nameof(name));
+    public ShaderUniform? Uniform(string name) => _uniforms.GetValueOrDefault(name);
 
     /// <summary>
     /// Gets the uniform block with the specified name. Returns null if such uniform block does not exist.
     /// </summary>
     /// <param name="name">Name of the uniform block.</param>
     /// <returns>Uniform block.</returns>
-    public ShaderUniformBlock UniformBlock(string name) => _uniformBlocks.GetValueOrDefault(name) ??
-                                                            throw new ArgumentException($"Uniform block {name} does not exist.", nameof(name));
+    public ShaderUniformBlock? UniformBlock(string name) => _uniformBlocks.GetValueOrDefault(name);
 
     protected override void FreeResources()
     {

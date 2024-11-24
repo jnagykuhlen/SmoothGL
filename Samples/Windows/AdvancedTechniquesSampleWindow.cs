@@ -91,10 +91,10 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
 
         // Sets the values of shader uniforms that do not change during the main loop. Color and
         // cube textures can be assigned to uniform samplers like any other primitive value.
-        _shaderPostProcessing.Uniform("NearPlane").Value = NearPlane;
-        _shaderPostProcessing.Uniform("FarPlane").Value = FarPlane;
-        _shaderSky.Uniform("TextureSkybox").Value = _contentManager.Load<TextureCube>("Skybox.png");
-        _shaderTorus.Uniform("Texture").Value = _contentManager.Load<ColorTexture2D>("Texture.png");
+        _shaderPostProcessing.Uniform("NearPlane")?.SetValue(NearPlane);
+        _shaderPostProcessing.Uniform("FarPlane")?.SetValue(FarPlane);
+        _shaderSky.Uniform("TextureSkybox")?.SetValue(_contentManager.Load<TextureCube>("Skybox.png"));
+        _shaderTorus.Uniform("Texture")?.SetValue(_contentManager.Load<ColorTexture2D>("Texture.png"));
 
         // Creates a quad, which is essentially a vertex array with two triangles spanning the
         // whole screen. This is required for post-processing effects: First, the scene is rendered
@@ -134,8 +134,8 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
         // being used to draw the skybox geometry.
         DepthState.None.Apply();
 
-        _shaderSky.Uniform("Projection").Value = CameraProjection;
-        _shaderSky.Uniform("View").Value = CameraView;
+        _shaderSky.Uniform("Projection")?.SetValue(CameraProjection);
+        _shaderSky.Uniform("View")?.SetValue(CameraView);
         _shaderSky.Use();
         _vertexArraySkybox.Draw(Primitive.Triangles);
 
@@ -147,8 +147,8 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
         // with a single rendering call.
         DepthState.Default.Apply();
 
-        _shaderTorus.Uniform("Projection").Value = CameraProjection;
-        _shaderTorus.Uniform("View").Value = CameraView;
+        _shaderTorus.Uniform("Projection")?.SetValue(CameraProjection);
+        _shaderTorus.Uniform("View")?.SetValue(CameraView);
         _shaderTorus.Use();
 
         var instanceData = new Matrix4[9];
@@ -172,8 +172,8 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
         FrameBufferTarget.Default.SetAsTarget();
         FrameBufferTarget.Default.Clear(TargetOptions.All, Color.CornflowerBlue, 1.0f, 0);
 
-        _shaderPostProcessing.Uniform("TextureColor").Value = _frameBufferColorTexture;
-        _shaderPostProcessing.Uniform("TextureDepth").Value = _frameBufferDepthTexture;
+        _shaderPostProcessing.Uniform("TextureColor")?.SetValue(_frameBufferColorTexture);
+        _shaderPostProcessing.Uniform("TextureDepth")?.SetValue(_frameBufferDepthTexture);
         _shaderPostProcessing.Use();
         _quad.Draw();
 

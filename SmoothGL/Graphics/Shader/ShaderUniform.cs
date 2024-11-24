@@ -5,19 +5,18 @@
 /// </summary>
 public abstract class ShaderUniform(string name, ShaderUniformType type, int size)
 {
-    private object? _value;
+    /// <summary>
+    /// Gets the value of this uniform in the corresponding shader program.
+    /// </summary>
+    public object? Value { get; private set; }
 
     /// <summary>
-    /// Gets or sets the value of this uniform in the corresponding shader program.
+    /// Sets the value of this uniform in the corresponding shader program.
     /// </summary>
-    public object Value
+    public void SetValue(object value)
     {
-        get => _value ?? throw new InvalidOperationException("Shader uniform value has not been set yet.");
-        set
-        {
-            OnValueChanged(value);
-            _value = value;
-        }
+        OnValueChanged(value);
+        Value = value;
     }
 
     /// <summary>
