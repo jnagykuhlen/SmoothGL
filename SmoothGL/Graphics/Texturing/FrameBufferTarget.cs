@@ -10,7 +10,6 @@ namespace SmoothGL.Graphics.Texturing;
 /// </summary>
 public abstract class FrameBufferTarget(Rectangle viewport) : GraphicsResource
 {
-    private static int boundFrameBufferId;
     private static FrameBufferTarget? defaultFrameBufferTarget;
     private static FrameBufferTarget? currentFrameBufferTarget;
 
@@ -62,10 +61,7 @@ public abstract class FrameBufferTarget(Rectangle viewport) : GraphicsResource
     /// attachments are overwritten with maximum depth and zero, respectively.
     /// </summary>
     /// <param name="color">The color written to all color attachments.</param>
-    public void Clear(Color color)
-    {
-        Clear(TargetOptions.All, color, 1.0f, 0);
-    }
+    public void Clear(Color color) => Clear(TargetOptions.All, color, 1.0f, 0);
 
     /// <summary>
     /// Clears this frame buffer target, replacing all values in the specified attachments by the
@@ -86,10 +82,8 @@ public abstract class FrameBufferTarget(Rectangle viewport) : GraphicsResource
         GL.Clear((ClearBufferMask)options);
     }
 
-    public void CopyFrom(FrameBufferTarget source, TargetOptions options)
-    {
+    public void CopyFrom(FrameBufferTarget source, TargetOptions options) =>
         CopyFrom(source, options, source.Viewport, Viewport);
-    }
 
     /// <summary>
     /// Copies data from another frame buffer target to this frame buffer target, affecting the specified attachments and
@@ -113,32 +107,6 @@ public abstract class FrameBufferTarget(Rectangle viewport) : GraphicsResource
         );
     }
 
-    protected void Bind()
-    {
-        if (boundFrameBufferId != Id)
-        {
-            GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, Id);
-            boundFrameBufferId = Id;
-        }
-    }
-
-    protected void Unbind()
-    {
-        if (boundFrameBufferId == Id)
-        {
-            GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
-            boundFrameBufferId = 0;
-        }
-        
-        if (IsTarget)
-            Default.SetAsTarget();
-    }
-
-    protected void ApplyViewport()
-    {
-        GL.Viewport(viewport);
-    }
-
     /// <summary>
     /// Sets this frame buffer as target. As a result, subsequent draw operations
     /// write to this frame buffer target.
@@ -152,4 +120,7 @@ public abstract class FrameBufferTarget(Rectangle viewport) : GraphicsResource
             currentFrameBufferTarget = this;
         }
     }
+
+    private void Bind() => GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, Id);
+    private void ApplyViewport() => GL.Viewport(viewport);
 }

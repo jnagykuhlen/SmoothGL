@@ -71,7 +71,7 @@ public class FrameBuffer : FrameBufferTarget
         }
 
         var lastTarget = Current;
-        Bind();
+        SetAsTarget();
 
         depthStencilAttachment?.Attach();
 
@@ -85,18 +85,16 @@ public class FrameBuffer : FrameBufferTarget
         GL.DrawBuffers(drawBuffers.Length, drawBuffers);
 
         lastTarget.SetAsTarget();
-        CheckStatus();
-    }
-
-    protected static void CheckStatus()
-    {
+        
         if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
             throw new InvalidOperationException("Frame buffer is incomplete.");
     }
 
     protected override void FreeResources()
     {
-        Unbind();
+        if (IsTarget)
+            Default.SetAsTarget();
+
         GL.DeleteFramebuffers(1, ref _frameBufferId);
     }
 }
