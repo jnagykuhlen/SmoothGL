@@ -14,7 +14,7 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
 {
     private static readonly TimeSpan UpdateInterval = TimeSpan.FromSeconds(1);
 
-    private readonly Dictionary<Type, IContentReader<object>> _contentReaders = new();
+    private readonly ContentReaders _contentReaders = new();
     private readonly Dictionary<LoadingSource, IContentNode> _cachedContentNodes = new();
     private readonly List<IDisposable> _disposables = new();
     private DateTime _lastUpdateTime = DateTime.Now;
@@ -51,10 +51,8 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
     /// </summary>
     /// <typeparam name="T">Content type which can be loaded by the reader.</typeparam>
     /// <param name="contentReader">Content reader of the specified type.</param>
-    public void SetContentReader<T>(IContentReader<T> contentReader) where T : notnull
-    {
-        _contentReaders[typeof(T)] = (IContentReader<object>)contentReader;
-    }
+    public void SetContentReader<T>(IContentReader<T> contentReader) where T : notnull =>
+        _contentReaders.SetContentReader(contentReader);
 
     /// <summary>
     /// Loads content from a file.
@@ -76,10 +74,10 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
 
             var contentProviderProxy = new ContentProviderProxy(this);
 
-            using var fileStream = File.OpenRead(filePath);
-            var contentReader = GetContentReader(fileStream, typeof(T));
+            var contentReader = _contentReaders.GetContentReader<T>();
 
-            var newObject = (T)contentReader.Read(fileStream, typeof(T), contentProviderProxy);
+            using var fileStream = File.OpenRead(filePath);
+            var newObject = contentReader.Read(fileStream, typeof(T), contentProviderProxy);
 
             if (newObject is IHotSwappable || contentReader is IHotSwappingReader)
             {
@@ -115,26 +113,12 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
     {
         CheckDisposed();
 
-        var newObject = (T)GetContentReader(stream, typeof(T)).Read(stream, typeof(T), this);
+        var newObject = _contentReaders.GetContentReader<T>().Read(stream, typeof(T), this);
 
         if (newObject is IDisposable disposable)
             _disposables.Add(disposable);
 
         return newObject;
-    }
-
-    private IContentReader<object> GetContentReader(Stream stream, Type requestedType)
-    {
-        var type = requestedType;
-        do
-        {
-            if (_contentReaders.TryGetValue(type, out var contentReader) && (contentReader.CanReadSubtypes || type == requestedType))
-                return contentReader;
-
-            type = type.BaseType;
-        } while (type != null);
-
-        throw new ContentLoadException($"There is no content reader registered for type {requestedType}.", stream, requestedType);
     }
 
     /// <summary>
@@ -173,14 +157,6 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
         }
     }
 
-    public void PrintCachedContentNodes()
-    {
-        Console.WriteLine("\n--- CACHED CONTENT NODES ---");
-        foreach (var ((type, relativeFilePath), contentNode) in _cachedContentNodes)
-            Console.WriteLine($"[{contentNode.GetHashCode()}] {relativeFilePath} ({type.Name}) with dependencies {string.Join(',', contentNode.Dependencies)}");
-        Console.WriteLine("----------------------------\n");
-    }
-
     private bool FileChanged(NormalizedPath relativeFilePath) =>
         File.GetLastWriteTime(Path.Combine(rootPath, relativeFilePath)) > _lastUpdateTime;
 
@@ -194,8 +170,7 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
             using var fileStream = File.OpenRead(filePath);
 
             contentNode.HotSwap(fileStream, contentProviderProxy);
-
-            _cachedContentNodes[loadingSource] = contentNode.WithDependencies(contentProviderProxy.Dependencies);
+            contentNode.Dependencies = contentProviderProxy.Dependencies;
 
             Console.WriteLine($"Hot swap for '{loadingSource.RelativeFilePath}' successful");
         }
@@ -236,10 +211,7 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
             throw new ObjectDisposedException(nameof(ContentManager), "The object is already disposed.");
     }
 
-    ~HotSwappingContentManager()
-    {
-        Dispose();
-    }
+    ~HotSwappingContentManager() => Dispose();
 
     private class ContentProviderProxy(IContentProvider innerProvider) : IContentProvider
     {
@@ -258,26 +230,26 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
     private interface IContentNode
     {
         object ContentObject { get; }
-        IReadOnlySet<LoadingSource> Dependencies { get; }
+        IReadOnlySet<LoadingSource> Dependencies { get; set; }
         void HotSwap(Stream stream, IContentProvider contentProvider);
-        IContentNode WithDependencies(IReadOnlySet<LoadingSource> dependencies);
     }
 
-    private record ContentNode<T>(object ContentObject, IReadOnlySet<LoadingSource> Dependencies, IContentReader<object> ContentReader) : IContentNode where T : notnull
+    private class ContentNode<T>(T contentObject, IReadOnlySet<LoadingSource> dependencies, IContentReader<T> contentReader) : IContentNode where T : notnull
     {
+        public object ContentObject { get; } = contentObject;
+        public IReadOnlySet<LoadingSource> Dependencies { get; set; } = dependencies;
+        
         public void HotSwap(Stream stream, IContentProvider contentProvider)
         {
-            if (ContentReader is IHotSwappingReader hotSwappingReader)
+            if (contentReader is IHotSwappingReader hotSwappingReader)
             {
-                hotSwappingReader.ReadInto(ContentObject, stream, contentProvider);
+                hotSwappingReader.ReadInto(contentObject, stream, contentProvider);
             }
-            else if (ContentObject is IHotSwappable hotSwappable)
+            else if (contentObject is IHotSwappable hotSwappable)
             {
-                hotSwappable.HotSwap(ContentReader.Read(stream, typeof(T), contentProvider));
+                hotSwappable.HotSwap(contentReader.Read(stream, typeof(T), contentProvider));
             }
         }
-
-        public IContentNode WithDependencies(IReadOnlySet<LoadingSource> dependencies) => this with { Dependencies = dependencies };
     }
 
     private record LoadingSource(Type Type, NormalizedPath RelativeFilePath);
