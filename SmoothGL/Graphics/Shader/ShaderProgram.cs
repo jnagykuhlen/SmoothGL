@@ -7,7 +7,7 @@ namespace SmoothGL.Graphics.Shader;
 /// <summary>
 /// Represents a shader program linked from a number of compiled shaders.
 /// </summary>
-public class ShaderProgram : GraphicsResource, IHotSwappable
+public class ShaderProgram : GraphicsResource, IHotSwappable<ShaderProgram>
 {
     private static int currentProgramId;
 
@@ -285,32 +285,29 @@ public class ShaderProgram : GraphicsResource, IHotSwappable
         if (_programId != 0)
             GL.DeleteProgram(_programId);
     }
-    
-    void IHotSwappable.HotSwap(object other)
+
+    void IHotSwappable<ShaderProgram>.HotSwap(ShaderProgram other)
     {
-        if (other is ShaderProgram otherShaderProgram)
+        foreach (var uniform in Uniforms)
         {
-            foreach (var uniform in Uniforms)
-            {
-                var value = uniform.Value;
-                var otherUniform = otherShaderProgram.Uniform(uniform.Name);
+            var value = uniform.Value;
+            var otherUniform = other.Uniform(uniform.Name);
 
-                if (value != null && otherUniform != null && otherUniform.Type == uniform.Type && otherUniform.Size == uniform.Size)
-                    otherUniform.SetValue(value);
-            }
-            
-            foreach (var uniformBlock in otherShaderProgram.UniformBlocks)
-            {
-                var otherUniformBlock = otherShaderProgram.UniformBlock(uniformBlock.Name);
-                if (otherUniformBlock != null)
-                    otherUniformBlock.Buffer = uniformBlock.Buffer;
-            }
-
-            FreeResources();
-            GC.SuppressFinalize(otherShaderProgram);
-            _programId = otherShaderProgram._programId;
-            _uniforms = otherShaderProgram._uniforms;
-            _uniformBlocks = otherShaderProgram._uniformBlocks;
+            if (value != null && otherUniform != null && otherUniform.Type == uniform.Type && otherUniform.Size == uniform.Size)
+                otherUniform.SetValue(value);
         }
+
+        foreach (var uniformBlock in UniformBlocks)
+        {
+            var otherUniformBlock = other.UniformBlock(uniformBlock.Name);
+            if (otherUniformBlock != null)
+                otherUniformBlock.Buffer = uniformBlock.Buffer;
+        }
+
+        FreeResources();
+        GC.SuppressFinalize(other);
+        _programId = other._programId;
+        _uniforms = other._uniforms;
+        _uniformBlocks = other._uniformBlocks;
     }
 }

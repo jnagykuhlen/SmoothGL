@@ -79,7 +79,7 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
             using var fileStream = File.OpenRead(filePath);
             var newObject = contentReader.Read(fileStream, typeof(T), contentProviderProxy);
 
-            if (newObject is IHotSwappable || contentReader is IHotSwappingReader)
+            if (newObject is IHotSwappable<T> || contentReader is IHotSwappingReader)
             {
                 _cachedContentNodes[loadingSource] = new ContentNode<T>(
                     newObject,
@@ -245,7 +245,7 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
             {
                 hotSwappingReader.ReadInto(contentObject, stream, contentProvider);
             }
-            else if (contentObject is IHotSwappable hotSwappable)
+            else if (contentObject is IHotSwappable<T> hotSwappable)
             {
                 hotSwappable.HotSwap(contentReader.Read(stream, typeof(T), contentProvider));
             }

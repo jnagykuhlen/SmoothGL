@@ -1,6 +1,6 @@
 ﻿namespace SmoothGL.Content;
 
-public interface IHotSwappable
+public interface IHotSwappable<in T>
 {
-    void HotSwap(object other);
+    void HotSwap(T other);
 }
