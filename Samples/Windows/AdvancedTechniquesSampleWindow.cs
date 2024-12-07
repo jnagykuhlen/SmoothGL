@@ -41,7 +41,7 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
         // We specify that file paths are relative to the "Content" directory which is the location
         // where our content files will be stored. The default content reader for cube textures is
         // overwritten to load images with the provided layout.
-        _contentManager = ContentManager.CreateDefault("Content");
+        _contentManager = new ContentManager("Content").SetDefaultContentReaders();
         _contentManager.SetContentReader(new TextureCubeReader(TextureFilterMode.Default, CubeTextureLayout.HorizontalCross));
     }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

@@ -1,8 +1,4 @@
-﻿using SmoothGL.Content.Factories;
-using SmoothGL.Content.Internal;
-using SmoothGL.Content.Readers;
-using SmoothGL.Graphics.Shader;
-using SmoothGL.Graphics.Texturing;
+﻿using SmoothGL.Content.Internal;
 
 namespace SmoothGL.Content;
 
@@ -22,27 +18,6 @@ public class ContentManager(string rootPath, bool enableHotSwapping = false) : I
         : new ContentCache(new ContentFileHandler(rootPath));
 
     private bool _disposed;
-
-    /// <summary>
-    /// Creates a new content manager with readers for default content types already registered.
-    /// </summary>
-    /// <param name="rootPath">Root directory the paths of content files are relative to.</param>
-    /// <param name="enableHotSwapping">Indicates whether content files should be monitored for changes which are
-    /// automatically hot swapped into the loaded objects when <see cref="UpdateContent"/> is called.</param>
-    /// <returns>Content manager.</returns>
-    public static ContentManager CreateDefault(string rootPath, bool enableHotSwapping = false)
-    {
-        var contentManager = new ContentManager(rootPath, enableHotSwapping);
-        contentManager.SetContentReader(new SerializationReader());
-        contentManager.SetContentReader(new Readers.StringReader());
-        contentManager.SetContentReader(new ImageDataReader());
-        contentManager.SetContentReader(new TextureCubeReader(TextureFilterMode.Default));
-        contentManager.SetContentReader(new FactoryReader<ShaderProgram, ShaderProgramFactory>());
-        contentManager.SetContentReader(new WavefrontObjReader());
-        contentManager.SetContentReader(new VertexArrayReader());
-        contentManager.SetContentReader(new ColorTextureReader(TextureFilterMode.Default));
-        return contentManager;
-    }
 
     /// <summary>
     /// Registers a content reader which handles loading of content of the specified type.
