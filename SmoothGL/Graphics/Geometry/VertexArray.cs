@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL;
+using SmoothGL.Content;
 using SmoothGL.Graphics.Geometry.Internal;
 
 namespace SmoothGL.Graphics.Geometry;
@@ -8,14 +9,14 @@ namespace SmoothGL.Graphics.Geometry;
 /// This configuration can then be drawn with a single method call. Disposing a vertex array does not dispose the
 /// referenced buffers.
 /// </summary>
-public class VertexArray : GraphicsResource
+public class VertexArray : GraphicsResource, IHotSwappable<VertexArray>
 {
     private static readonly VertexBuffer[] NoVertexBuffers = [];
     
     private static int currentVertexArrayId;
 
-    private readonly IDrawStrategy _drawStrategy;
-    private readonly int _defaultNumberOfElements;
+    private IDrawStrategy _drawStrategy;
+    private int _defaultNumberOfElements;
     private int _vertexArrayId;
 
     private VertexArray(IDrawStrategy drawStrategy, int defaultNumberOfElements)
@@ -252,8 +253,14 @@ public class VertexArray : GraphicsResource
         Unbind();
     }
 
-    protected override void FreeResources()
+    protected override void FreeResources() => GL.DeleteVertexArrays(1, ref _vertexArrayId);
+
+    void IHotSwappable<VertexArray>.HotSwap(VertexArray other)
     {
-        GL.DeleteVertexArrays(1, ref _vertexArrayId);
+        FreeResources();
+        GC.SuppressFinalize(other);
+        _drawStrategy = other._drawStrategy;
+        _defaultNumberOfElements = other._defaultNumberOfElements;
+        _vertexArrayId = other._vertexArrayId;
     }
 }

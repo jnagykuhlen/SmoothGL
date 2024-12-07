@@ -71,11 +71,11 @@ public abstract class Texture : GraphicsResource
 
     protected sealed override void FreeResources() => GL.DeleteTextures(1, ref _textureId);
 
-    protected void HotSwap(Texture otherTexture)
+    protected void HotSwap(Texture other)
     {
         FreeResources();
-        GC.SuppressFinalize(otherTexture);
-        _textureId = otherTexture._textureId;
-        _target = otherTexture._target;
+        GC.SuppressFinalize(other);
+        _textureId = other._textureId;
+        _target = other._target;
     }
 }

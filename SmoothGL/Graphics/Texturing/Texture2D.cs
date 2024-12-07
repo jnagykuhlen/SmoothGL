@@ -27,10 +27,10 @@ public abstract class Texture2D : Texture
     /// </summary>
     public int Height { get; private set; }
 
-    protected void HotSwap(Texture2D otherTexture)
+    protected void HotSwap(Texture2D other)
     {
-        base.HotSwap(otherTexture);
-        Width = otherTexture.Width;
-        Height = otherTexture.Height;
+        base.HotSwap(other);
+        Width = other.Width;
+        Height = other.Height;
     }
 }

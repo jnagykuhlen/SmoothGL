@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using SmoothGL.Content;
 using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 
 
@@ -9,7 +10,7 @@ namespace SmoothGL.Graphics.Texturing;
 /// Defines a cube texture persistent in graphics memory, storing a separate grid of color values for each of the six
 /// faces of a cube.
 /// </summary>
-public class TextureCube : Texture
+public class TextureCube : Texture, IHotSwappable<TextureCube>
 {
     private const int AllFacesBitMask = 0b111111;
 
@@ -49,17 +50,17 @@ public class TextureCube : Texture
     /// <summary>
     /// Gets the width of each cube face in pixels.
     /// </summary>
-    public int Width { get; }
+    public int Width { get; private set; }
 
     /// <summary>
     /// Gets the height of each cube face in pixels.
     /// </summary>
-    public int Height { get; }
+    public int Height { get; private set; }
 
     /// <summary>
     /// Gets the format of each color value in memory.
     /// </summary>
-    public TextureColorFormat Format { get; }
+    public TextureColorFormat Format { get; private set; }
 
     /// <summary>
     /// Stores color data in the specified face of this texture. The provided data array must have exactly width * height
@@ -147,5 +148,13 @@ public class TextureCube : Texture
                 0
             );
         }
+    }
+
+    void IHotSwappable<TextureCube>.HotSwap(TextureCube other)
+    {
+        base.HotSwap(other);
+        Width = other.Width;
+        Height = other.Height;
+        Format = other.Format;
     }
 }
