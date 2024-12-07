@@ -7,15 +7,10 @@ public class HotSwappingContentCache(ContentFileHandler contentFileHandler) : IC
     private readonly Dictionary<CachingSource, HotSwappableNode> _hotSwappableNodes = new();
     private DateTime _lastUpdateTime = DateTime.Now;
 
-    public T? GetCached<T>(string relativeFilePath) where T : class
-    {
-        if (_hotSwappableNodes.TryGetValue(new CachingSource(typeof(T), relativeFilePath), out var hotSwappableNode))
-            return (T)hotSwappableNode.ContentObject;
+    public T? GetCached<T>(string relativeFilePath) where T : class =>
+        _hotSwappableNodes.GetValueOrDefault(new CachingSource(typeof(T), relativeFilePath))?.ContentObject as T;
 
-        return null;
-    }
-
-    public T AddToCache<T>(IContentReader<T> contentReader, string relativeFilePath, IContentProvider contentProvider) where T : class
+    public T AddToCache<T>(string relativeFilePath, IContentReader<T> contentReader, IContentProvider contentProvider) where T : class
     {
         var contentProviderProxy = new ContentProviderProxy(contentProvider);
         using var fileStream = contentFileHandler.OpenRead(relativeFilePath);
