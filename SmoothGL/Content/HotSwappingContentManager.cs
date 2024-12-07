@@ -60,7 +60,7 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
     {
         CheckDisposed();
 
-        var filePath = Path.Combine(rootPath, relativeFilePath);
+        var filePath = FullFilePath(relativeFilePath);
         var loadingSource = new LoadingSource(typeof(T), relativeFilePath);
 
         try
@@ -72,16 +72,16 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
             var contentReader = _contentReaders.GetContentReader<T>();
 
             using var fileStream = File.OpenRead(filePath);
-            var newObject = contentReader.Read<T>(fileStream, contentProviderProxy);
+            var contentObject = contentReader.Read<T>(fileStream, contentProviderProxy);
 
-            var hotSwapAction = CreateHotSwapAction(newObject, contentReader);
+            var hotSwapAction = CreateHotSwapAction(contentObject, contentReader);
             if (hotSwapAction != null)
-                _hotSwappableNodes[loadingSource] = new HotSwappableNode(newObject, contentProviderProxy.Dependencies, hotSwapAction);
+                _hotSwappableNodes[loadingSource] = new HotSwappableNode(contentObject, contentProviderProxy.Dependencies, hotSwapAction);
 
-            if (newObject is IDisposable disposable)
+            if (contentObject is IDisposable disposable)
                 _disposables.Add(disposable);
 
-            return newObject;
+            return contentObject;
         }
         catch (FileNotFoundException fileNotFoundException)
         {
@@ -111,12 +111,11 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
     {
         CheckDisposed();
 
-        var newObject = _contentReaders.GetContentReader<T>().Read<T>(stream, this);
-
-        if (newObject is IDisposable disposable)
+        var contentObject = _contentReaders.GetContentReader<T>().Read<T>(stream, this);
+        if (contentObject is IDisposable disposable)
             _disposables.Add(disposable);
 
-        return newObject;
+        return contentObject;
     }
 
     /// <summary>
@@ -156,16 +155,14 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
     }
 
     private bool FileChanged(NormalizedPath relativeFilePath) =>
-        File.GetLastWriteTime(Path.Combine(rootPath, relativeFilePath)) > _lastUpdateTime;
+        File.GetLastWriteTime(FullFilePath(relativeFilePath)) > _lastUpdateTime;
 
     private void HotSwap(HotSwappableNode hotSwappableNode, LoadingSource loadingSource)
     {
         try
         {
             var contentProviderProxy = new ContentProviderProxy(this);
-
-            var filePath = Path.Combine(rootPath, loadingSource.RelativeFilePath);
-            using var fileStream = File.OpenRead(filePath);
+            using var fileStream = File.OpenRead(FullFilePath(loadingSource.RelativeFilePath));
 
             hotSwappableNode.HotSwap(fileStream, contentProviderProxy);
             hotSwappableNode.Dependencies = contentProviderProxy.Dependencies;
@@ -177,6 +174,8 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
             Console.WriteLine($"Hot swap for '{loadingSource.RelativeFilePath}' failed: {exception.Message}");
         }
     }
+
+    private string FullFilePath(string relativeFilePath) => Path.Combine(rootPath, relativeFilePath);
 
     /// <summary>
     /// Disposes all content objects managed by this content manager.
