@@ -2,11 +2,11 @@
 
 public class ContentReaders
 {
-    private readonly Dictionary<Type, IContentReader<object>> _contentReaders = new();
+    private readonly Dictionary<Type, object> _contentReaders = new();
 
     public void SetContentReader<T>(IContentReader<T> contentReader) where T : notnull
     {
-        _contentReaders[typeof(T)] = (IContentReader<object>)contentReader;
+        _contentReaders[typeof(T)] = contentReader;
     }
 
     public IContentReader<T> GetContentReader<T>() where T : notnull
@@ -15,19 +15,12 @@ public class ContentReaders
         var type = requestedType;
         do
         {
-            if (_contentReaders.TryGetValue(type, out var contentReader) && (contentReader.CanReadSubtypes || type == requestedType))
-                return contentReader as IContentReader<T> ?? new TypedContentReader<T>(contentReader);
+            if (_contentReaders.TryGetValue(type, out var contentReader) && contentReader is IContentReader<T> requestedContentReader && (requestedContentReader.CanReadSubtypes || type == requestedType))
+                return requestedContentReader;
 
             type = type.BaseType;
         } while (type != null);
 
         throw new ContentLoadException($"There is no content reader registered for type {requestedType}.", null, null, requestedType);
-    }
-
-    private class TypedContentReader<T>(IContentReader<object> inner) : IContentReader<T> where T : notnull
-    {
-        public bool CanReadSubtypes => inner.CanReadSubtypes;
-        public T Read(Stream stream, Type requestedType, IContentProvider contentProvider) =>
-            (T)inner.Read(stream, requestedType, contentProvider);
     }
 }

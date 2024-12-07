@@ -32,10 +32,7 @@ public class ContentManager(string rootPath) : IContentProvider, IDisposable
         contentManager.SetContentReader(new FactoryReader<ShaderProgram, ShaderProgramFactory>());
         contentManager.SetContentReader(new WavefrontObjReader());
         contentManager.SetContentReader(new VertexArrayReader());
-
-        var colorTextureReader = new ColorTextureReader(TextureFilterMode.Default);
-        contentManager.SetContentReader<Texture2D>(colorTextureReader);
-        contentManager.SetContentReader(colorTextureReader);
+        contentManager.SetContentReader(new ColorTextureReader(TextureFilterMode.Default));
 
         return contentManager;
     }
@@ -104,14 +101,14 @@ public class ContentManager(string rootPath) : IContentProvider, IDisposable
         return newObject;
     }
 
-    private T Read<T>(Stream stream)
+    private T Read<T>(Stream stream) where T : notnull
     {
         var requestedType = typeof(T);
         var type = requestedType;
         do
         {
             if (_contentReaders.TryGetValue(type, out var contentReader) && (contentReader.CanReadSubtypes || type == requestedType))
-                return (T)contentReader.Read(stream, requestedType, this);
+                return contentReader.Read<T>(stream, this);
 
             type = type.BaseType;
         } while (type != null);

@@ -9,7 +9,7 @@ namespace SmoothGL.Graphics.Texturing;
 /// <summary>
 /// Defines a two-dimensional texture persistent in graphics memory, storing a grid of color values.
 /// </summary>
-public class ColorTexture2D : Texture2D, IHotSwappable<Texture2D>
+public class ColorTexture2D : Texture2D, IHotSwappable<ColorTexture2D>
 {
     /// <summary>
     /// Creates a new color texture with RGBA format and default filter mode.
@@ -116,12 +116,9 @@ public class ColorTexture2D : Texture2D, IHotSwappable<Texture2D>
         }
     }
 
-    void IHotSwappable<Texture2D>.HotSwap(Texture2D other)
+    void IHotSwappable<ColorTexture2D>.HotSwap(ColorTexture2D other)
     {
         base.HotSwap(other);
-        if (other is ColorTexture2D otherTexture)
-        {
-            Format = otherTexture.Format;
-        }
+        Format = other.Format;
     }
 }

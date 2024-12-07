@@ -35,11 +35,7 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
         contentManager.SetContentReader(new FactoryReader<ShaderProgram, ShaderProgramFactory>());
         contentManager.SetContentReader(new WavefrontObjReader());
         contentManager.SetContentReader(new VertexArrayReader());
-
-        var colorTextureReader = new ColorTextureReader(TextureFilterMode.Default);
-        contentManager.SetContentReader<Texture2D>(colorTextureReader);
-        contentManager.SetContentReader(colorTextureReader);
-
+        contentManager.SetContentReader(new ColorTextureReader(TextureFilterMode.Default));
         return contentManager;
     }
 
@@ -76,7 +72,7 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
             var contentReader = _contentReaders.GetContentReader<T>();
 
             using var fileStream = File.OpenRead(filePath);
-            var newObject = contentReader.Read(fileStream, typeof(T), contentProviderProxy);
+            var newObject = contentReader.Read<T>(fileStream, contentProviderProxy);
 
             var hotSwapAction = CreateHotSwapAction(newObject, contentReader);
             if (hotSwapAction != null)
@@ -100,7 +96,7 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
     private static Action<Stream, IContentProvider>? CreateHotSwapAction<T>(T contentObject, IContentReader<T> contentReader) where T : notnull =>
         (contentObject, contentReader) switch
         {
-            (IHotSwappable<T> hotSwappable, _) => (stream, contentProvider) => hotSwappable.HotSwap(contentReader.Read(stream, typeof(T), contentProvider)),
+            (IHotSwappable<T> hotSwappable, _) => (stream, contentProvider) => hotSwappable.HotSwap(contentReader.Read<T>(stream, contentProvider)),
             (_, IHotSwappingReader hotSwappingReader) => (stream, contentProvider) => hotSwappingReader.ReadInto(contentObject, stream, contentProvider),
             _ => null
         };
@@ -115,7 +111,7 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
     {
         CheckDisposed();
 
-        var newObject = _contentReaders.GetContentReader<T>().Read(stream, typeof(T), this);
+        var newObject = _contentReaders.GetContentReader<T>().Read<T>(stream, this);
 
         if (newObject is IDisposable disposable)
             _disposables.Add(disposable);
