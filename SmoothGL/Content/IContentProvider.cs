@@ -8,7 +8,7 @@ public interface IContentProvider
     /// <typeparam name="T">The requested content type to load.</typeparam>
     /// <param name="relativeFilePath">Relative path to the file storing content data.</param>
     /// <returns>Content object.</returns>
-    T Load<T>(string relativeFilePath) where T : notnull;
+    T Load<T>(string relativeFilePath) where T : class;
 
     /// <summary>
     /// Loads content from a stream.
@@ -16,7 +16,7 @@ public interface IContentProvider
     /// <typeparam name="T">The requested content type to load.</typeparam>
     /// <param name="stream">Stream from which content data is read.</param>
     /// <returns>Content object.</returns>
-    T Load<T>(Stream stream) where T : notnull;
+    T Load<T>(Stream stream) where T : class;
 
     /// <summary>
     /// Adds a disposable content object so that its lifetime is managed by this content manager.

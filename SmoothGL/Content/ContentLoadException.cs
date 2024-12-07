@@ -12,7 +12,7 @@ public class ContentLoadException : Exception
     /// <param name="innerException">Inner exception which indicated that the read operation failed.</param>
     /// <param name="filePath">Path to the content file for which loading failed.</param>
     /// <param name="contentType">Requested content type for which loading failed.</param>
-    public ContentLoadException(string message, Exception? innerException, string? filePath, Type contentType)
+    public ContentLoadException(string message, Exception? innerException, string? filePath = null, Type? contentType = null)
         : base(message, innerException)
     {
         FilePath = filePath;
@@ -38,5 +38,5 @@ public class ContentLoadException : Exception
     /// <summary>
     /// Gets the requested content type for which loading failed.
     /// </summary>
-    public Type ContentType { get; }
+    public Type? ContentType { get; }
 }

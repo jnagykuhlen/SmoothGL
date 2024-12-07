@@ -56,7 +56,7 @@ public class ContentManager(string rootPath) : IContentProvider, IDisposable
     /// <typeparam name="T">The requested content type to load.</typeparam>
     /// <param name="relativeFilePath">Relative path to the file storing content data.</param>
     /// <returns>Content object.</returns>
-    public T Load<T>(string relativeFilePath) where T : notnull
+    public T Load<T>(string relativeFilePath) where T : class
     {
         CheckDisposed();
 
@@ -89,7 +89,7 @@ public class ContentManager(string rootPath) : IContentProvider, IDisposable
     /// <typeparam name="T">The requested content type to load.</typeparam>
     /// <param name="stream">Stream from which content data is read.</param>
     /// <returns>Content object.</returns>
-    public T Load<T>(Stream stream) where T : notnull
+    public T Load<T>(Stream stream) where T : class
     {
         CheckDisposed();
 

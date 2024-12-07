@@ -7,7 +7,7 @@
 /// <typeparam name="TProduct">Content type read by this reader.</typeparam>
 /// <typeparam name="TFactory">Type of factory which is capable of creating the requested content type.</typeparam>
 public class FactoryReader<TProduct, TFactory> : ContentReader<TProduct>
-    where TFactory : IFactory<TProduct>
+    where TFactory : class, IFactory<TProduct>
     where TProduct : notnull
 {
     protected override TProduct Read(Stream stream, IContentProvider contentProvider)
