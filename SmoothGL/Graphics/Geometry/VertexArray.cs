@@ -152,18 +152,7 @@ public class VertexArray : GraphicsResource, IHotSwappable<VertexArray>
         Unbind();
     }
 
-    protected int Id => _vertexArrayId;
-
     protected override string ResourceName => "VertexArray";
-
-    /// <summary>
-    /// Invalidates the binding cache used to speed up vertex array binding operations.
-    /// This method is not required to be called by client code.
-    /// </summary>
-    public static void InvalidateBindingCache()
-    {
-        currentVertexArrayId = 0;
-    }
 
     private void AttachVertexBuffer(VertexBuffer vertexBuffer, bool isInstanceData)
     {
@@ -185,28 +174,19 @@ public class VertexArray : GraphicsResource, IHotSwappable<VertexArray>
     /// <summary>
     /// Binds this vertex array to the graphics device. This method is not required to be called by client code.
     /// </summary>
-    public void Bind()
-    {
-        Bind(_vertexArrayId);
-    }
+    public void Bind() => Bind(_vertexArrayId);
 
     /// <summary>
     /// Unbinds this vertex array. This method is not required to be called by client code.
     /// </summary>
-    public void Unbind()
-    {
-        Bind(0);
-    }
+    public void Unbind() => Bind(0);
 
     /// <summary>
     /// Draws the geometry defined by the data in vertex buffers and element buffer,
     /// interpreted as a number of specified primitives.
     /// </summary>
     /// <param name="primitiveType">Type of primitives the vertices form.</param>
-    public void Draw(Primitive primitiveType)
-    {
-        Draw(primitiveType, 0, _defaultNumberOfElements);
-    }
+    public void Draw(Primitive primitiveType) => Draw(primitiveType, 0, _defaultNumberOfElements);
 
     /// <summary>
     /// Draws the geometry defined by the data in vertex buffers and element buffer,
@@ -230,10 +210,8 @@ public class VertexArray : GraphicsResource, IHotSwappable<VertexArray>
     /// </summary>
     /// <param name="primitiveType">Type of primitives the vertices form.</param>
     /// <param name="numberOfInstances">Number of instances of this geometry that need to be drawn.</param>
-    public void DrawMultiple(Primitive primitiveType, int numberOfInstances)
-    {
+    public void DrawMultiple(Primitive primitiveType, int numberOfInstances) =>
         DrawMultiple(primitiveType, 0, _defaultNumberOfElements, numberOfInstances);
-    }
 
     /// <summary>
     /// Draws the geometry defined by the data in vertex buffers and element buffer multiple times,
