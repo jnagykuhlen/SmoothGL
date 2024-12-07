@@ -15,8 +15,8 @@ public class ContentReaders
         var type = requestedType;
         do
         {
-            if (_contentReaders.TryGetValue(type, out var contentReader) && contentReader is IContentReader<T> requestedContentReader && (requestedContentReader.CanReadSubtypes || type == requestedType))
-                return requestedContentReader;
+            if (_contentReaders.GetValueOrDefault(type) is IContentReader<T> contentReader && (contentReader.CanReadSubtypes || type == requestedType))
+                return contentReader;
 
             type = type.BaseType;
         } while (type != null);
