@@ -97,7 +97,7 @@ public class HotSwappingContentManager(string rootPath) : IContentProvider, IDis
         (contentObject, contentReader) switch
         {
             (IHotSwappable<T> hotSwappable, _) => (stream, contentProvider) => hotSwappable.HotSwap(contentReader.Read<T>(stream, contentProvider)),
-            (_, IHotSwappingReader hotSwappingReader) => (stream, contentProvider) => hotSwappingReader.ReadInto(contentObject, stream, contentProvider),
+            (_, IHotSwappingContentReader<T> hotSwappingContentReader) => (stream, contentProvider) => hotSwappingContentReader.ReadInto(contentObject, stream, contentProvider),
             _ => null
         };
 
