@@ -1,6 +1,6 @@
 ﻿namespace SmoothGL.Content.Internal;
 
-public class HotSwappingContentCache(ContentFileHandler contentFileHandler) : IContentCache
+public class HotSwappingContentCache(ContentDirectory contentDirectory) : IContentCache
 {
     private static readonly TimeSpan UpdateInterval = TimeSpan.FromSeconds(1);
 
@@ -13,7 +13,7 @@ public class HotSwappingContentCache(ContentFileHandler contentFileHandler) : IC
     public T AddToCache<T>(string relativeFilePath, IContentReader<T> contentReader, IContentProvider contentProvider) where T : class
     {
         var contentProviderProxy = new ContentProviderProxy(contentProvider);
-        using var fileStream = contentFileHandler.OpenRead(relativeFilePath);
+        using var fileStream = contentDirectory.OpenRead(relativeFilePath);
         var contentObject = contentReader.Read<T>(fileStream, contentProviderProxy);
 
         var hotSwapAction = CreateHotSwapAction(contentObject, contentReader);
@@ -54,14 +54,14 @@ public class HotSwappingContentCache(ContentFileHandler contentFileHandler) : IC
     }
 
     private bool FileChanged(NormalizedPath relativeFilePath) =>
-        contentFileHandler.GetLastWriteTime(relativeFilePath) > _lastUpdateTime;
+        contentDirectory.GetLastWriteTime(relativeFilePath) > _lastUpdateTime;
 
     private void HotSwap(HotSwappableNode hotSwappableNode, NormalizedPath relativeFilePath, IContentProvider contentProvider)
     {
         try
         {
             var contentProviderProxy = new ContentProviderProxy(contentProvider);
-            using var fileStream = contentFileHandler.OpenRead(relativeFilePath);
+            using var fileStream = contentDirectory.OpenRead(relativeFilePath);
 
             hotSwappableNode.HotSwap(fileStream, contentProviderProxy);
             hotSwappableNode.Dependencies = contentProviderProxy.Dependencies;

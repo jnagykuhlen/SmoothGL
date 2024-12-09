@@ -1,6 +1,6 @@
 ﻿namespace SmoothGL.Content.Internal;
 
-public class ContentFileHandler(string rootPath)
+public class ContentDirectory(string rootPath)
 {
     public FileStream OpenRead(string relativeFilePath)
     {

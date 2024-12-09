@@ -12,12 +12,14 @@ public class ContentManager(string rootPath, bool enableHotSwapping = false) : I
 {
     private readonly ContentReaders _contentReaders = new();
     private readonly List<IDisposable> _disposables = new();
-
-    private readonly IContentCache _contentCache = enableHotSwapping
-        ? new HotSwappingContentCache(new ContentFileHandler(rootPath))
-        : new ContentCache(new ContentFileHandler(rootPath));
+    private readonly IContentCache _contentCache = CreateContentCache(new ContentDirectory(rootPath), enableHotSwapping);
 
     private bool _disposed;
+
+    private static IContentCache CreateContentCache(ContentDirectory contentDirectory, bool enableHotSwapping) =>
+        enableHotSwapping
+            ? new HotSwappingContentCache(contentDirectory)
+            : new ContentCache(contentDirectory);
 
     /// <summary>
     /// Registers a content reader which handles loading of content of the specified type.

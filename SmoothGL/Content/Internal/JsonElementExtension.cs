@@ -32,7 +32,7 @@ public static class JsonElementExtension
     {
         var jsonArrayItemsWithTargetItems = jsonArrayElement.EnumerateArray()
             .ZipWithRemainder(enumerableTarget, out var jsonArrayRemainder, out var targetRemainder);
-        
+
         foreach (var (jsonArrayItem, targetItem) in jsonArrayItemsWithTargetItems)
             jsonArrayItem.Populate(targetItem);
 

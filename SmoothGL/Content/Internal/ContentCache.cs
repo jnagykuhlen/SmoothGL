@@ -1,6 +1,6 @@
 ﻿namespace SmoothGL.Content.Internal;
 
-public class ContentCache(ContentFileHandler contentFileHandler) : IContentCache
+public class ContentCache(ContentDirectory contentDirectory) : IContentCache
 {
     private readonly Dictionary<(Type, NormalizedPath), object> _cachedContentObjects = new();
     public T? GetCached<T>(string relativeFilePath) where T : class =>
@@ -8,7 +8,7 @@ public class ContentCache(ContentFileHandler contentFileHandler) : IContentCache
 
     public T AddToCache<T>(string relativeFilePath, IContentReader<T> contentReader, IContentProvider contentProvider) where T : class
     {
-        using var fileStream = contentFileHandler.OpenRead(relativeFilePath);
+        using var fileStream = contentDirectory.OpenRead(relativeFilePath);
         var contentObject = contentReader.Read<T>(fileStream, contentProvider);
         
         _cachedContentObjects[(typeof(T), relativeFilePath)] = contentObject;
