@@ -84,11 +84,12 @@ public class HotSwappingContentCache(ContentFileHandler contentFileHandler) : IC
 
     private class ContentProviderProxy(IContentProvider innerProvider) : IContentProvider
     {
-        public HashSet<CachingSource> Dependencies { get; } = new();
+        private readonly HashSet<CachingSource> _dependencies = new();
+        public IReadOnlySet<CachingSource> Dependencies => _dependencies;
 
         public T Load<T>(string relativeFilePath) where T : class
         {
-            Dependencies.Add(new CachingSource(typeof(T), relativeFilePath));
+            _dependencies.Add(new CachingSource(typeof(T), relativeFilePath));
             return innerProvider.Load<T>(relativeFilePath);
         }
 
