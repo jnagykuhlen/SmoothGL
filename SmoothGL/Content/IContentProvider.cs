@@ -1,5 +1,8 @@
 ﻿namespace SmoothGL.Content;
 
+/// <summary>
+/// Represents a content provider which can be used to load content from files or streams.
+/// </summary>
 public interface IContentProvider
 {
     /// <summary>
@@ -19,7 +22,7 @@ public interface IContentProvider
     T Load<T>(Stream stream) where T : class;
 
     /// <summary>
-    /// Adds a disposable content object so that its lifetime is managed by this content manager.
+    /// Adds a disposable content object so that its lifetime is managed by this content provider.
     /// </summary>
     /// <param name="disposable"></param>
     T Add<T>(T disposable) where T : IDisposable;

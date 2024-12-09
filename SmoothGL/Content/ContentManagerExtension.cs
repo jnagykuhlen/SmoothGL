@@ -5,6 +5,9 @@ using SmoothGL.Graphics.Texturing;
 
 namespace SmoothGL.Content;
 
+/// <summary>
+/// Provides extension methods for the <see cref="ContentManager"/> class.
+/// </summary>
 public static class ContentManagerExtension
 {
     /// <summary>

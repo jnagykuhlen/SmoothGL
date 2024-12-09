@@ -86,6 +86,10 @@ public class ContentManager(string rootPath, bool enableHotSwapping = false) : I
         return disposable;
     }
 
+    /// <summary>
+    /// If <see cref="enableHotSwapping"/> is set, checks for file changes of tracked content objects and tries to
+    /// hot swap in-place. Otherwise, calling this method does nothing./>
+    /// </summary>
     public void UpdateContent() => _contentCache.UpdateCached(this);
 
     /// <summary>
