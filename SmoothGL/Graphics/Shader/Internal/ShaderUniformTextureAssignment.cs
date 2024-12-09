@@ -3,26 +3,18 @@ using SmoothGL.Graphics.Texturing;
 
 namespace SmoothGL.Graphics.Shader.Internal;
 
-public class ShaderUniformTextureAssignment<T> : ShaderUniformAssignment<T>
-    where T : Texture
+public class ShaderUniformTextureAssignment(Func<object, bool> validationFunction) : IShaderUniformAssignment
 {
-    public override bool IsPersistent => false;
+    public bool Validate(object value) => validationFunction(value);
 
-    protected override void AssignSingle(int location, T value)
+    public void Assign(int location, object value)
     {
         GL.ActiveTexture(TextureUnit.Texture0 + location);
-        value.Bind();
+        ((Texture)value).Bind();
     }
 
-    protected override void AssignArray(int location, T[] value)
-    {
-        for (var i = 0; i < value.Length; ++i)
-        {
-            GL.ActiveTexture(TextureUnit.Texture0 + location + i);
-            value[i].Bind();
-        }
-    }
-
-    public override void WriteSingleToBuffer(IUnsafeBuffer buffer, object value, int offset) =>
+    public void WriteToBuffer(IUnsafeBuffer buffer, object value, int offset) =>
         throw new InvalidOperationException("Texture uniforms cannot be written to buffers.");
+
+    public bool IsPersistent => false;
 }

@@ -1,250 +1,55 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using SmoothGL.Graphics.Texturing;
 
 namespace SmoothGL.Graphics.Shader.Internal;
 
-public class ShaderUniformAssignmentBool : ShaderUniformAssignment<bool>
+public static class ShaderUniformAssignments
 {
-    protected override void AssignSingle(int location, bool value)
-    {
-        GL.Uniform1(location, BoolToInt(value));
-    }
+    private static readonly IShaderUniformAssignment BooleanAssignment = new ShaderUniformBooleanAssignment();
+    private static readonly IShaderUniformAssignment DoubleAssigment = new ShaderUniformAssignment<double>(GL.Uniform1);
+    private static readonly IShaderUniformAssignment Double2Assigment = new ShaderUniformAssignment<Vector2d>((location, value) => GL.Uniform2(location, value.X, value.Y));
+    private static readonly IShaderUniformAssignment Double3Assigment = new ShaderUniformAssignment<Vector3d>((location, value) => GL.Uniform3(location, value.X, value.Y, value.Z));
+    private static readonly IShaderUniformAssignment Double4Assigment = new ShaderUniformAssignment<Vector4d>((location, value) => GL.Uniform4(location, value.X, value.Y, value.Z, value.W));
+    private static readonly IShaderUniformAssignment FloatAssigment = new ShaderUniformAssignment<float>(GL.Uniform1);
+    private static readonly IShaderUniformAssignment Float2Assigment = new ShaderUniformAssignment<Vector2>(GL.Uniform2);
+    private static readonly IShaderUniformAssignment Float3Assigment = new ShaderUniformAssignment<Vector3>(GL.Uniform3);
+    private static readonly IShaderUniformAssignment Float4Assigment = new ShaderUniformAssignment<Vector4>(GL.Uniform4);
+    private static readonly IShaderUniformAssignment IntAssigment = new ShaderUniformAssignment<int>(GL.Uniform1);
+    private static readonly IShaderUniformAssignment UnsignedIntAssigment = new ShaderUniformAssignment<uint>(GL.Uniform1);
+    private static readonly IShaderUniformAssignment Matrix2Assigment = new ShaderUniformAssignment<Matrix2>((location, value) => GL.UniformMatrix2(location, false, ref value));
+    private static readonly IShaderUniformAssignment Matrix3Assigment = new ShaderUniformAssignment<Matrix3>((location, value) => GL.UniformMatrix3(location, false, ref value));
+    private static readonly IShaderUniformAssignment Matrix4Assigment = new ShaderUniformAssignment<Matrix4>((location, value) => GL.UniformMatrix4(location, false, ref value));
+    private static readonly IShaderUniformAssignment Sampler1DAssigment = new ShaderUniformTextureAssignment(value => value is Texture1D);
+    private static readonly IShaderUniformAssignment Sampler2DAssigment = new ShaderUniformTextureAssignment(value => value is ColorTexture2D or DepthStencilTexture2D);
+    private static readonly IShaderUniformAssignment Sampler3DAssigment = new ShaderUniformTextureAssignment(value => value is Texture3D);
+    private static readonly IShaderUniformAssignment SamplerCubeAssigment = new ShaderUniformTextureAssignment(value => value is TextureCube);
 
-    protected override void AssignArray(int location, bool[] value)
+    public static IShaderUniformAssignment Get(ShaderUniformType type, int size)
     {
-        GL.Uniform1(location, value.Length, value.Select(BoolToInt).ToArray());
-    }
-
-    public override void WriteSingleToBuffer(IUnsafeBuffer buffer, object value, int offset)
-    {
-        buffer.SetData(BoolToInt((bool)value), offset);
-    }
-
-    private static int BoolToInt(bool value)
-    {
-        return value ? 1 : 0;
-    }
-}
-
-public class ShaderUniformAssignmentInt : ShaderUniformAssignment<int>
-{
-    protected override void AssignSingle(int location, int value)
-    {
-        GL.Uniform1(location, value);
-    }
-
-    protected override void AssignArray(int location, int[] value)
-    {
-        GL.Uniform1(location, value.Length, value);
-    }
-}
-
-public class ShaderUniformAssignmentUnsignedInt : ShaderUniformAssignment<uint>
-{
-    protected override void AssignSingle(int location, uint value)
-    {
-        GL.Uniform1(location, value);
-    }
-
-    protected override void AssignArray(int location, uint[] value)
-    {
-        GL.Uniform1(location, value.Length, value);
-    }
-}
-
-public class ShaderUniformAssignmentFloat : ShaderUniformAssignment<float>
-{
-    protected override void AssignSingle(int location, float value)
-    {
-        GL.Uniform1(location, value);
-    }
-
-    protected override void AssignArray(int location, float[] value)
-    {
-        GL.Uniform1(location, value.Length, value);
-    }
-}
-
-public class ShaderUniformAssignmentDouble : ShaderUniformAssignment<double>
-{
-    protected override void AssignSingle(int location, double value)
-    {
-        GL.Uniform1(location, value);
-    }
-
-    protected override void AssignArray(int location, double[] value)
-    {
-        GL.Uniform1(location, value.Length, value);
-    }
-}
-
-public class ShaderUniformAssignmentVector2 : ShaderUniformAssignment<Vector2>
-{
-    protected override void AssignSingle(int location, Vector2 value)
-    {
-        GL.Uniform2(location, value);
-    }
-
-    protected override void AssignArray(int location, Vector2[] value)
-    {
-        unsafe
+        var assignment = type switch
         {
-            fixed (float* p = &value[0].X)
-            {
-                GL.Uniform2(0, 2 * value.Length, p);
-            }
-        }
-    }
-}
-
-public class ShaderUniformAssignmentVector3 : ShaderUniformAssignment<Vector3>
-{
-    protected override void AssignSingle(int location, Vector3 value)
-    {
-        GL.Uniform3(location, value);
-    }
-
-    protected override void AssignArray(int location, Vector3[] value)
-    {
-        unsafe
-        {
-            fixed (float* p = &value[0].X)
-            {
-                GL.Uniform3(0, 3 * value.Length, p);
-            }
-        }
-    }
-}
-
-public class ShaderUniformAssignmentVector4 : ShaderUniformAssignment<Vector4>
-{
-    protected override void AssignSingle(int location, Vector4 value)
-    {
-        GL.Uniform4(location, value);
-    }
-
-    protected override void AssignArray(int location, Vector4[] value)
-    {
-        unsafe
-        {
-            fixed (float* p = &value[0].X)
-            {
-                GL.Uniform4(0, 4 * value.Length, p);
-            }
-        }
-    }
-}
-
-public class ShaderUniformAssignmentDoubleVector2 : ShaderUniformAssignment<Vector2d>
-{
-    protected override void AssignSingle(int location, Vector2d value)
-    {
-        GL.Uniform2(location, value.X, value.Y);
-    }
-
-    protected override void AssignArray(int location, Vector2d[] value)
-    {
-        unsafe
-        {
-            fixed (double* p = &value[0].X)
-            {
-                GL.Uniform2(0, 2 * value.Length, p);
-            }
-        }
-    }
-}
-
-public class ShaderUniformAssignmentDoubleVector3 : ShaderUniformAssignment<Vector3d>
-{
-    protected override void AssignSingle(int location, Vector3d value)
-    {
-        GL.Uniform3(location, value.X, value.Y, value.Z);
-    }
-
-    protected override void AssignArray(int location, Vector3d[] value)
-    {
-        unsafe
-        {
-            fixed (double* p = &value[0].X)
-            {
-                GL.Uniform3(0, 3 * value.Length, p);
-            }
-        }
-    }
-}
-
-public class ShaderUniformAssignmentDoubleVector4 : ShaderUniformAssignment<Vector4d>
-{
-    protected override void AssignSingle(int location, Vector4d value)
-    {
-        GL.Uniform4(location, value.X, value.Y, value.Z, value.W);
-    }
-
-    protected override void AssignArray(int location, Vector4d[] value)
-    {
-        unsafe
-        {
-            fixed (double* p = &value[0].X)
-            {
-                GL.Uniform4(0, 4 * value.Length, p);
-            }
-        }
-    }
-}
-
-public class ShaderUniformAssignmentMatrix2 : ShaderUniformAssignment<Matrix2>
-{
-    protected override void AssignSingle(int location, Matrix2 value)
-    {
-        GL.UniformMatrix2(location, false, ref value);
-    }
-
-    protected override void AssignArray(int location, Matrix2[] value)
-    {
-        unsafe
-        {
-            fixed (float* p = &value[0].Row0.X)
-            {
-                GL.UniformMatrix2(0, 4 * value.Length, false, p);
-            }
-        }
-    }
-}
-
-public class ShaderUniformAssignmentMatrix3 : ShaderUniformAssignment<Matrix3>
-{
-    protected override void AssignSingle(int location, Matrix3 value)
-    {
-        GL.UniformMatrix3(location, false, ref value);
-    }
-
-    protected override void AssignArray(int location, Matrix3[] value)
-    {
-        unsafe
-        {
-            fixed (float* p = &value[0].Row0.X)
-            {
-                GL.UniformMatrix3(0, 9 * value.Length, false, p);
-            }
-        }
-    }
-}
-
-public class ShaderUniformAssignmentMatrix4 : ShaderUniformAssignment<Matrix4>
-{
-    protected override void AssignSingle(int location, Matrix4 value)
-    {
-        GL.UniformMatrix4(location, false, ref value);
-    }
-
-    protected override void AssignArray(int location, Matrix4[] value)
-    {
-        unsafe
-        {
-            fixed (float* p = &value[0].Row0.X)
-            {
-                GL.UniformMatrix4(0, 16 * value.Length, false, p);
-            }
-        }
+            ShaderUniformType.Bool => BooleanAssignment,
+            ShaderUniformType.Double => DoubleAssigment,
+            ShaderUniformType.Double2 => Double2Assigment,
+            ShaderUniformType.Double3 => Double3Assigment,
+            ShaderUniformType.Double4 => Double4Assigment,
+            ShaderUniformType.Float => FloatAssigment,
+            ShaderUniformType.Float2 => Float2Assigment,
+            ShaderUniformType.Float3 => Float3Assigment,
+            ShaderUniformType.Float4 => Float4Assigment,
+            ShaderUniformType.Int => IntAssigment,
+            ShaderUniformType.UnsignedInt => UnsignedIntAssigment,
+            ShaderUniformType.Matrix2 => Matrix2Assigment,
+            ShaderUniformType.Matrix3 => Matrix3Assigment,
+            ShaderUniformType.Matrix4 => Matrix4Assigment,
+            ShaderUniformType.Sampler1D => Sampler1DAssigment,
+            ShaderUniformType.Sampler2D => Sampler2DAssigment,
+            ShaderUniformType.Sampler3D => Sampler3DAssigment,
+            ShaderUniformType.SamplerCube => SamplerCubeAssigment,
+            _ => throw new ArgumentException($"There is no assignment registered for uniforms of type {type}.", nameof(type))
+        };
+        
+        return size == 1 ? assignment : new ShaderUniformArrayAssignment(assignment, size);
     }
 }

@@ -189,33 +189,26 @@ public class ShaderProgram : GraphicsResource, IHotSwappable<ShaderProgram>
                         uniformType
                     );
 
-                IShaderUniformAssignmentDispatcher dispatcher = uniformSize > 1
-                    ? ShaderUniformArrayAssignmentDispatcher.Instance
-                    : ShaderUniformSingleAssignmentDispatcher.Instance;
-
-                if (uniformType == ShaderUniformType.Sampler1D ||
-                    uniformType == ShaderUniformType.Sampler2D ||
-                    uniformType == ShaderUniformType.Sampler3D ||
-                    uniformType == ShaderUniformType.SamplerCube)
+                if (uniformType is ShaderUniformType.Sampler1D or ShaderUniformType.Sampler2D or ShaderUniformType.Sampler3D or ShaderUniformType.SamplerCube)
                 {
                     if (textureIndex + uniformSize > maxTextureIndex)
+                    {
                         throw new ShaderUniformException(
                             $"Texture uniform {uniformName} exceeds the limit of {maxTextureIndex} texture units.",
                             uniformName,
                             uniformType
                         );
+                    }
 
-                    var indices = new int[uniformSize];
-                    for (var j = 0; j < uniformSize; ++j)
-                        indices[j] = textureIndex + j;
+                    var textureIndices = Enumerable.Range(textureIndex, uniformSize).ToArray();
 
-                    GL.Uniform1(uniformLocation, uniformSize, indices);
+                    GL.Uniform1(uniformLocation, uniformSize, textureIndices);
 
                     uniformLocation = textureIndex;
                     textureIndex += uniformSize;
                 }
 
-                var uniform = new ShaderProgramUniform(uniformName, uniformType, uniformSize, uniformLocation, dispatcher);
+                var uniform = new ShaderProgramUniform(uniformName, uniformType, uniformSize, uniformLocation);
                 _uniforms.Add(uniformName, uniform);
             }
             else

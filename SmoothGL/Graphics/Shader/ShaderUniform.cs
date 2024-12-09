@@ -1,10 +1,14 @@
-﻿namespace SmoothGL.Graphics.Shader;
+﻿using SmoothGL.Graphics.Shader.Internal;
+
+namespace SmoothGL.Graphics.Shader;
 
 /// <summary>
 /// Represents a shader uniform associated with a single shader program instance.
 /// </summary>
 public abstract class ShaderUniform(string name, ShaderUniformType type, int size)
 {
+    protected IShaderUniformAssignment Assignment { get; } = ShaderUniformAssignments.Get(type, size);
+    
     /// <summary>
     /// Gets the value of this uniform in the corresponding shader program.
     /// </summary>
@@ -15,6 +19,9 @@ public abstract class ShaderUniform(string name, ShaderUniformType type, int siz
     /// </summary>
     public void SetValue(object value)
     {
+        if (!Assignment.Validate(value))
+            throw new ShaderUniformException($"Cannot assign value of type {value.GetType().Name} to uniform {Name} of type {FormattedType}.", Name, Type);
+        
         OnValueChanged(value);
         Value = value;
     }
@@ -35,4 +42,6 @@ public abstract class ShaderUniform(string name, ShaderUniformType type, int siz
     public ShaderUniformType Type { get; } = type;
 
     protected abstract void OnValueChanged(object value);
+    
+    private string FormattedType => Size == 1 ? Type.ToString() : $"{Type}[{Size}]";
 }
