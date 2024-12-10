@@ -1,10 +1,8 @@
 ﻿namespace SmoothGL.Graphics.Shader.Internal;
 
-public class ShaderBufferUniform(string name, ShaderUniformType type, int size, IUnsafeBuffer buffer, int offset)
-    : ShaderUniform(name, type, size)
+public class ShaderBufferUniform(UniformBufferElement uniformBufferElement, IUnsafeBuffer buffer)
+    : ShaderUniform(uniformBufferElement.Name, uniformBufferElement.Type, uniformBufferElement.Size)
 {
-    protected override void OnValueChanged(object value)
-    {
-        Assignment.WriteToBuffer(buffer, value, offset);
-    }
+    protected override void OnValueChanged(object value) =>
+        Assignment.WriteToBuffer(buffer, value, uniformBufferElement.Offset);
 }

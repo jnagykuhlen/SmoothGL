@@ -20,6 +20,19 @@ public class ShaderUniformBlock
     }
 
     /// <summary>
+    /// Gets the uniform buffer which is attached to this shader uniform block.
+    /// </summary>
+    public UniformBuffer? Buffer { get; private set; }
+
+    /// <summary>
+    /// Attaches a buffer to this shader uniform block.
+    /// </summary>
+    public void SetBuffer(UniformBuffer buffer)
+    {
+        Buffer = buffer;
+    }
+
+    /// <summary>
     /// Gets the name of this uniform block.
     /// </summary>
     public string Name { get; }
@@ -34,9 +47,4 @@ public class ShaderUniformBlock
     /// defined by the block definition in GLSL shader code.
     /// </summary>
     public UniformBufferLayout Layout { get; }
-
-    /// <summary>
-    /// Gets or sets the uniform buffer which is attached to this shader uniform block.
-    /// </summary>
-    public UniformBuffer? Buffer { get; set; }
 }

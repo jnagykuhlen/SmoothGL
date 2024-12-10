@@ -10,8 +10,9 @@ public class UniformBufferElement
     /// </summary>
     /// <param name="name">Name of the uniform.</param>
     /// <param name="type">Type of the value the uniform stores.</param>
+    /// <param name="size">Number of elements of this uniform in case that it represents an array, 1 otherwise.</param>
     /// <param name="offset">Offset of this uniform relative to the start of the containing uniform buffer, in bytes.</param>
-    public UniformBufferElement(string name, ShaderUniformType type, int offset)
+    public UniformBufferElement(string name, ShaderUniformType type, int size, int offset)
     {
         if (type is
             ShaderUniformType.Sampler1D or
@@ -41,6 +42,7 @@ public class UniformBufferElement
 
         Name = name;
         Type = type;
+        Size = size;
         Offset = offset;
     }
 
@@ -53,6 +55,11 @@ public class UniformBufferElement
     /// Gets the type of the value the uniform stores.
     /// </summary>
     public ShaderUniformType Type { get; }
+    
+    /// <summary>
+    /// Gets the number of elements of this uniform in case that it represents an array. Otherwise, 1 is returned.
+    /// </summary>
+    public int Size { get; }
 
     /// <summary>
     /// Gets the offset of this uniform relative to the start of the containing uniform buffer, in bytes.

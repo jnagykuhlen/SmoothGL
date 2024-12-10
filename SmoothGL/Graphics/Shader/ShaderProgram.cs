@@ -213,12 +213,8 @@ public class ShaderProgram : GraphicsResource, IHotSwappable<ShaderProgram>
             }
             else
             {
-                // Currently, arrays in uniform blocks are not supported.
-                if (uniformSize == 1)
-                {
-                    GL.GetActiveUniforms(_programId, 1, ref i, ActiveUniformParameter.UniformOffset, out var uniformOffset);
-                    uniformBlockElements[uniformBlockIndex].Add(new UniformBufferElement(uniformName, uniformType, uniformOffset));
-                }
+                GL.GetActiveUniforms(_programId, 1, ref i, ActiveUniformParameter.UniformOffset, out var uniformOffset);
+                uniformBlockElements[uniformBlockIndex].Add(new UniformBufferElement(uniformName, uniformType, uniformSize, uniformOffset));
             }
         }
 
@@ -292,9 +288,11 @@ public class ShaderProgram : GraphicsResource, IHotSwappable<ShaderProgram>
 
         foreach (var uniformBlock in UniformBlocks)
         {
+            var buffer = uniformBlock.Buffer;
             var otherUniformBlock = other.UniformBlock(uniformBlock.Name);
-            if (otherUniformBlock != null)
-                otherUniformBlock.Buffer = uniformBlock.Buffer;
+            
+            if (buffer != null && otherUniformBlock != null)
+                otherUniformBlock.SetBuffer(buffer);
         }
 
         FreeResources();

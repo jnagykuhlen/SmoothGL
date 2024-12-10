@@ -29,7 +29,7 @@ public class UniformBuffer : Buffer
     protected override string ResourceName => "StructuredUniformBuffer";
 
     private ShaderUniform CreateUniform(UniformBufferElement element) =>
-        new ShaderBufferUniform(element.Name, element.Type, 1, this, element.Offset);
+        new ShaderBufferUniform(element, this);
 
     /// <summary>
     /// Gets the uniform with the specified name contained in this uniform buffer.

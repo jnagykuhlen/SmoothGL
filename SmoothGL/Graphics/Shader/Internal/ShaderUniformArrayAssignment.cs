@@ -1,4 +1,6 @@
-﻿namespace SmoothGL.Graphics.Shader.Internal;
+﻿using System.Runtime.InteropServices;
+
+namespace SmoothGL.Graphics.Shader.Internal;
 
 public class ShaderUniformArrayAssignment(IShaderUniformAssignment itemAssignment, int size) : IShaderUniformAssignment
 {
@@ -11,8 +13,14 @@ public class ShaderUniformArrayAssignment(IShaderUniformAssignment itemAssignmen
             itemAssignment.Assign(location++, item);
     }
 
-    public void WriteToBuffer(IUnsafeBuffer buffer, object value, int offset) =>
-        throw new InvalidOperationException("Arrays in uniform buffers are not supported.");
+    public void WriteToBuffer(IUnsafeBuffer buffer, object value, int offset)
+    {
+        foreach (var item in (Array)value)
+        {
+            itemAssignment.WriteToBuffer(buffer, item, offset);
+            offset += Marshal.SizeOf(item);
+        }
+    }
 
     public bool IsPersistent => itemAssignment.IsPersistent;
 }
