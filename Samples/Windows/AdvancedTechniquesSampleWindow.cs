@@ -32,7 +32,7 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
     private VertexArray _vertexArrayTorus;
 
     private FrameBuffer _frameBuffer;
-    private ColorTexture2D _frameBufferColorTexture;
+    private Texture2D _frameBufferColorTexture;
     private DepthStencilTexture2D _frameBufferDepthTexture;
 
     public AdvancedTechniquesSampleWindow()
@@ -94,7 +94,7 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
         _shaderPostProcessing.Uniform("NearPlane")?.SetValue(NearPlane);
         _shaderPostProcessing.Uniform("FarPlane")?.SetValue(FarPlane);
         _shaderSky.Uniform("TextureSkybox")?.SetValue(_contentManager.Load<TextureCube>("Skybox.png"));
-        _shaderTorus.Uniform("Texture")?.SetValue(_contentManager.Load<ColorTexture2D>("Texture.png"));
+        _shaderTorus.Uniform("Texture")?.SetValue(_contentManager.Load<Texture2D>("Texture.png"));
 
         // Creates a quad, which is essentially a vertex array with two triangles spanning the
         // whole screen. This is required for post-processing effects: First, the scene is rendered
@@ -198,7 +198,7 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
     private void LoadFrameBuffer(Vector2i size)
     {
         _frameBuffer = new FrameBuffer(size.X, size.Y);
-        _frameBufferColorTexture = new ColorTexture2D(size.X, size.Y, TextureColorFormat.Rgba32, TextureFilterMode.None);
+        _frameBufferColorTexture = new Texture2D(size.X, size.Y, TextureColorFormat.Rgba32, TextureFilterMode.None);
         _frameBufferDepthTexture = new DepthStencilTexture2D(size.X, size.Y);
 
         _frameBuffer.Attach(

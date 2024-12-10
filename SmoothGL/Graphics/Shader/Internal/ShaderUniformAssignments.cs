@@ -21,7 +21,7 @@ public static class ShaderUniformAssignments
     private static readonly IShaderUniformAssignment Matrix3Assigment = new ShaderUniformAssignment<Matrix3>((location, value) => GL.UniformMatrix3(location, false, ref value));
     private static readonly IShaderUniformAssignment Matrix4Assigment = new ShaderUniformAssignment<Matrix4>((location, value) => GL.UniformMatrix4(location, false, ref value));
     private static readonly IShaderUniformAssignment Sampler1DAssigment = new ShaderUniformTextureAssignment(value => value is Texture1D);
-    private static readonly IShaderUniformAssignment Sampler2DAssigment = new ShaderUniformTextureAssignment(value => value is ColorTexture2D or DepthStencilTexture2D);
+    private static readonly IShaderUniformAssignment Sampler2DAssigment = new ShaderUniformTextureAssignment(value => value is Texture2D or DepthStencilTexture2D);
     private static readonly IShaderUniformAssignment Sampler3DAssigment = new ShaderUniformTextureAssignment(value => value is Texture3D);
     private static readonly IShaderUniformAssignment SamplerCubeAssigment = new ShaderUniformTextureAssignment(value => value is TextureCube);
 

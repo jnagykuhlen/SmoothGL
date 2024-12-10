@@ -20,11 +20,11 @@ public static class ContentManagerExtension
         contentManager.SetContentReader(new SerializationReader());
         contentManager.SetContentReader(new Readers.StringReader());
         contentManager.SetContentReader(new ImageDataReader());
+        contentManager.SetContentReader(new Texture2DReader(TextureFilterMode.Default));
         contentManager.SetContentReader(new TextureCubeReader(TextureFilterMode.Default));
         contentManager.SetContentReader(new FactoryReader<ShaderProgram, ShaderProgramFactory>());
         contentManager.SetContentReader(new WavefrontObjReader());
         contentManager.SetContentReader(new VertexArrayReader());
-        contentManager.SetContentReader(new ColorTextureReader(TextureFilterMode.Default));
         return contentManager;
     }
 }
