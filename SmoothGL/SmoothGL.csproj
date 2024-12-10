@@ -8,7 +8,6 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <RootNamespace>SmoothGL</RootNamespace>
         <AssemblyName>SmoothGL</AssemblyName>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>SmoothGL</Title>
         <Authors>Jonas Nagy-Kuhlen</Authors>
