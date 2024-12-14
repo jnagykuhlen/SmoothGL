@@ -9,7 +9,7 @@ public class ShaderProgramUniform(string name, ShaderUniformType type, int size,
     {
         if (_valueHasChanged || !Assignment.IsPersistent)
         {
-            var value = Value ?? throw new ShaderUniformException($"Value of shader uniform {Name} has not been set yet.", Name, Type);
+            var value = Value ?? throw new ShaderUniformException($"Value of shader uniform {Name} has not been set yet.");
             Assignment.Assign(location, value);
             _valueHasChanged = false;
         }

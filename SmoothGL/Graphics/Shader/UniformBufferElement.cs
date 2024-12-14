@@ -14,28 +14,8 @@ public class UniformBufferElement
     /// <param name="offset">Offset of this uniform relative to the start of the containing uniform buffer, in bytes.</param>
     public UniformBufferElement(string name, ShaderUniformType type, int size, int offset)
     {
-        if (type is
-            ShaderUniformType.Sampler1D or
-            ShaderUniformType.Sampler2D or
-            ShaderUniformType.Sampler3D or
-            ShaderUniformType.SamplerCube)
-        {
+        if (type.IsSampler())
             throw new ArgumentException("Texture samplers are not allowed to be defined in uniform blocks.", nameof(type));
-        }
-
-        if (type is
-            ShaderUniformType.Double or
-            ShaderUniformType.Double2 or
-            ShaderUniformType.Double3 or
-            ShaderUniformType.Double4 or
-            ShaderUniformType.Matrix3)
-        {
-            throw new ShaderUniformException(
-                $"The uniform type {type} is currently not supported for uniform buffer elements.",
-                name,
-                type
-            );
-        }
 
         if (offset < 0)
             throw new ArgumentOutOfRangeException(nameof(offset), "Offset must not be negative.");

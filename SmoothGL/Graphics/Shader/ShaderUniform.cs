@@ -20,7 +20,7 @@ public abstract class ShaderUniform(string name, ShaderUniformType type, int siz
     public void SetValue(object value)
     {
         if (!Assignment.Validate(value))
-            throw new ShaderUniformException($"Cannot assign value of type {value.GetType().Name} to uniform {Name} of type {FormattedType}.", Name, Type);
+            throw new ShaderUniformException($"Cannot assign value of type {value.GetType().Name} to uniform {Name} of type {FormattedType}.");
         
         OnValueChanged(value);
         Value = value;
@@ -43,5 +43,5 @@ public abstract class ShaderUniform(string name, ShaderUniformType type, int siz
 
     protected abstract void OnValueChanged(object value);
     
-    private string FormattedType => Size == 1 ? Type.ToString() : $"{Type}[{Size}]";
+    private string FormattedType => Size == 1 ? $"{Type}" : $"{Type}[{Size}]";
 }

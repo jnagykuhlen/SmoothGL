@@ -30,3 +30,9 @@ public enum ShaderUniformType
     Sampler3D = ActiveUniformType.Sampler3D,
     SamplerCube = ActiveUniformType.SamplerCube
 }
+
+public static class ShaderUniformTypeExtension
+{
+    public static bool IsSampler(this ShaderUniformType shaderUniformType) =>
+        shaderUniformType is >= ShaderUniformType.Sampler1D and <= ShaderUniformType.SamplerCube;
+}

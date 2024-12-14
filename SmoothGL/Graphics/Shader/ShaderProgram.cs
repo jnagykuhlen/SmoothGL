@@ -70,16 +70,16 @@ public class ShaderProgram : GraphicsResource, IHotSwappable<ShaderProgram>
         try
         {
             shaderIds.Add(CreateShader(ShaderType.VertexShader, vertexShaderCode));
-            
+
             if (tessellationControlShaderCode != null)
                 shaderIds.Add(CreateShader(ShaderType.TessControlShader, tessellationControlShaderCode));
-            
+
             if (tessellationEvaluationShaderCode != null)
                 shaderIds.Add(CreateShader(ShaderType.TessEvaluationShader, tessellationEvaluationShaderCode));
-            
+
             if (geometryShaderCode != null)
                 shaderIds.Add(CreateShader(ShaderType.GeometryShader, geometryShaderCode));
-            
+
             shaderIds.Add(CreateShader(ShaderType.FragmentShader, fragmentShaderCode));
 
             _programId = LinkProgram(shaderIds);
@@ -104,12 +104,26 @@ public class ShaderProgram : GraphicsResource, IHotSwappable<ShaderProgram>
     public IEnumerable<ShaderUniformBlock> UniformBlocks => _uniformBlocks.Values;
 
     /// <summary>
+    /// Gets the uniform with the specified name. Returns null if such uniform does not exist.
+    /// Note that uniform value changes are not communicated to the GPU until this shader
+    /// program's <see cref="Use" /> method is called again.
+    /// </summary>
+    /// <param name="name">Name of the uniform.</param>
+    /// <returns>Uniform.</returns>
+    public ShaderUniform? Uniform(string name) => _uniforms.GetValueOrDefault(name);
+
+    /// <summary>
+    /// Gets the uniform block with the specified name. Returns null if such uniform block does not exist.
+    /// </summary>
+    /// <param name="name">Name of the uniform block.</param>
+    /// <returns>Uniform block.</returns>
+    public ShaderUniformBlock? UniformBlock(string name) => _uniformBlocks.GetValueOrDefault(name);
+
+    /// <summary>
     /// Gets a value indicating whether this shader program is currently in use for subsequent draw operations,
     /// i.e., its <see cref="Use" /> method was called after using any other shader program.
     /// </summary>
     public bool IsActive => currentProgramId == _programId;
-
-    protected override string ResourceName => "ShaderProgram";
 
     private static int LinkProgram(IReadOnlyCollection<int> shaderIds)
     {
@@ -167,41 +181,27 @@ public class ShaderProgram : GraphicsResource, IHotSwappable<ShaderProgram>
         for (var i = 0; i < numberOfUniformBlocks; ++i)
             uniformBlockElements[i] = new List<UniformBufferElement>();
 
+        var maxNumberOfTextures = GL.GetInteger(GetPName.MaxCombinedTextureImageUnits);
         var textureIndex = 0;
-        var maxTextureIndex = GL.GetInteger(GetPName.MaxCombinedTextureImageUnits);
 
-        for (var i = 0; i < numberOfUniforms; ++i)
+        for (var uniformIndex = 0; uniformIndex < numberOfUniforms; ++uniformIndex)
         {
-            var uniformName = GL.GetActiveUniform(_programId, i, out var uniformSize, out var uniformRawType);
+            var uniformName = GL.GetActiveUniform(_programId, uniformIndex, out var uniformSize, out var uniformRawType).Replace("[0]", "");
             var uniformLocation = GL.GetUniformLocation(_programId, uniformName);
-            GL.GetActiveUniforms(_programId, 1, ref i, ActiveUniformParameter.UniformBlockIndex, out var uniformBlockIndex);
+            GL.GetActiveUniforms(_programId, 1, ref uniformIndex, ActiveUniformParameter.UniformBlockIndex, out var uniformBlockIndex);
             var uniformType = (ShaderUniformType)uniformRawType;
-
-            if (uniformName.EndsWith("[0]"))
-                uniformName = uniformName[..^3];
+            
+            if (!Enum.IsDefined(typeof(ShaderUniformType), uniformType))
+                throw new ShaderUniformException($"The uniform type {uniformRawType} specified in the shader for uniform {uniformName} is not supported.");
 
             if (uniformBlockIndex == -1)
             {
-                if (!Enum.IsDefined(typeof(ShaderUniformType), uniformType))
-                    throw new ShaderUniformException(
-                        $"The uniform type {uniformType} specified in the shader for uniform {uniformName} is not supported.",
-                        uniformName,
-                        uniformType
-                    );
-
-                if (uniformType is ShaderUniformType.Sampler1D or ShaderUniformType.Sampler2D or ShaderUniformType.Sampler3D or ShaderUniformType.SamplerCube)
+                if (uniformType.IsSampler())
                 {
-                    if (textureIndex + uniformSize > maxTextureIndex)
-                    {
-                        throw new ShaderUniformException(
-                            $"Texture uniform {uniformName} exceeds the limit of {maxTextureIndex} texture units.",
-                            uniformName,
-                            uniformType
-                        );
-                    }
+                    if (textureIndex + uniformSize > maxNumberOfTextures)
+                        throw new ShaderUniformException($"Texture uniform {uniformName} exceeds the limit of {maxNumberOfTextures} texture units.");
 
                     var textureIndices = Enumerable.Range(textureIndex, uniformSize).ToArray();
-
                     GL.Uniform1(uniformLocation, uniformSize, textureIndices);
 
                     uniformLocation = textureIndex;
@@ -213,19 +213,19 @@ public class ShaderProgram : GraphicsResource, IHotSwappable<ShaderProgram>
             }
             else
             {
-                GL.GetActiveUniforms(_programId, 1, ref i, ActiveUniformParameter.UniformOffset, out var uniformOffset);
+                GL.GetActiveUniforms(_programId, 1, ref uniformIndex, ActiveUniformParameter.UniformOffset, out var uniformOffset);
                 uniformBlockElements[uniformBlockIndex].Add(new UniformBufferElement(uniformName, uniformType, uniformSize, uniformOffset));
             }
         }
 
-        for (var i = 0; i < numberOfUniformBlocks; ++i)
+        for (var uniformBlockIndex = 0; uniformBlockIndex < numberOfUniformBlocks; ++uniformBlockIndex)
         {
-            var uniformBlockName = GL.GetActiveUniformBlockName(_programId, i);
-            GL.GetActiveUniformBlock(_programId, i, ActiveUniformBlockParameter.UniformBlockDataSize, out var uniformBlockSize);
-            GL.UniformBlockBinding(_programId, i, i);
+            var uniformBlockName = GL.GetActiveUniformBlockName(_programId, uniformBlockIndex);
+            GL.GetActiveUniformBlock(_programId, uniformBlockIndex, ActiveUniformBlockParameter.UniformBlockDataSize, out var uniformBlockSize);
+            GL.UniformBlockBinding(_programId, uniformBlockIndex, uniformBlockIndex);
 
-            var layout = new UniformBufferLayout(uniformBlockSize, uniformBlockElements[i].ToArray());
-            _uniformBlocks.Add(uniformBlockName, new ShaderUniformBlock(uniformBlockName, i, layout));
+            var layout = new UniformBufferLayout(uniformBlockSize, uniformBlockElements[uniformBlockIndex].ToArray());
+            _uniformBlocks.Add(uniformBlockName, new ShaderUniformBlock(uniformBlockName, uniformBlockIndex, layout));
         }
     }
 
@@ -249,22 +249,6 @@ public class ShaderProgram : GraphicsResource, IHotSwappable<ShaderProgram>
         foreach (var uniformBlock in UniformBlocks)
             uniformBlock.Buffer?.Bind(uniformBlock.Location);
     }
-
-    /// <summary>
-    /// Gets the uniform with the specified name. Returns null if such uniform does not exist.
-    /// Note that uniform value changes are not communicated to the GPU until this shader
-    /// program's <see cref="Use" /> method is called again.
-    /// </summary>
-    /// <param name="name">Name of the uniform.</param>
-    /// <returns>Uniform.</returns>
-    public ShaderUniform? Uniform(string name) => _uniforms.GetValueOrDefault(name);
-
-    /// <summary>
-    /// Gets the uniform block with the specified name. Returns null if such uniform block does not exist.
-    /// </summary>
-    /// <param name="name">Name of the uniform block.</param>
-    /// <returns>Uniform block.</returns>
-    public ShaderUniformBlock? UniformBlock(string name) => _uniformBlocks.GetValueOrDefault(name);
 
     protected override void FreeResources()
     {
@@ -290,7 +274,7 @@ public class ShaderProgram : GraphicsResource, IHotSwappable<ShaderProgram>
         {
             var buffer = uniformBlock.Buffer;
             var otherUniformBlock = other.UniformBlock(uniformBlock.Name);
-            
+
             if (buffer != null && otherUniformBlock != null)
                 otherUniformBlock.SetBuffer(buffer);
         }
