@@ -38,7 +38,7 @@ public class WavefrontObjReader : ContentReader<MeshData>
             yield return line.Trim();
     }
 
-    private float[] ParseVector(string text, int numberOfComponents)
+    private static float[] ParseVector(string text, int numberOfComponents)
     {
         var componentStrings = text.Split(' ');
         if (componentStrings.Length < numberOfComponents)
@@ -58,25 +58,25 @@ public class WavefrontObjReader : ContentReader<MeshData>
         }
     }
 
-    private Vector3 ParseVertex(string text)
+    private static Vector3 ParseVertex(string text)
     {
         var components = ParseVector(text, 3);
         return new Vector3(components[0], components[1], components[2]);
     }
 
-    private Vector3 ParseNormal(string text)
+    private static Vector3 ParseNormal(string text)
     {
         var components = ParseVector(text, 3);
         return Vector3.Normalize(new Vector3(components[0], components[1], components[2]));
     }
 
-    private Vector2 ParseTextureCoordinate(string text)
+    private static Vector2 ParseTextureCoordinate(string text)
     {
         var components = ParseVector(text, 2);
         return new Vector2(components[0], components[1]);
     }
 
-    private IEnumerable<uint> ParseFace(string text)
+    private static IEnumerable<uint> ParseFace(string text)
     {
         var indexStrings = text.Split(' ');
         if (indexStrings.Length < 3)
@@ -100,7 +100,7 @@ public class WavefrontObjReader : ContentReader<MeshData>
         }
     }
 
-    private uint ParseIndex(string text)
+    private static uint ParseIndex(string text)
     {
         var indices = text.Split('/')
             .Where(indexString => !string.IsNullOrWhiteSpace(indexString))
