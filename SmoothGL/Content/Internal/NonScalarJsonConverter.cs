@@ -27,5 +27,5 @@ public class NonScalarJsonConverter<T>(int numberOfValues, Func<float[], T> fact
     }
 
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options) =>
-        throw new NotImplementedException($"Serialization of type {typeof(T).Name} is not supported.");
+        throw new NotSupportedException($"Serialization of type {typeof(T).Name} is not supported.");
 }
