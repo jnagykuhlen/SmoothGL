@@ -9,12 +9,6 @@ public enum ShaderUniformType
 {
     Bool = ActiveUniformType.Bool,
     Int = ActiveUniformType.Int,
-    UnsignedInt = ActiveUniformType.UnsignedInt,
-
-    Double = ActiveUniformType.Double,
-    Double2 = ActiveUniformType.DoubleVec2,
-    Double3 = ActiveUniformType.DoubleVec3,
-    Double4 = ActiveUniformType.DoubleVec4,
 
     Float = ActiveUniformType.Float,
     Float2 = ActiveUniformType.FloatVec2,
