@@ -89,12 +89,9 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
         _shaderSky = _contentManager.Load<ShaderProgram>("shader-sky.json");
         _shaderPostProcessing = _contentManager.Load<ShaderProgram>("shader-post-processing.json");
 
-        // Sets the values of shader uniforms that do not change during the main loop. Color and
-        // cube textures can be assigned to uniform samplers like any other primitive value.
+        // Sets the values of shader uniforms that do not change during the main loop.
         _shaderPostProcessing.Uniform("NearPlane")?.SetValue(NearPlane);
         _shaderPostProcessing.Uniform("FarPlane")?.SetValue(FarPlane);
-        _shaderSky.Uniform("TextureSkybox")?.SetValue(_contentManager.Load<TextureCube>("Skybox.png"));
-        _shaderTorus.Uniform("Texture")?.SetValue(_contentManager.Load<Texture2D>("Texture.png"));
 
         // Creates a quad, which is essentially a vertex array with two triangles spanning the
         // whole screen. This is required for post-processing effects: First, the scene is rendered
@@ -172,6 +169,7 @@ public class AdvancedTechniquesSampleWindow : SampleWindow
         FrameBufferTarget.Default.SetAsTarget();
         FrameBufferTarget.Default.Clear(TargetOptions.All, Color.CornflowerBlue, 1.0f, 0);
 
+        // Textures can be assigned to uniform samplers like any other primitive value.
         _shaderPostProcessing.Uniform("TextureColor")?.SetValue(_frameBufferColorTexture);
         _shaderPostProcessing.Uniform("TextureDepth")?.SetValue(_frameBufferDepthTexture);
         _shaderPostProcessing.Use();

@@ -1,4 +1,7 @@
 ﻿{
-    "vertex": "VertexTorus.glsl",
-    "fragment": "FragmentTorus.glsl"
+  "vertex": "VertexTorus.glsl",
+  "fragment": "FragmentTorus.glsl",
+  "uniformAssignments": {
+    "Texture": "Texture.png"
+  }
 }

@@ -1,4 +1,7 @@
 ﻿{
     "vertex": "VertexSky.glsl",
-    "fragment": "FragmentSky.glsl"
+    "fragment": "FragmentSky.glsl",
+    "uniformAssignments": {
+        "TextureSkybox": "Skybox.png"
+    }
 }
