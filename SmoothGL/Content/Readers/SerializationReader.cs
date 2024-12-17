@@ -10,7 +10,7 @@ namespace SmoothGL.Content.Readers;
 public class SerializationReader : IHotSwappingContentReader<object>
 {
     public TRequested Read<TRequested>(Stream stream, IContentProvider contentProvider) where TRequested : notnull =>
-        JsonSerializer.Deserialize<TRequested>(stream, CommonJsonSerializerOptions.CaseInsensitive) ?? throw new ContentLoadException("Deserialized null.", stream, typeof(object));
+        JsonSerializer.Deserialize<TRequested>(stream, CommonJsonSerializerOptions.Default) ?? throw new ContentLoadException("Deserialized null.", stream, typeof(object));
 
     public void ReadInto(object existingObject, Stream stream, IContentProvider contentProvider) =>
         JsonDocument.Parse(stream).RootElement.Populate(existingObject);

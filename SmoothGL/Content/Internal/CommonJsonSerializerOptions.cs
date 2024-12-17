@@ -5,7 +5,7 @@ namespace SmoothGL.Content.Internal;
 
 public static class CommonJsonSerializerOptions
 {
-    public static readonly JsonSerializerOptions CaseInsensitive = new()
+    public static readonly JsonSerializerOptions Default = new()
     {
         PropertyNameCaseInsensitive = true,
         Converters =

@@ -45,7 +45,7 @@ public static class JsonElementExtension
             if (itemType != null)
             {
                 foreach (var jsonArrayItem in jsonArrayRemainder)
-                    listTarget.Add(jsonArrayItem.Deserialize(itemType, CommonJsonSerializerOptions.CaseInsensitive));
+                    listTarget.Add(jsonArrayItem.Deserialize(itemType, CommonJsonSerializerOptions.Default));
             }
         }
     }
@@ -70,7 +70,7 @@ public static class JsonElementExtension
             else if (propertyInfo.CanWrite)
             {
                 var deserializedValue =
-                    property.Value.Deserialize(propertyInfo.PropertyType, CommonJsonSerializerOptions.CaseInsensitive);
+                    property.Value.Deserialize(propertyInfo.PropertyType, CommonJsonSerializerOptions.Default);
 
                 propertyInfo.SetValue(target, deserializedValue);
             }
