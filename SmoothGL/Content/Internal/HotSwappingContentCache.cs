@@ -20,7 +20,7 @@ public class HotSwappingContentCache(ContentDirectory contentDirectory) : IConte
         if (hotSwapAction != null)
         {
             var cachingSource = new CachingSource(typeof(T), relativeFilePath);
-            _hotSwappableNodes[cachingSource] = new HotSwappableNode(contentObject, contentProviderProxy.Dependencies, hotSwapAction);
+            _hotSwappableNodes[cachingSource] = new HotSwappableNode(cachingSource, contentObject, contentProviderProxy.Dependencies, hotSwapAction);
         }
 
         return contentObject;
@@ -40,24 +40,26 @@ public class HotSwappingContentCache(ContentDirectory contentDirectory) : IConte
 
     private void HotSwapOnFileChanged(IContentProvider contentProvider)
     {
-        foreach (var (cachingSource, hotSwappableNode) in _hotSwappableNodes)
-        {
-            var fileChanged = hotSwappableNode.Dependencies
-                .Where(dependency => !_hotSwappableNodes.ContainsKey(dependency))
-                .Select(dependency => dependency.RelativeFilePath)
-                .Append(cachingSource.RelativeFilePath)
-                .Any(FileChanged);
-
-            if (fileChanged)
-                HotSwap(hotSwappableNode, cachingSource.RelativeFilePath, contentProvider);
-        }
+        var changedHotSwappableNodes = _hotSwappableNodes.Values
+            .Where(SelfOrDependencyChanged)
+            .ToList();
+        
+        changedHotSwappableNodes.ForEach(changedHotSwappableNode => HotSwap(changedHotSwappableNode, contentProvider));
     }
+
+    private bool SelfOrDependencyChanged(HotSwappableNode hotSwappableNode) =>
+        hotSwappableNode.Dependencies
+            .Where(dependency => !_hotSwappableNodes.ContainsKey(dependency))
+            .Select(dependency => dependency.RelativeFilePath)
+            .Append(hotSwappableNode.CachingSource.RelativeFilePath)
+            .Any(FileChanged);
 
     private bool FileChanged(NormalizedPath relativeFilePath) =>
         contentDirectory.GetLastWriteTime(relativeFilePath) > _lastUpdateTime;
 
-    private void HotSwap(HotSwappableNode hotSwappableNode, NormalizedPath relativeFilePath, IContentProvider contentProvider)
+    private void HotSwap(HotSwappableNode hotSwappableNode, IContentProvider contentProvider)
     {
+        var relativeFilePath = hotSwappableNode.CachingSource.RelativeFilePath;
         try
         {
             var contentProviderProxy = new ContentProviderProxy(contentProvider);
@@ -97,8 +99,9 @@ public class HotSwappingContentCache(ContentDirectory contentDirectory) : IConte
         public T Add<T>(T disposable) where T : IDisposable => innerProvider.Add(disposable);
     }
 
-    private class HotSwappableNode(object contentObject, IReadOnlySet<CachingSource> dependencies, Action<Stream, IContentProvider> hotSwapAction)
+    private class HotSwappableNode(CachingSource cachingSource, object contentObject, IReadOnlySet<CachingSource> dependencies, Action<Stream, IContentProvider> hotSwapAction)
     {
+        public CachingSource CachingSource { get; } = cachingSource;
         public object ContentObject { get; } = contentObject;
         public IReadOnlySet<CachingSource> Dependencies { get; set; } = dependencies;
         public void HotSwap(Stream stream, IContentProvider contentProvider) => hotSwapAction(stream, contentProvider);
