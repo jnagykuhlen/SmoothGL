@@ -1,6 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using OpenTK.Mathematics;
 using SmoothGL.Content.Internal;
 using SmoothGL.Graphics.Shader;
+using SmoothGL.Graphics.Texturing;
 
 namespace SmoothGL.Content.Factories;
 
@@ -44,12 +47,32 @@ public class ShaderProgramFactory : IFactory<ShaderProgram>
     [JsonPropertyName("fragment"), JsonRequired]
     public required string FragmentShaderFilePath { get; set; }
 
+    [JsonPropertyName("uniformAssignments")]
+    public IReadOnlyDictionary<string, JsonElement> UniformAssignments { get; set; } = new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// Creates a shader program from the individual shaders loaded from the corresponding files.
     /// </summary>
     /// <param name="contentProvider">Content provider used to load the shader files.</param>
     /// <returns>Shader program.</returns>
     public ShaderProgram Create(IContentProvider contentProvider)
+    {
+        var shaderProgram = CompileShaderProgram(contentProvider);
+
+        try
+        {
+            AssignUniforms(shaderProgram, contentProvider);
+        }
+        catch (Exception)
+        {
+            shaderProgram.Dispose();
+            throw;
+        }
+
+        return shaderProgram;
+    }
+
+    private ShaderProgram CompileShaderProgram(IContentProvider contentProvider)
     {
         try
         {
@@ -104,6 +127,35 @@ public class ShaderProgramFactory : IFactory<ShaderProgram>
                 return "";
 
             return contentProvider.Load<string>(includePath);
+        });
+    }
+
+    private void AssignUniforms(ShaderProgram shaderProgram, IContentProvider contentProvider)
+    {
+        foreach (var (uniformName, uniformValue) in UniformAssignments)
+        {
+            var uniform = shaderProgram.Uniform(uniformName);
+            if (uniform != null)
+                AssignUniform(uniform, uniformValue, contentProvider);
+        }
+    }
+
+    private static void AssignUniform(ShaderUniform uniform, JsonElement uniformValue, IContentProvider contentProvider)
+    {
+        uniform.SetValue(uniform.Type switch
+        {
+            ShaderUniformType.Bool => uniformValue.GetBoolean(),
+            ShaderUniformType.Int => uniformValue.GetInt32(),
+            ShaderUniformType.Float => uniformValue.GetSingle(),
+            ShaderUniformType.Float2 => uniformValue.Deserialize<Vector2>(CommonJsonSerializerOptions.CaseInsensitive),
+            ShaderUniformType.Float3 => uniformValue.Deserialize<Vector3>(CommonJsonSerializerOptions.CaseInsensitive),
+            ShaderUniformType.Float4 => uniformValue.Deserialize<Vector4>(CommonJsonSerializerOptions.CaseInsensitive),
+            ShaderUniformType.Matrix2 => uniformValue.Deserialize<Matrix2>(CommonJsonSerializerOptions.CaseInsensitive),
+            ShaderUniformType.Matrix3 => uniformValue.Deserialize<Matrix3>(CommonJsonSerializerOptions.CaseInsensitive),
+            ShaderUniformType.Matrix4 => uniformValue.Deserialize<Matrix4>(CommonJsonSerializerOptions.CaseInsensitive),
+            ShaderUniformType.Sampler2D => contentProvider.Load<Texture2D>(uniformValue.GetString() ?? throw new JsonException("Value is not a path string.")),
+            ShaderUniformType.SamplerCube => contentProvider.Load<TextureCube>(uniformValue.GetString() ?? throw new JsonException("Value is not a path string.")),
+            _ => throw new JsonException($"Uniform assignment from JSON is not supported for type {uniform.Type}.")
         });
     }
 }
