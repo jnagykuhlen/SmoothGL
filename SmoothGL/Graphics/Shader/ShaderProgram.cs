@@ -266,7 +266,7 @@ public class ShaderProgram : GraphicsResource, IHotSwappable<ShaderProgram>
             var value = uniform.Value;
             var otherUniform = other.Uniform(uniform.Name);
 
-            if (value != null && otherUniform != null && otherUniform.Type == uniform.Type && otherUniform.Size == uniform.Size)
+            if (value != null && otherUniform is { Value: null } && otherUniform.Type == uniform.Type && otherUniform.Size == uniform.Size)
                 otherUniform.SetValue(value);
         }
 
