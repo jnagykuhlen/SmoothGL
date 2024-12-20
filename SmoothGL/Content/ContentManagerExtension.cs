@@ -15,16 +15,14 @@ public static class ContentManagerExtension
     /// </summary>
     /// <param name="contentManager">The content manager readers are registered to.</param>
     /// <returns>The content manager readers are registered to.</returns>
-    public static ContentManager SetDefaultContentReaders(this ContentManager contentManager)
-    {
-        contentManager.SetContentReader(new SerializationReader());
-        contentManager.SetContentReader(new Readers.StringReader());
-        contentManager.SetContentReader(new ImageDataReader());
-        contentManager.SetContentReader(new Texture2DReader(TextureFilterMode.Default));
-        contentManager.SetContentReader(new TextureCubeReader(TextureFilterMode.Default));
-        contentManager.SetContentReader(new FactoryReader<ShaderProgram, ShaderProgramFactory>());
-        contentManager.SetContentReader(new WavefrontObjReader());
-        contentManager.SetContentReader(new VertexArrayReader());
-        return contentManager;
-    }
+    public static ContentManager SetDefaultContentReaders(this ContentManager contentManager) =>
+        contentManager
+            .SetContentReader(new SerializationReader())
+            .SetContentReader(new Readers.StringReader())
+            .SetContentReader(new ImageDataReader())
+            .SetContentReader(new Texture2DReader(TextureFilterMode.Default))
+            .SetContentReader(new TextureCubeReader(TextureFilterMode.Default))
+            .SetContentReader(new FactoryReader<ShaderProgram, ShaderProgramFactory>())
+            .SetContentReader(new WavefrontObjReader())
+            .SetContentReader(new VertexArrayReader());
 }
