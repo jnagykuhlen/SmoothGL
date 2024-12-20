@@ -1,7 +1,8 @@
 ﻿using System.Text.Json;
 using OpenTK.Mathematics;
+using SmoothGL.Content.Internal;
 
-namespace SmoothGL.Content.Internal;
+namespace SmoothGL.Content;
 
 public static class CommonJsonSerializerOptions
 {
@@ -10,6 +11,7 @@ public static class CommonJsonSerializerOptions
         PropertyNameCaseInsensitive = true,
         Converters =
         {
+            new ColorJsonConverter(),
             new NonScalarJsonConverter<Vector2>(2, values => new Vector2(values[0], values[1])),
             new NonScalarJsonConverter<Vector3>(3, values => new Vector3(values[0], values[1], values[2])),
             new NonScalarJsonConverter<Vector4>(4, values => new Vector4(values[0], values[1], values[2], values[3])),
