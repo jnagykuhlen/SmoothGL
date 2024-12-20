@@ -29,6 +29,7 @@ public class ContentManager(string rootPath, bool enableHotSwapping = false) : I
     /// </summary>
     /// <typeparam name="T">Content type which can be loaded by the reader.</typeparam>
     /// <param name="contentReader">Content reader of the specified type.</param>
+    /// <returns>This content manager instance.</returns>
     public ContentManager SetContentReader<T>(IContentReader<T> contentReader) where T : notnull
     {
         _contentReaders.SetContentReader(contentReader);
