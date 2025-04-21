@@ -8,6 +8,6 @@ namespace SmoothGL.Graphics.State;
 public enum CullMode
 {
     None,
-    Back = CullFaceMode.Back,
-    Front = CullFaceMode.Front
+    Back = TriangleFace.Back,
+    Front = TriangleFace.Front
 }

@@ -55,9 +55,9 @@ public class RasterizerState : IGraphicsState
         else
         {
             GL.Enable(EnableCap.CullFace);
-            GL.CullFace((CullFaceMode)CullMode);
+            GL.CullFace((TriangleFace)CullMode);
         }
 
-        GL.PolygonMode(MaterialFace.FrontAndBack, (PolygonMode)FillMode);
+        GL.PolygonMode(TriangleFace.FrontAndBack, (PolygonMode)FillMode);
     }
 }
