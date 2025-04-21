@@ -11,13 +11,24 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>SmoothGL</Title>
         <Authors>Jonas Nagy-Kuhlen</Authors>
-        <Description>An easy-to-use framework for OpenGL graphics in C#</Description>
+        <Description>An easy-to-use framework for OpenGL graphics and content management in C#</Description>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageProjectUrl>https://github.com/jnagykuhlen/SmoothGL</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/jnagykuhlen/SmoothGL</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>OpenGL Graphics Rendering Content Shader GLSL 3D</PackageTags>
+        <Copyright>Copyright (c) Jonas Nagy-Kuhlen 2025</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="OpenTK" Version="4.9.4"/>
         <PackageReference Include="StbImageSharp" Version="2.30.15" />
         <PackageReference Include="StbImageWriteSharp" Version="1.16.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
 </Project>
